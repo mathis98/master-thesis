@@ -1,82 +1,72 @@
 import torch
-import os
 import pytorch_lightning as pl
-from torch.utils.data import DataLoader, Dataset
-from torchvision import transforms
-from torchvision.models import resnet18
-from torchvision.datasets import ImageFolder
-from PIL import Image
-import imageio
-import numpy as np
+from torchvision.transforms import v2
 from torchinfo import summary
+import matplotlib.pyplot as plt
 
-from util import closest_indices
+# Data Modules
+from data.image.data_module import ImageDataModule
+from data.image.simclr_data_module import SimCLRDataModule
 
-class ImageDataSet(Dataset):
-	def __init__(self, image_paths, image_size):
-		self.image_paths = image_paths
-		self.image_size = image_size
-		self.transform = transforms.Compose([
-			transforms.Resize(self.image_size),
-			transforms.ToTensor(),
-        ])
+#  Embedding Modules
+from model.image_embedding import ImageEmbeddingModule
+from model.simclr_model import SimCLRModule
 
-	def __len__(self):
-		return len(self.image_paths)
-
-	def __getitem__(self, idx):
-		image_path = self.image_paths[idx]
-		image = Image.open(image_path).convert('RGB')
-		image = self.transform(image)
-		return image, image_path
-
-class ImageDataModule(pl.LightningDataModule):
-	def __init__(self, data_dir, image_size, batch_size):
-		super().__init__()
-		self.data_dir = data_dir
-		self.image_size = image_size
-		self.batch_size = batch_size
-
-	def prepare_data(self):
-		self.image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
-
-	def setup(self, stage=None):
-		self.train_dataset = ImageDataSet(self.image_paths, self.image_size)
-
-	def train_dataloader(self):
-		return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True)
-
-
-class ImageEmbeddingModule(pl.LightningModule):
-	def __init__(self, image_size):
-		super(ImageEmbeddingModule, self).__init__()
-		self.model = resnet18(pretrained=True)
-		self.model = torch.nn.Sequential(*(list(self.model.children())[:-1])) # Remove classification layer
-
-	def forward(self, input):
-		return self.model(input[0])
+# Helper functions
+from utility.helpers import closest_indices, visualize_augmentations
 
 
 data_dir = '../Datasets/UCM/imgs'
 batch_size = 64
 image_size = (224, 224)
+simclr = True
 
+
+# Embedding Only
 data_module = ImageDataModule(data_dir, image_size, batch_size)
 data_module.prepare_data()
 data_module.setup()
 
 image_embedding_model = ImageEmbeddingModule(image_size)
 
-summary(image_embedding_model)
 
-trainer = pl.Trainer()
+# SimCLR
+augmentation_transform = v2.Compose([
+		v2.RandAugment(), # “RandAugment: Practical automated data augmentation with a reduced search space”.
+		v2.ToImageTensor(),
+		v2.ConvertImageDtype(),
+])
 
-with torch.no_grad():
-	predictions = trainer.predict(image_embedding_model, dataloaders=data_module.train_dataloader())
+simclr_data_module = SimCLRDataModule(data_dir, image_size, batch_size, augmentation_transform)
+simclr_data_module.prepare_data()
+simclr_data_module.setup(stage="fit")
 
-embeddings = torch.vstack(predictions)
-embeddings = embeddings.view(embeddings.size(0), -1)
+simclr_module = SimCLRModule(image_size)
 
+
+trainer = pl.Trainer(max_epochs=1)
+
+if simclr:
+	trainer.fit(simclr_module, simclr_data_module.train_dataloader())
+
+
+	visualize_augmentations(simclr_data_module.train_dataset, 5)
+
+
+	embeddings = simclr_module.embed_data(simclr_data_module.train_dataloader())	
+
+
+else:
+	summary(image_embedding_model)
+
+
+	with torch.no_grad():
+		predictions = trainer.predict(image_embedding_model, dataloaders=data_module.train_dataloader())
+
+	embeddings = torch.vstack(predictions)
+	embeddings = embeddings.view(embeddings.size(0), -1)
+
+	
 print('Shape: ', embeddings.shape)
 
 pairs = closest_indices(embeddings)
