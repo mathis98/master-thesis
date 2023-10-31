@@ -35,3 +35,14 @@ def visualize_augmentations(data, number):
 
 	plt.tight_layout()
 	plt.show()
+
+
+def visualize_text_augmentations(data, number):
+
+	for idx in range(number):
+
+		sentences = data[idx]
+		original = sentences[2]
+		augmented = sentences[3]
+
+		print(original, '->', augmented)
