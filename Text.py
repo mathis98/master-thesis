@@ -21,7 +21,7 @@ args = parse_arguments()
 model_name = 'prajjwal1/bert-mini'
 batch_size = 64
 path = '../Datasets/UCM/dataset.json' if not args.ucm else '../Datasets/RSICD/dataset_rsicd.json'
-simclr = True
+simclr = False
 
 print(f"Using {path}")
 print(f"Using {args.embedding}")
@@ -69,7 +69,7 @@ else:
 		embeddings.extend(batch.tolist())
 
 	embeddings = np.vstack(embeddings)
-	
+
 
 print(f"Shape: {embeddings.shape}")
 

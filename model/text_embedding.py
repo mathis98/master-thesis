@@ -35,5 +35,8 @@ class BERTSentenceEmbedding(pl.LightningModule):
 
 			return torch.mean(resulting_states, dim=1)
 
+		elif self.embedding == 'pooler':
+			return self.model.pooler(outputs.last_hidden_state)
+
 		elif self.embedding == 'sbert':
 			return self.model.encode(inputs[1])
