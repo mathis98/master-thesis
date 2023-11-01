@@ -10,11 +10,12 @@ from loss.contrastive_loss import SimCLRLoss
 
 
 class SimCLRModule(pl.LightningModule):
-	def __init__(self, image_size, temperature=.07):
+	def __init__(self, image_size=(224, 224), temperature=.07, learning_rate=1e-4):
 		super(SimCLRModule, self).__init__()
 		self.model = resnet(weights=ResNet_Weights.DEFAULT)
 		self.temperature = temperature
 		self.criterion = SimCLRLoss(temperature)
+		self.learning_rate = learning_rate
 
 	def forward(self, original, augmented):
 		z_original = self.model(original)
@@ -29,7 +30,7 @@ class SimCLRModule(pl.LightningModule):
 		return loss
 
 	def configure_optimizers(self):
-		optimizer = torch.optim.Adam(self.parameters(), lr=.001)
+		optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 		return optimizer
 
 	def embed_data(self, dataloader):

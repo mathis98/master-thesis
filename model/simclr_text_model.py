@@ -16,12 +16,13 @@ from loss.contrastive_loss import SimCLRLoss
 
 
 class SimCLRModule(pl.LightningModule):
-	def __init__(self, model_name='prajjwal1/bert-mini', embedding='CLS', temperature=.07):
+	def __init__(self, model_name='prajjwal1/bert-mini', embedding='CLS', temperature=.07, learning_rate=1e-4):
 		super(SimCLRModule, self).__init__()
 		self.model_name = model_name
 		self.embedding = embedding
 		self.temperature = temperature
 		self.criterion = SimCLRLoss(temperature)
+		self.learning_rate = learning_rate
 
 		if self.embedding == 'sbert':
 			self.model = SentenceTransformer('all-mpnet-base-v2')
@@ -64,7 +65,7 @@ class SimCLRModule(pl.LightningModule):
 		return loss
 
 	def configure_optimizers(self):
-		optimizer = torch.optim.Adam(self.parameters(), lr=.001)
+		optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 		return optimizer
 
 	def embed_data(self, dataloader):

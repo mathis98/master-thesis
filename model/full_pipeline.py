@@ -16,6 +16,7 @@ from loss.contrastive_loss import SimCLRLoss
 
 class FullPipeline(pl.LightningModule):
 	def __init__(self, text_data, image_paths, batch_size, temperature=.07):
+		super(FullPipeline, self).__init__()
 		self.text_data = text_data
 		self.image_paths = image_paths
 		self.batch_size = batch_size
