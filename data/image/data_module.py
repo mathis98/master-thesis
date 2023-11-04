@@ -28,14 +28,16 @@ class ImageDataSet(Dataset):
 
 
 class ImageDataModule(pl.LightningDataModule):
-	def __init__(self, data_dir, image_size, batch_size):
+	def __init__(self, data_dir, image_size, batch_size, num_repeats=5):
 		super().__init__()
 		self.data_dir = data_dir
 		self.image_size = image_size
 		self.batch_size = batch_size
+		self.num_repeats = num_repeats
 
 	def prepare_data(self):
-		self.image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
+		image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
+		self.image_paths = np.repeat(image_paths, self.num_repeats)
 
 	def setup(self, stage=None):
 		self.train_dataset = ImageDataSet(self.image_paths, self.image_size)

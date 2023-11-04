@@ -12,9 +12,10 @@ img_path = '../Datasets/UCM/imgs'
 model_name = 'prajjwal1/bert-small'
 image_size = (224, 224)
 batch_size = 64
+num_repeats = 5
 
 
-image_data_module = ImageDataModule(img_path, image_size, batch_size)
+image_data_module = ImageDataModule(img_path, image_size, batch_size, num_repeats)
 image_data_module.prepare_data()
 image_data_module.setup()
 
