@@ -11,9 +11,13 @@ respectively.
 
 CLI Arguments:
 
-*--rsicd* - use the RSICD dataset (default: True)
-*--ucm* - use the UCM captions dataset (default: False)
-*--embedding* - embedding technique to use (defuault: CLS, other options: last (last layer), last_n (last 5 layers), sbert (SBERT))
+
+**--rsicd** - use the RSICD dataset (default: True)
+
+**--ucm** - use the UCM captions dataset (default: False)
+
+**--embedding** - embedding technique to use (defuault: CLS, other options: last (last layer), last_n (last 5 layers), sbert (SBERT))
+
 
 The data modules for simclr and non simclr can be found in /data/text (simclr_data_module, data_module)
 
@@ -27,13 +31,13 @@ The data modules for simclr and non simclr can be found in /data/image (simclr_d
 
 The models for simclr and non simclr can be found in /model (simclr_model, image_embedding)
 
-### util.py
+### /utility/helpers.py
 
-Utility functions. 
+Helper functions. 
 
 *closest_indices* - returns top 5 pairs of closest indices according to pairwise cosine similarity
 
-### argument_paser.py
+### /utility/argument_paser.py
 
 Helper for parsing the CLI arguments
 
