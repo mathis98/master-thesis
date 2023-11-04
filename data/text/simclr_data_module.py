@@ -64,7 +64,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 		self.json_file_path = json_file_path 
 
 	def setup(self, stage=None):
-		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-mini')
+		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
 		self.dataset = SimCLRDataset(self.json_file_path, self.tokenizer)
 
 	def train_dataloader(self):	

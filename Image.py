@@ -19,7 +19,7 @@ from utility.helpers import closest_indices, visualize_augmentations
 data_dir = '../Datasets/UCM/imgs'
 batch_size = 64
 image_size = (224, 224)
-simclr = True
+simclr = False
 
 
 # Embedding Only
@@ -44,7 +44,7 @@ simclr_data_module.setup(stage="fit")
 simclr_module = SimCLRModule(image_size)
 
 
-trainer = pl.Trainer(max_epochs=1)
+trainer = pl.Trainer(fast_dev_run=True)
 
 if simclr:
 	trainer.fit(simclr_module, simclr_data_module.train_dataloader())

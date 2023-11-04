@@ -4,55 +4,45 @@ sys.path.append('..')
 import pytorch_lightning as pl
 import torch
 
-# SimCLR for Text
-from model.simclr_text_model import SimCLRModule as BertEmbeddingModule
+# Embedding for text
+from model.text_embedding import BERTSentenceEmbedding
 
-# SimCLR for Image
-from model.simclr_model import SimCLRModule as ResNetEmbeddingModel
+# Embedding for image
+from model.image_embedding import ImageEmbeddingModule
 
 # SimCLR loss
 from loss.contrastive_loss import SimCLRLoss
 
 
 class FullPipeline(pl.LightningModule):
-	def __init__(self, text_data, image_paths, batch_size, temperature=.07):
+	def __init__(self, batch_size, temperature=.07, learning_rate=1e-4):
 		super(FullPipeline, self).__init__()
-		self.text_data = text_data
-		self.image_paths = image_paths
 		self.batch_size = batch_size
 		self.temperature = temperature
-		self.bert_embedding_module = BertEmbeddingModule()
-		self.resnet_embedding_module = ResNetEmbeddingModel()
-		self.criterion = torch.nn.CrossEntropyLoss()
+		self.learning_rate = learning_rate
 
-	def forward(self, images, captions):
-		image_embed = self.resnet_embedding_module(images)
-		text_embed = self.bert_embedding_module(captions)
+		self.bert_embedding_module = BERTSentenceEmbedding()
+		self.resnet_embedding_module = ImageEmbeddingModule()
+		self.criterion = SimCLRLoss(temperature)
+
+	def forward(self, image, caption):
+		image_embed = self.resnet_embedding_module(image)
+		text_embed = self.bert_embedding_module(caption)
 		return image_embed, text_embed
 
 	def configure_optimizers(self):
-		optimizers = [
-			{"params": self.resnet_embedding_module.parameters(), "lr": self.resnet_embedding_module.learning_rate},
-			{"params": self.bert_embedding_module.parameters(), "lr": self.bert_embedding_module.learning_rate}
-		]
-
-		optimizer = torch.optim.Adam(optimizers)
+		optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 		return optimizer
 
-	def training_step(self, batch, batch_idx, dataloader_idx):
-		print(batch)
+	def training_step(self, batch, batch_idx):
+
+		# NT-Xent loss between image and caption
+		image, caption = batch
+		caption_embed, img_embed = self(image, caption)
+		caption_embed = caption_embed.view(64,512)
+		loss = self.criterion(caption_embed, img_embed)
+		return loss
 
 
-		# contrastive loss between image and caption
-
-
-		# simclr loss between image and image
-
-
-		# simclr loss between text and text
-
-
-		# calculate total loss and return
-
-	def validation_step(self, batch, batch_idx, dataloader_idx):
+	def validation_step(self, batch, batch_idx):
 		pass

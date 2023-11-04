@@ -16,7 +16,7 @@ from loss.contrastive_loss import SimCLRLoss
 
 
 class SimCLRModule(pl.LightningModule):
-	def __init__(self, model_name='prajjwal1/bert-mini', embedding='CLS', temperature=.07, learning_rate=1e-4):
+	def __init__(self, model_name='prajjwal1/bert-small', embedding='CLS', temperature=.07, learning_rate=1e-4):
 		super(SimCLRModule, self).__init__()
 		self.model_name = model_name
 		self.embedding = embedding

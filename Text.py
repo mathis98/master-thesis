@@ -2,7 +2,7 @@ from torchinfo import summary
 import pytorch_lightning as pl
 import torch
 import numpy as np
-from argument_parser import parse_arguments
+from utility.argument_parser import parse_arguments
 
 # Helper functions
 from utility.helpers import closest_indices, visualize_text_augmentations
@@ -18,7 +18,7 @@ from model.simclr_text_model import SimCLRModule
 args = parse_arguments()
 
 
-model_name = 'prajjwal1/bert-mini'
+model_name = 'prajjwal1/bert-small'
 batch_size = 64
 path = '../Datasets/UCM/dataset.json' if not args.ucm else '../Datasets/RSICD/dataset_rsicd.json'
 simclr = False
