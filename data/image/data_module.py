@@ -1,6 +1,6 @@
 import os
 import pytorch_lightning as pl
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision import transforms
 from torchvision.datasets import ImageFolder
 from PIL import Image
@@ -40,7 +40,26 @@ class ImageDataModule(pl.LightningDataModule):
 		self.image_paths = np.repeat(image_paths, self.num_repeats)
 
 	def setup(self, stage=None):
-		self.train_dataset = ImageDataSet(self.image_paths, self.image_size)
+		# dataset = ImageDataSet(self.image_paths, self.image_size)
+
+		total_size = len(self.image_paths)
+		train_size = int(.8 * total_size)
+		val_size = int(.1 * total_size)
+		test_size = total_size - train_size - val_size
+
+		indices = list(range(total_size))
+
+		train_indices, val_indices, test_indices = indices[:train_size], indices[train_size:(train_size+val_size)], indices[(train_size+val_size):]
+
+		self.train_dataset = ImageDataSet([self.image_paths[i] for i in train_indices], self.image_size)
+		self.val_dataset = ImageDataSet([self.image_paths[i] for i in val_indices], self.image_size)
+		self.test_dataset = ImageDataSet([self.image_paths[i] for i in test_indices], self.image_size)
 
 	def train_dataloader(self):
-		return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True)
+		return DataLoader(self.train_dataset, batch_size=self.batch_size)
+
+	def val_dataloader(self):
+		return DataLoader(self.val_dataset, batch_size=self.batch_size)
+
+	def test_dataloader(self):
+		return DataLoader(self.test_dataset, batch_size=self.batch_size)

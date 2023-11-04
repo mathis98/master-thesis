@@ -32,7 +32,9 @@ class FullPipeline(pl.LightningModule):
 
 	def configure_optimizers(self):
 		optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
-		return optimizer
+		scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=.1)
+
+		return {'optimizer': optimizer, 'lr_scheduler': scheduler}
 
 	def training_step(self, batch, batch_idx):
 
@@ -41,8 +43,25 @@ class FullPipeline(pl.LightningModule):
 		caption_embed, img_embed = self(image, caption)
 		caption_embed = caption_embed.view(64,512)
 		loss = self.criterion(caption_embed, img_embed)
+		self.log('train-loss', loss)
 		return loss
 
+	def test_step(self, batch, batch_idx):
+
+		# NT-Xent loss between image and caption
+		image, caption = batch
+		caption_embed, img_embed = self(image, caption)
+		caption_embed = caption_embed.view(64,512)
+		loss = self.criterion(caption_embed, img_embed)
+		self.log('test_loss', loss)
+		return loss
 
 	def validation_step(self, batch, batch_idx):
-		pass
+		
+		# NT-Xent loss between image and caption
+		image, caption = batch
+		caption_embed, img_embed = self(image, caption)
+		caption_embed = caption_embed.view(64,512)
+		loss = self.criterion(caption_embed, img_embed)
+		self.log('val_loss', loss)
+		return loss

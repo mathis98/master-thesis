@@ -13,5 +13,23 @@ class ImageTextPairDataLoader(pl.LightningDataModule):
 		pass
 
 	def train_dataloader(self):
-		for image_batch, text_batch in zip(self.image_dataloader, self.text_dataloader):
+		for image_batch, text_batch in zip(
+			self.image_dataloader.train_dataloader(), 
+			self.text_dataloader.train_dataloader()
+		):
+			yield image_batch, text_batch
+
+	def val_dataloader(self):
+		for image_batch, text_batch in zip(
+			self.image_dataloader.val_dataloader(), 
+			self.text_dataloader.val_dataloader()
+		):
+			yield image_batch, text_batch
+
+
+	def test_dataloader(self):
+		for image_batch, text_batch in zip(
+			self.image_dataloader.test_dataloader(), 
+			self.text_dataloader.test_dataloader()
+		):
 			yield image_batch, text_batch

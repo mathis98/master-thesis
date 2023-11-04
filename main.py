@@ -24,8 +24,7 @@ text_data_module = SentenceDataModule(model_name, batch_size, text_path)
 text_data_module.prepare_data()
 text_data_module.setup()
 
-image_text_pair_dataloader = ImageTextPairDataLoader(image_data_module.train_dataloader(), text_data_module.train_dataloader())
-
+image_text_pair_dataloader = ImageTextPairDataLoader(image_data_module, text_data_module)
 
 full_pipeline = FullPipeline(batch_size)
 
