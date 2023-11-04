@@ -1,4 +1,9 @@
-# thesis
+# This is the repository for the master thesis of Mathis Jürgen Arend, at the RSiM group of Technische Universität Berlin, titled Multi-Query, Cross-Modal and Scalable Content-Based Image Retrieval in Remote Sensing. It contains all the necessary code to reproduce the experiments described therein.
+
+
+Supervisor: Prof. Begüm Demir
+
+Advisors: Gencer Sümbül, Leonard Hackel
 
 
 
