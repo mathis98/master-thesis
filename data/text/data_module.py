@@ -49,7 +49,7 @@ class SentenceDataModule(pl.LightningDataModule):
 		with open(self.json_file_path, 'r') as json_file:
 			data = json.load(json_file)
 
-		sentences = [item['sentences'][0]['raw'] for item in data['images']]
+		sentences = [item['sentences'][i]['raw'] for i in range(5) for item in data['images']] # TODO: NOT ALL SENTENCES+ SPLIT AT IMAGE LEVEL
 
 		total_size = len(sentences)
 		train_size = int(.8 * total_size)
