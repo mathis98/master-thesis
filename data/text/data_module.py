@@ -61,8 +61,8 @@ class SentenceDataModule(pl.LightningDataModule):
 
 		sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
 		sentences = list(itertools.chain.from_iterable(sentences))
-		print('sentences:')
-		print(sentences[0:10])
+		# print('sentences:')
+		# print(sentences[0:10])
 
 		# 5 captions per image: [0,100] -> [0,500], [3, 20] -> [11, 100]
 

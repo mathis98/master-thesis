@@ -26,19 +26,25 @@ text_data_module.setup(stage='fit')
 
 image_text_pair_dataloader = ImageTextPairDataLoader(image_data_module, text_data_module)
 
+
+# print('image: ')
+# print(image_data_module.train_dataset.image_paths[:10])
+# print('text: ')
+# print(text_data_module.train_dataset.sentences[:10])
+# print('both: ')
+# elem = next(image_text_pair_dataloader.train_dataloader())
+# print(elem[0][1][:10], elem[1][1][:10])
+
+
 full_pipeline = FullPipeline(batch_size)
 
 trainer = pl.Trainer(max_epochs=1)
 
-# trainer.fit(
-# 	full_pipeline, 
-# 	image_text_pair_dataloader.train_dataloader(),
-# 	image_text_pair_dataloader.val_dataloader(),
-# )
+trainer.fit(
+	full_pipeline, 
+	image_text_pair_dataloader.train_dataloader(),
+	image_text_pair_dataloader.val_dataloader(),
+)
 
-# trainer.test(dataloaders=image_text_pair_dataloader.test_dataloader())
+trainer.test(dataloaders=image_text_pair_dataloader.test_dataloader())
 
-print('image: ')
-print(image_data_module.train_dataset.image_paths[0:10])
-print('text: ')
-print(text_data_module.train_dataset.sentences[0:10])
