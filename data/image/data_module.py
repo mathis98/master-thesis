@@ -37,6 +37,7 @@ class ImageDataModule(pl.LightningDataModule):
 
 	def prepare_data(self):
 		image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
+		image_paths = sorted(image_paths, key=lambda x: int(''.join(filter(str.isdigit, x))))
 		self.image_paths = np.repeat(image_paths, self.num_repeats)
 
 	def setup(self, stage=None):
@@ -49,15 +50,18 @@ class ImageDataModule(pl.LightningDataModule):
 
 		train_indices, val_indices, test_indices = indices[:train_size], indices[train_size:(train_size+val_size)], indices[(train_size+val_size):]
 
+		print('image paths:')
+		print(self.image_paths[0:10])
+
 		self.train_dataset = ImageDataSet([self.image_paths[i] for i in train_indices], self.image_size)
 		self.val_dataset = ImageDataSet([self.image_paths[i] for i in val_indices], self.image_size)
 		self.test_dataset = ImageDataSet([self.image_paths[i] for i in test_indices], self.image_size)
 
 	def train_dataloader(self):
-		return DataLoader(self.train_dataset, batch_size=self.batch_size)
+		return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=False)
 
 	def val_dataloader(self):
-		return DataLoader(self.val_dataset, batch_size=self.batch_size)
+		return DataLoader(self.val_dataset, batch_size=self.batch_size, shuffle=False)
 
 	def test_dataloader(self):
-		return DataLoader(self.test_dataset, batch_size=self.batch_size)
+		return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=False)

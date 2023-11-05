@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader, Dataset
 from transformers import AutoModel, AutoTokenizer
 import numpy as np
 import json
+import itertools
 
 
 class CustomSentenceDataset(Dataset):
@@ -49,8 +50,6 @@ class SentenceDataModule(pl.LightningDataModule):
 		with open(self.json_file_path, 'r') as json_file:
 			data = json.load(json_file)
 
-		 # TODO: NOT ALL SENTENCES+ SPLIT AT IMAGE LEVEL
-
 		items = [item for item in data['images']]
 
 		total_size = len(items)
@@ -60,10 +59,19 @@ class SentenceDataModule(pl.LightningDataModule):
 
 		indices = list(range(total_size))
 
-		# sentences = [item['sentences'][i]['raw'] for i in range(5) for item in data['images']]
+		sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
+		sentences = list(itertools.chain.from_iterable(sentences))
+		print('sentences:')
+		print(sentences[0:10])
+
+		# 5 captions per image: [0,100] -> [0,500], [3, 20] -> [11, 100]
 
 		def get_sentences(indeces):
-			return [items[index]['sentences'][i]['raw'] for i in range(5) for index in indeces]
+			items_filter = []
+			for index in indeces:
+				items_filter.append(items[index])
+			all_sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in items_filter]
+			return list(itertools.chain.from_iterable(all_sentences))
 
 		train_indices, val_indices, test_indices = indices[:train_size], indices[train_size:(train_size+val_size)], indices[(train_size+val_size):]
 

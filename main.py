@@ -17,12 +17,12 @@ num_repeats = 5
 
 image_data_module = ImageDataModule(img_path, image_size, batch_size, num_repeats)
 image_data_module.prepare_data()
-image_data_module.setup(stage='test')
+image_data_module.setup(stage='fit')
 
 
 text_data_module = SentenceDataModule(model_name, batch_size, text_path)
 text_data_module.prepare_data()
-text_data_module.setup(stage='test')
+text_data_module.setup(stage='fit')
 
 image_text_pair_dataloader = ImageTextPairDataLoader(image_data_module, text_data_module)
 
@@ -30,10 +30,15 @@ full_pipeline = FullPipeline(batch_size)
 
 trainer = pl.Trainer(max_epochs=1)
 
-trainer.fit(
-	full_pipeline, 
-	image_text_pair_dataloader.train_dataloader(),
-	image_text_pair_dataloader.val_dataloader(),
-)
+# trainer.fit(
+# 	full_pipeline, 
+# 	image_text_pair_dataloader.train_dataloader(),
+# 	image_text_pair_dataloader.val_dataloader(),
+# )
 
-trainer.test(dataloaders=image_text_pair_dataloader.test_dataloader())
+# trainer.test(dataloaders=image_text_pair_dataloader.test_dataloader())
+
+print('image: ')
+print(image_data_module.train_dataset.image_paths[0:10])
+print('text: ')
+print(text_data_module.train_dataset.sentences[0:10])
