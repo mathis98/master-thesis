@@ -49,20 +49,27 @@ class SentenceDataModule(pl.LightningDataModule):
 		with open(self.json_file_path, 'r') as json_file:
 			data = json.load(json_file)
 
-		sentences = [item['sentences'][i]['raw'] for i in range(5) for item in data['images']] # TODO: NOT ALL SENTENCES+ SPLIT AT IMAGE LEVEL
+		 # TODO: NOT ALL SENTENCES+ SPLIT AT IMAGE LEVEL
 
-		total_size = len(sentences)
+		items = [item for item in data['images']]
+
+		total_size = len(items)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
 		test_size = total_size - train_size - val_size
 
 		indices = list(range(total_size))
 
+		# sentences = [item['sentences'][i]['raw'] for i in range(5) for item in data['images']]
+
+		def get_sentences(indeces):
+			return [items[index]['sentences'][i]['raw'] for i in range(5) for index in indeces]
+
 		train_indices, val_indices, test_indices = indices[:train_size], indices[train_size:(train_size+val_size)], indices[(train_size+val_size):]
 
-		self.train_dataset = CustomSentenceDataset([sentences[i] for i in train_indices], self.tokenizer)
-		self.val_dataset = CustomSentenceDataset([sentences[i] for i in val_indices], self.tokenizer)
-		self.test_dataset = CustomSentenceDataset([sentences[i] for i in test_indices], self.tokenizer)
+		self.train_dataset = CustomSentenceDataset(get_sentences(train_indices), self.tokenizer)
+		self.val_dataset = CustomSentenceDataset(get_sentences(val_indices), self.tokenizer)
+		self.test_dataset = CustomSentenceDataset(get_sentences(test_indices), self.tokenizer)
 
 	def train_dataloader(self):	
 		return DataLoader(self.train_dataset, batch_size=self.batch_size)
