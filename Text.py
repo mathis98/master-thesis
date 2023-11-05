@@ -42,7 +42,7 @@ simclr_data_module.setup()
 simclr_module = SimCLRModule(model_name, args.embedding)
 
 
-trainer = pl.Trainer(fast_dev_run=True)
+trainer = pl.Trainer()
 
 
 if simclr:
@@ -76,4 +76,4 @@ print(f"Shape: {embeddings.shape}")
 pairs = closest_indices(embeddings)
 
 for first, second in pairs:
-	print(data_module.dataset.sentences[first], '<-->', data_module.dataset.sentences[second], ' (', first, ',', second, ')')
+	print(data_module.train_dataset.sentences[first], '<-->', data_module.train_dataset.sentences[second], ' (', first, ',', second, ')')

@@ -44,7 +44,7 @@ simclr_data_module.setup(stage="fit")
 simclr_module = SimCLRModule(image_size)
 
 
-trainer = pl.Trainer(fast_dev_run=True)
+trainer = pl.Trainer()
 
 if simclr:
 	trainer.fit(simclr_module, simclr_data_module.train_dataloader())

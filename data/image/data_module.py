@@ -40,8 +40,6 @@ class ImageDataModule(pl.LightningDataModule):
 		self.image_paths = np.repeat(image_paths, self.num_repeats)
 
 	def setup(self, stage=None):
-		# dataset = ImageDataSet(self.image_paths, self.image_size)
-
 		total_size = len(self.image_paths)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
