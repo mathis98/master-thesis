@@ -53,7 +53,7 @@ if simclr:
 	visualize_augmentations(simclr_data_module.train_dataset, 5)
 
 
-	embeddings = simclr_module.embed_data(simclr_data_module.train_dataloader())	
+	embeddings = simclr_module.embed_data(simclr_data_module.train_dataloader(num_workers=87))	
 
 
 else:
