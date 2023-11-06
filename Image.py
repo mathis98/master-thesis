@@ -19,7 +19,7 @@ from utility.helpers import closest_indices, visualize_augmentations
 data_dir = '../Datasets/UCM/imgs'
 batch_size = 64
 image_size = (224, 224)
-simclr = False
+simclr = True
 
 
 # Embedding Only
