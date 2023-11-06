@@ -38,13 +38,13 @@ image_text_pair_dataloader = ImageTextPairDataLoader(image_data_module, text_dat
 
 full_pipeline = FullPipeline(batch_size)
 
-trainer = pl.Trainer(max_epochs=1)
+trainer = pl.Trainer()
 
-# trainer.fit(
-# 	full_pipeline, 
-# 	image_text_pair_dataloader.train_dataloader(),
-# 	image_text_pair_dataloader.val_dataloader(),
-# )
+trainer.fit(
+	full_pipeline, 
+	image_text_pair_dataloader.train_dataloader(),
+	image_text_pair_dataloader.val_dataloader(),
+)
 
 trainer.test(full_pipeline, dataloaders=image_text_pair_dataloader.test_dataloader())
 
