@@ -47,7 +47,7 @@ simclr_module = SimCLRModule(image_size)
 trainer = pl.Trainer()
 
 if simclr:
-	trainer.fit(simclr_module, simclr_data_module.train_dataloader())
+	trainer.fit(simclr_module, simclr_data_module.train_dataloader(num_workers=87))
 
 
 	visualize_augmentations(simclr_data_module.train_dataset, 5)
