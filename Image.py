@@ -47,13 +47,13 @@ simclr_module = SimCLRModule(image_size)
 trainer = pl.Trainer()
 
 if simclr:
-	trainer.fit(simclr_module, simclr_data_module.train_dataloader(num_workers=87))
+	trainer.fit(simclr_module, simclr_data_module.train_dataloader())
 
 
 	visualize_augmentations(simclr_data_module.train_dataset, 5)
 
 
-	embeddings = simclr_module.embed_data(simclr_data_module.train_dataloader(num_workers=87))	
+	embeddings = simclr_module.embed_data(simclr_data_module.train_dataloader())	
 
 
 else:
