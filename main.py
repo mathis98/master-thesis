@@ -40,11 +40,11 @@ full_pipeline = FullPipeline(batch_size)
 
 trainer = pl.Trainer(max_epochs=1)
 
-trainer.fit(
-	full_pipeline, 
-	image_text_pair_dataloader.train_dataloader(),
-	image_text_pair_dataloader.val_dataloader(),
-)
+# trainer.fit(
+# 	full_pipeline, 
+# 	image_text_pair_dataloader.train_dataloader(),
+# 	image_text_pair_dataloader.val_dataloader(),
+# )
 
-trainer.test(dataloaders=image_text_pair_dataloader.test_dataloader())
+trainer.test(full_pipeline, dataloaders=image_text_pair_dataloader.test_dataloader())
 
