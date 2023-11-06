@@ -39,7 +39,7 @@ class FullPipeline(pl.LightningModule):
 		# NT-Xent loss between image and caption
 		image, caption = batch
 		image_embed, caption_embed = self(image, caption)
-		image_embed = image_embed.view(64,512)
+		image_embed = torch.squeeze(image_embed)
 		loss = self.criterion(image_embed, caption_embed)
 		self.log('train-loss', loss, batch_size=self.batch_size)
 		return loss
@@ -49,7 +49,7 @@ class FullPipeline(pl.LightningModule):
 		# NT-Xent loss between image and caption
 		image, caption = batch
 		image_embed, caption_embed = self(image, caption)
-		image_embed = image_embed.view(64,512)
+		image_embed = torch.squeeze(image_embed)
 		loss = self.criterion(image_embed, caption_embed)
 		self.log('train-loss', loss, batch_size=self.batch_size)
 
@@ -58,6 +58,6 @@ class FullPipeline(pl.LightningModule):
 		# NT-Xent loss between image and caption
 		image, caption = batch
 		image_embed, caption_embed = self(image, caption)
-		image_embed = image_embed.view(64,512)
+		image_embed = torch.squeeze(image_embed)
 		loss = self.criterion(image_embed, caption_embed)
 		self.log('train-loss', loss, batch_size=self.batch_size)
