@@ -52,6 +52,7 @@ class FullPipeline(pl.LightningModule):
 		image_embed = torch.squeeze(image_embed)
 		loss = self.criterion(image_embed, caption_embed)
 		self.log('train-loss', loss, batch_size=self.batch_size)
+		return loss
 
 	def validation_step(self, batch, batch_idx):
 		
@@ -60,4 +61,5 @@ class FullPipeline(pl.LightningModule):
 		image_embed, caption_embed = self(image, caption)
 		image_embed = torch.squeeze(image_embed)
 		loss = self.criterion(image_embed, caption_embed)
+		return loss
 		self.log('train-loss', loss, batch_size=self.batch_size)
