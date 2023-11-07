@@ -33,8 +33,10 @@ image_text_pair_data_module.setup(stage='fit')
 # print('text: ')
 # print(text_data_module.train_dataset.sentences[:10])
 # print('both: ')
-# elem = next(image_text_pair_data_module.train_dataloader())
+# elem = image_text_pair_data_module.train_dataset
 # print(elem[0][1][:10], elem[1][1][:10])
+
+# print(list(image_text_pair_data_module.train_dataloader())[:10])
 
 
 full_pipeline = FullPipeline(batch_size)
