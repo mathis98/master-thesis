@@ -38,7 +38,7 @@ class ImageTextPairDataModule(pl.LightningDataModule):
 		return DataLoader(self.train_dataset, self.batch_size, num_workers=40, shuffle=True)
 
 	def val_dataloader(self):
-		return DataLoader(self.val_dataset, self.batch_size, num_workers=40, shuffle=True)
+		return DataLoader(self.val_dataset, self.batch_size, num_workers=40, shuffle=False)
 
 	def test_dataloader(self):
-		return DataLoader(self.test_dataset, self.batch_size, num_workers=40, shuffle=True)
+		return DataLoader(self.test_dataset, self.batch_size, num_workers=40, shuffle=False)
