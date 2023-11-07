@@ -25,7 +25,8 @@ text_data_module.prepare_data()
 text_data_module.setup(stage='fit')
 
 
-image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module)
+image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
+image_text_pair_data_module.setup(stage='fit')
 
 # print('image: ')
 # print(image_data_module.train_dataset.image_paths[:10])
