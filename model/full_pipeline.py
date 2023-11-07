@@ -3,6 +3,7 @@ sys.path.append('..')
 
 import pytorch_lightning as pl
 import torch
+import numpy as np
 
 # Embedding for text
 from model.text_embedding import BERTSentenceEmbedding
@@ -27,6 +28,9 @@ class FullPipeline(pl.LightningModule):
 		self.bert_embedding_module = BERTSentenceEmbedding()
 		self.resnet_embedding_module = ImageEmbeddingModule()
 		self.criterion = SimCLRLoss(temperature)
+
+		self.validation_step_outputs = []
+		self.test_step_outputs = []
 
 	def forward(self, image, caption):
 		image_embed = self.resnet_embedding_module(image)
@@ -60,9 +64,15 @@ class FullPipeline(pl.LightningModule):
 		image_embed = torch.squeeze(image_embed)
 		
 		mAP = calculate_mAP(image_embed, caption_embed, groundtruth)
-		print('train mAP: ', mAP)
 		self.log('train mAP:',mAP)
+		self.test_step_outputs.append(mAP)
 		return mAP
+
+	def on_test_epoch_end(self):
+		avg_mAP = np.mean(self.test_step_outputs)
+		self.log('avg_test_mAP: ', avg_mAP)
+		print('avg_test_mAP: ', avg_mAP)
+
 
 	def validation_step(self, batch, batch_idx):
 		# NT-Xent loss between image and caption
@@ -76,6 +86,11 @@ class FullPipeline(pl.LightningModule):
 		image_embed = torch.squeeze(image_embed)
 		
 		mAP = calculate_mAP(image_embed, caption_embed, groundtruth)
-		print('validation mAP: ', mAP)
 		self.log('validation mAP:',mAP)
+		self.validation_step_outputs.append(mAP)
 		return mAP
+
+	def on_validation_epoch_end(self):
+		avg_mAP = np.mean(self.validation_step_outputs)
+		self.log('avg_val_mAP: ', avg_mAP)
+		print('avg_val_mAP: ', avg_mAP)

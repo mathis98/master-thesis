@@ -61,7 +61,7 @@ def relevant_list(labels):
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels):
 	mAP_values = []
 
-	for i in range(64):
+	for i in range(image_embeddings.shape[0]):
 		caption_embedding = caption_embeddings[i]
 		
 		image_scores = np.dot(image_embeddings, caption_embedding)
