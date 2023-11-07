@@ -68,4 +68,4 @@ class SimCLRDataModule(pl.LightningDataModule):
 		self.dataset = SimCLRDataset(self.json_file_path, self.tokenizer)
 
 	def train_dataloader(self):	
-		return DataLoader(self.dataset, batch_size=self.batch_size, num_workers=87)
+		return DataLoader(self.dataset, batch_size=self.batch_size, num_workers=30)
