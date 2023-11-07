@@ -13,6 +13,9 @@ from model.image_embedding import ImageEmbeddingModule
 # SimCLR loss
 from loss.contrastive_loss import SimCLRLoss
 
+# for mAP calculation
+from utility.helpers import relevant_list, calculate_mAP
+
 
 class FullPipeline(pl.LightningModule):
 	def __init__(self, batch_size=64, temperature=.07, learning_rate=1e-4):
@@ -48,16 +51,31 @@ class FullPipeline(pl.LightningModule):
 
 		# NT-Xent loss between image and caption
 		image, caption = batch
+
+		indeces = caption[2]
+		labels = indeces // 100
+		groundtruth = relevant_list(labels)
+
 		image_embed, caption_embed = self(image, caption)
 		image_embed = torch.squeeze(image_embed)
-		loss = self.criterion(image_embed, caption_embed)
-		self.log('train-loss', loss, batch_size=self.batch_size)
+		
+		mAP = calculate_mAP(image_embed, caption_embed, groundtruth)
+		print('train mAP: ', mAP)
+		self.log('train mAP:',mAP)
+		return mAP
 
 	def validation_step(self, batch, batch_idx):
-		
 		# NT-Xent loss between image and caption
 		image, caption = batch
+
+		indeces = caption[2]
+		labels = indeces // 100
+		groundtruth = relevant_list(labels)
+
 		image_embed, caption_embed = self(image, caption)
 		image_embed = torch.squeeze(image_embed)
-		loss = self.criterion(image_embed, caption_embed)
-		self.log('train-loss', loss, batch_size=self.batch_size)
+		
+		mAP = calculate_mAP(image_embed, caption_embed, groundtruth)
+		print('validation mAP: ', mAP)
+		self.log('validation mAP:',mAP)
+		return mAP

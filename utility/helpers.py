@@ -1,6 +1,7 @@
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import matplotlib.pyplot as plt
+import torch
 
 def closest_indices(embeddings):
 
@@ -46,3 +47,40 @@ def visualize_text_augmentations(data, number):
 		augmented = sentences[3]
 
 		print(original, '->', augmented)
+
+def relevant_list(labels):
+	relevant_list = []
+
+	for label in labels:
+		relevants = torch.where(labels == label, 1, 0)
+		relevant_list.append(relevants)
+
+	return relevant_list
+
+
+def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels):
+	mAP_values = []
+
+	for i in range(64):
+		caption_embedding = caption_embeddings[i]
+		
+		image_scores = np.dot(image_embeddings, caption_embedding)
+
+		relevant_labels = ground_truth_labels[i]
+
+		ranked_indices = np.argsort(image_scores)[::-1]
+
+		num_relevant_images = torch.sum(relevant_labels)
+
+		if num_relevant_images == 0:
+			AP = .0
+		else:
+			ranked = ranked_indices.copy()
+			precision = np.cumsum(relevant_labels[ranked]) / (np.arange(len(relevant_labels)) + 1)
+			AP = torch.sum(precision * relevant_labels) / num_relevant_images
+
+		mAP_values.append(AP)
+
+	mAP = np.mean(mAP_values)
+	return mAP
+
