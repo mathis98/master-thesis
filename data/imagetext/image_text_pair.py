@@ -17,7 +17,7 @@ class ImageTextPairDataModule(pl.LightningDataModule):
 
 	def custom_collate_fn(self, batch):
 		image_batch, text_batch = zip(*batch)
-		return (image_batch, text_batch)
+		return image_batch[0], text_batch[0]
 
 	def train_dataloader(self):
 		image_loader = self.image_data_module.train_dataloader()
