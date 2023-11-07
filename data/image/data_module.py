@@ -58,10 +58,11 @@ class ImageDataModule(pl.LightningDataModule):
 		self.test_dataset = ImageDataSet([self.image_paths[i] for i in test_indices], self.image_size)
 
 	def train_dataloader(self):
-		return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=False)
+		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=87)
 
 	def val_dataloader(self):
-		return DataLoader(self.val_dataset, batch_size=self.batch_size, shuffle=False)
+		return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=87)
 
 	def test_dataloader(self):
-		return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=False)
+		return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=87)
+		
