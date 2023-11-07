@@ -24,8 +24,6 @@ text_data_module = SentenceDataModule(model_name, batch_size, text_path)
 text_data_module.prepare_data()
 text_data_module.setup(stage='fit')
 
-image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
-
 
 # print('image: ')
 # print(image_data_module.train_dataset.image_paths[:10])
@@ -39,6 +37,8 @@ image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_da
 full_pipeline = FullPipeline(batch_size)
 
 trainer = pl.Trainer()
+
+image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, trainer, batch_size)
 
 trainer.fit(
 	full_pipeline, 
