@@ -25,7 +25,7 @@ class ImageTextPairDataModule(pl.LightningDataModule):
 		loader = DataLoader(
 			list(zip(image_loader, text_loader)),
 			batch_size = self.batch_size,
-			collate_fn = self.cusom_collate_fn,
+			collate_fn = self.custom_collate_fn,
 		)
 		return loader
 
@@ -35,7 +35,7 @@ class ImageTextPairDataModule(pl.LightningDataModule):
 		loader = DataLoader(
 			list(zip(image_loader, text_loader)),
 			batch_size = self.batch_size,
-			collate_fn = self.cusom_collate_fn,
+			collate_fn = self.custom_collate_fn,
 		)
 		return loader
 
@@ -46,6 +46,6 @@ class ImageTextPairDataModule(pl.LightningDataModule):
 		loader = DataLoader(
 			list(zip(image_loader, text_loader)),
 			batch_size = self.batch_size,
-			collate_fn = self.cusom_collate_fn,
+			collate_fn = self.custom_collate_fn,
 		)
 		return loader
