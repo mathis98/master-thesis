@@ -10,7 +10,7 @@ from data.image.simclr_data_module import SimCLRDataModule
 
 #  Embedding Modules
 from model.image_embedding import ImageEmbeddingModule
-from model.simclr_model import SimCLRModule
+from model.simclr_image_model import SimCLRModule
 
 # Helper functions
 from utility.helpers import closest_indices, visualize_augmentations
