@@ -21,22 +21,42 @@ class SimCLRDataset(Dataset):
 		original_image = self.transform(image)
 		augmented_image = self.transform(image)
 
-		return original_image, augmented_image
+		return original_image, augmented_image, image_path
 
 
 class SimCLRDataModule(pl.LightningDataModule):
-	def __init__(self, data_dir, image_size, batch_size, augmentation_transform):
+	def __init__(self, data_dir, image_size, batch_size, augmentation_transform, num_repeats=5):
 		super().__init__()
 		self.data_dir = data_dir
 		self.image_size = image_size
 		self.batch_size = batch_size
 		self.augmentation_transform = augmentation_transform
+		self.num_repeats = num_repeats
 
 	def prepare_data(self):
-		self.image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
+		image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
+		image_paths = sorted(image_paths, key=lambda x: int(''.join(filter(str.isdigit, x))))
+		self.image_paths = np.repeat(image_paths, self.num_repeats)
 
 	def setup(self, stage=None):
-		self.train_dataset = SimCLRDataset(self.image_paths, self.image_size, self.augmentation_transform)
+		total_size = len(self.image_paths)
+		train_size = int(.8 * total_size)
+		val_size = int(.1 * total_size)
+		test_size = total_size - train_size - val_size
+
+		indices = list(range(total_size))
+
+		np.random.seed(self.seed)
+		shuffled_indices = np.random.permutation(indices)
+		
+		train_indices, val_indices, test_indices = shuffled_indices[:train_size], shuffled_indices[train_size:(train_size+val_size)], shuffled_indices[(train_size+val_size):]
+
+		# print('image paths:')
+		# print(self.image_paths[0:10])
+
+		self.train_dataset = SimCLRDataset([self.image_paths[i] for i in train_indices], self.image_size, self.augmentation_transform)
+		self.val_dataset = SimCLRDataset([self.image_paths[i] for i in val_indices], self.augmentation_transform)
+		self.test_dataset = SimCLRDataset([self.image_paths[i] for i in test_indices], self.augmentation_transform)
 
 	def train_dataloader(self):
 		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=30)

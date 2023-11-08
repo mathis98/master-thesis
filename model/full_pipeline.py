@@ -7,9 +7,11 @@ import numpy as np
 
 # Embedding for text
 from model.text_embedding import BERTSentenceEmbedding
+from model.simclr_text_model import SimCLRModule as SimCLRTextModule
 
 # Embedding for image
 from model.image_embedding import ImageEmbeddingModule
+from model.simclr_image_model import SimCLRModule as SimCLRImageModule
 
 # SimCLR loss
 from loss.contrastive_loss import SimCLRLoss
@@ -19,9 +21,10 @@ from utility.helpers import relevant_list, calculate_mAP
 
 
 class FullPipeline(pl.LightningModule):
-	def __init__(self, batch_size=64, temperature=.07, learning_rate=1e-4):
+	def __init__(self, batch_size=64, simclr=False, temperature=.07, learning_rate=1e-4):
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
+		self.simclr = simclr
 		self.temperature = temperature
 		self.learning_rate = learning_rate
 

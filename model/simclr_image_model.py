@@ -22,6 +22,9 @@ class SimCLRModule(pl.LightningModule):
 		z_augmented = self.model(augmented)
 		return z_original, z_augmented
 
+	def source_image_embeddings(self, source_images):
+		return self.model(source_images)
+
 	def training_step(self, batch, batch_idx):
 		original, augmented = batch
 		print(original[0])

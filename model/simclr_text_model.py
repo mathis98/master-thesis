@@ -57,6 +57,27 @@ class SimCLRModule(pl.LightningModule):
 		elif self.embedding == 'sbert':
 			return self.model.encode(original[2]), self.model.encode(augmented[3])
 
+	def source_text_embeddings(self, source_text):
+		if self.embedding != 'sbert':
+			outputs = self.model(source_text['input_ids'], source_text['attention_mask'])
+
+		if self.embedding == 'CLS':
+			return outputs.last_hidden_state[:, 0, :]
+
+		elif self.embedding == 'last':
+			last_hidden = outputs.last_hidden_state
+			return torch.mean(last_hidden, dim=1)
+
+		elif self.embedding == 'last_n':
+			last_n_hidden = outputs.hidden_states[-4:]
+			hiddens = torch.stack(last_n_hidden)
+			resulting_states = torch.sum(hiddens, dim=0)
+
+			return torch.mean(resulting_states, dim=1)
+
+		elif self.embedding == 'sbert':
+			return self.model.encode(original[2])
+
 	def training_step(self, batch, batch_idx):
 		original, augmented, _, _, _ = batch
 		z_original, z_augmented = self(original, augmented)
