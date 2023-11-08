@@ -14,6 +14,8 @@ image_size = (224, 224)
 batch_size = 64
 num_repeats = 5
 
+simclr = False
+
 
 image_data_module = ImageDataModule(img_path, image_size, batch_size, num_repeats)
 image_data_module.prepare_data()
@@ -41,8 +43,7 @@ image_text_pair_data_module.setup(stage='fit')
 
 full_pipeline = FullPipeline(batch_size)
 
-logger = pl.loggers.CSVLogger('logs', name='full_pipeline_simple')
-trainer = pl.Trainer(logger=logger)
+trainer = pl.Trainer(logger='csv', default_save_path='logs/')
 
 trainer.fit(
 	full_pipeline, 
