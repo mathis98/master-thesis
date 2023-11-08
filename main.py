@@ -43,7 +43,8 @@ image_text_pair_data_module.setup(stage='fit')
 
 full_pipeline = FullPipeline(batch_size)
 
-trainer = pl.Trainer(logger='csv', default_save_path='logs/')
+logger = pl.loggers.CSVLogger('logs', name='full_pipeline_simple')
+trainer = pl.Trainer(logger=logger)
 
 trainer.fit(
 	full_pipeline, 

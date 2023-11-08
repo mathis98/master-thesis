@@ -8,11 +8,12 @@ import itertools
 
 
 class CustomSentenceDataset(Dataset):
-	def __init__(self, sentences, tokenizer, max_length=128):
+	def __init__(self, sentences, tokenizer, indices, max_length=128):
 
 		self.sentences = sentences
 		self.tokenizer = tokenizer
 		self.max_length = max_length
+		self.indices = indices
 
 	def __len__(self):
 		return len(self.sentences)
@@ -34,15 +35,16 @@ class CustomSentenceDataset(Dataset):
 		inputs['input_ids'] = inputs['input_ids'].squeeze(0)
 		inputs['attention_mask'] = inputs['attention_mask'].squeeze(0)
 
-		return inputs, sentence, idx
+		return inputs, sentence, self.indices[idx]
 
 
 class SentenceDataModule(pl.LightningDataModule):
-	def __init__(self, model_name, batch_size, json_file_path):
+	def __init__(self, model_name, batch_size, json_file_path, seed=42):
 		super(SentenceDataModule, self).__init__()
 		self.model_name = model_name
 		self.batch_size = batch_size
 		self.json_file_path = json_file_path 
+		self.seed = seed
 
 	def setup(self, stage=None):
 		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
@@ -50,34 +52,36 @@ class SentenceDataModule(pl.LightningDataModule):
 		with open(self.json_file_path, 'r') as json_file:
 			data = json.load(json_file)
 
-		items = [item for item in data['images']]
+		sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
+		sentences = list(itertools.chain.from_iterable(sentences))
 
-		total_size = len(items)
+		total_size = len(sentences)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
 		test_size = total_size - train_size - val_size
 
 		indices = list(range(total_size))
 
-		sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
-		sentences = list(itertools.chain.from_iterable(sentences))
+		np.random.seed(self.seed)
+		shuffled_indices = np.random.permutation(indices)
+
 		# print('sentences:')
-		# print(sentences[0:10])
+		# print(sentences[-10:])
 
 		# 5 captions per image: [0,100] -> [0,500], [3, 20] -> [11, 100]
 
-		def get_sentences(indeces):
-			items_filter = []
-			for index in indeces:
-				items_filter.append(items[index])
-			all_sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in items_filter]
-			return list(itertools.chain.from_iterable(all_sentences))
+		# def get_sentences(indeces):
+		# 	items_filter = []
+		# 	for index in indeces:
+		# 		items_filter.append(items[index])
+		# 	all_sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in items_filter]
+		# 	return list(itertools.chain.from_iterable(all_sentences))
 
-		train_indices, val_indices, test_indices = indices[:train_size], indices[train_size:(train_size+val_size)], indices[(train_size+val_size):]
+		train_indices, val_indices, test_indices = shuffled_indices[:train_size], shuffled_indices[train_size:(train_size+val_size)], shuffled_indices[(train_size+val_size):]
 
-		self.train_dataset = CustomSentenceDataset(get_sentences(train_indices), self.tokenizer)
-		self.val_dataset = CustomSentenceDataset(get_sentences(val_indices), self.tokenizer)
-		self.test_dataset = CustomSentenceDataset(get_sentences(test_indices), self.tokenizer)
+		self.train_dataset = CustomSentenceDataset([sentences[i] for i in train_indices], self.tokenizer, train_indices)
+		self.val_dataset = CustomSentenceDataset([sentences[i] for i in val_indices], self.tokenizer, val_indices)
+		self.test_dataset = CustomSentenceDataset([sentences[i] for i in test_indices], self.tokenizer, test_indices)
 
 	def train_dataloader(self):	
 		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=30)

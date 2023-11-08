@@ -28,12 +28,13 @@ class ImageDataSet(Dataset):
 
 
 class ImageDataModule(pl.LightningDataModule):
-	def __init__(self, data_dir, image_size, batch_size, num_repeats=5):
+	def __init__(self, data_dir, image_size, batch_size, num_repeats=5, seed=42):
 		super().__init__()
 		self.data_dir = data_dir
 		self.image_size = image_size
 		self.batch_size = batch_size
 		self.num_repeats = num_repeats
+		self.seed = seed
 
 	def prepare_data(self):
 		image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
@@ -48,7 +49,10 @@ class ImageDataModule(pl.LightningDataModule):
 
 		indices = list(range(total_size))
 
-		train_indices, val_indices, test_indices = indices[:train_size], indices[train_size:(train_size+val_size)], indices[(train_size+val_size):]
+		np.random.seed(self.seed)
+		shuffled_indices = np.random.permutation(indices)
+		
+		train_indices, val_indices, test_indices = shuffled_indices[:train_size], shuffled_indices[train_size:(train_size+val_size)], shuffled_indices[(train_size+val_size):]
 
 		# print('image paths:')
 		# print(self.image_paths[0:10])
