@@ -18,7 +18,7 @@ image_size = (224, 224)
 batch_size = 64
 num_repeats = 5
 
-simclr = False
+simclr = True
 
 # SimCLR
 augmentation_transform = v2.Compose([
@@ -51,14 +51,39 @@ image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_da
 image_text_pair_data_module.setup(stage='fit')
 
 # print('image: ')
-# print(image_data_module.train_dataset.image_paths[:10])
+# print(image_data_module.train_dataset.image_paths[0])
 # print('text: ')
-# print(text_data_module.train_dataset.sentences[:10])
+# print(text_data_module.train_dataset.sentences[0])
 # print('both: ')
-# elem = image_text_pair_data_module.train_dataset
-# print(elem[0][1][:10], elem[1][1][:10])
+# elem = image_text_pair_data_module.train_dataset[0]
 
-# print(list(image_text_pair_data_module.train_dataloader())[:10])
+# print('shape: ', len(elem))
+
+# image, caption = elem
+# print('len image: ', len(image))
+# print('len caption: ', len(caption))
+
+# orig_img = image[0]
+# aug_img = image[1]
+# img_path = image[2]
+
+# inputs = caption[0]
+# inputs_aug = caption[1]
+# sentence = caption[2]
+# sentence_aug = caption[3]
+# idx = caption[4]
+
+# print('original image: ', orig_img)
+# print('augmented image: ', aug_img)
+# print('path: ', img_path)
+# print('-----------------')
+
+# print('inputs: ', inputs)
+# print('aug inputs: ', inputs_aug)
+# print('sentence: ', sentence)
+# print('sentence aug: ', sentence_aug)
+# print('index: ', idx)
+# print('+++++++++++++++++++++++++++')
 
 
 full_pipeline = FullPipeline(batch_size, simclr=simclr)

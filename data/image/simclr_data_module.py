@@ -4,6 +4,8 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from PIL import Image
 import imageio
+import numpy as np
+from torchvision.transforms import v2
 
 
 class SimCLRDataset(Dataset):
@@ -21,17 +23,25 @@ class SimCLRDataset(Dataset):
 		original_image = self.transform(image)
 		augmented_image = self.transform(image)
 
-		return original_image, augmented_image, image_path
+		augmentation_transform = v2.Compose([
+			v2.ToImageTensor(),
+			v2.ConvertImageDtype(),
+		])
+
+		source_image = augmentation_transform(image)
+
+		return original_image, augmented_image, image_path, source_image
 
 
 class SimCLRDataModule(pl.LightningDataModule):
-	def __init__(self, data_dir, image_size, batch_size, augmentation_transform, num_repeats=5):
+	def __init__(self, data_dir, image_size, batch_size, augmentation_transform, num_repeats=5, seed=42):
 		super().__init__()
 		self.data_dir = data_dir
 		self.image_size = image_size
 		self.batch_size = batch_size
 		self.augmentation_transform = augmentation_transform
 		self.num_repeats = num_repeats
+		self.seed = seed
 
 	def prepare_data(self):
 		image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
@@ -55,8 +65,14 @@ class SimCLRDataModule(pl.LightningDataModule):
 		# print(self.image_paths[0:10])
 
 		self.train_dataset = SimCLRDataset([self.image_paths[i] for i in train_indices], self.image_size, self.augmentation_transform)
-		self.val_dataset = SimCLRDataset([self.image_paths[i] for i in val_indices], self.augmentation_transform)
-		self.test_dataset = SimCLRDataset([self.image_paths[i] for i in test_indices], self.augmentation_transform)
+		self.val_dataset = SimCLRDataset([self.image_paths[i] for i in val_indices], self.image_size, self.augmentation_transform)
+		self.test_dataset = SimCLRDataset([self.image_paths[i] for i in test_indices], self.image_size, self.augmentation_transform)
 
 	def train_dataloader(self):
-		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=30)
+		return DataLoader(self.train_dataset, batch_size=self.batch_size)
+
+	def val_dataloader(self):
+		return DataLoader(self.val_dataset, batch_size=self.batch_size)
+
+	def test_dataloader(self):
+		return DataLoader(self.test_dataset, batch_size=self.batch_size)
