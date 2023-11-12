@@ -88,7 +88,7 @@ class FullPipeline(pl.LightningModule):
 		self.test_step_outputs.append(mAP)
 
 	def on_test_epoch_end(self):
-		avg_mAP = np.mean([output for output in self.test_step_outputs])
+		avg_mAP = np.mean(np.concatenate(self.test_step_outputs))
 		self.log('avg_test_mAP: ', avg_mAP, batch_size=self.batch_size, prog_bar=True)
 		print('avg_test_mAP: ', avg_mAP)
 
@@ -111,8 +111,7 @@ class FullPipeline(pl.LightningModule):
 		self.validation_step_outputs.append(mAP)
 
 	def on_validation_epoch_end(self):
-		print(self.validation_step_outputs)
-		avg_mAP = np.mean([output for output in self.validation_step_outputs])
+		avg_mAP = np.mean(np.concatenate(self.validation_step_outputs))
 		self.log('avg_val_mAP: ', avg_mAP, batch_size=self.batch_size, prog_bar=True)
 		print('avg_val_mAP: ', avg_mAP)
 
