@@ -16,7 +16,7 @@ from loss.contrastive_loss import SimCLRLoss
 
 
 class SimCLRModule(pl.LightningModule):
-	def __init__(self, model_name='prajjwal1/bert-small', embedding='CLS', temperature=.07, learning_rate=1e-4):
+	def __init__(self, model_name='prajjwal1/bert-small', embedding='CLS', temperature=.07, learning_rate=1e-4, hidden_dim=128):
 		super(SimCLRModule, self).__init__()
 		self.model_name = model_name
 		self.embedding = embedding
@@ -24,11 +24,17 @@ class SimCLRModule(pl.LightningModule):
 		self.criterion = SimCLRLoss(temperature)
 		self.learning_rate = learning_rate
 
+
 		if self.embedding == 'sbert':
 			self.model = SentenceTransformer('all-mpnet-base-v2')
 
 		else:
 			self.model = AutoModel.from_pretrained(model_name, output_hidden_states=True)
+			self.projection_head = nn.Sequential(
+				nn.Linear(self.model.config.hidden_size, 4*hidden_dim),
+				nn.ReLU(),
+				nn.Linear(4*hidden_dim, hidden_dim)
+			)
 
 	def forward(self, original, augmented):
 		if self.embedding != 'sbert':
@@ -36,7 +42,8 @@ class SimCLRModule(pl.LightningModule):
 			outputs_aug = self.model(augmented['input_ids'], augmented['attention_mask'])
 
 		if self.embedding == 'CLS':
-			return outputs.last_hidden_state[:, 0, :], outputs_aug.last_hidden_state[:, 0, :]
+			outputs, outputs_aug =  outputs.last_hidden_state[:, 0, :], outputs_aug.last_hidden_state[:, 0, :]
+			return self.projection_head(outputs), self.projection_head(outputs_aug)
 
 		elif self.embedding == 'last':
 			last_hidden = outputs.last_hidden_state
