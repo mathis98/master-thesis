@@ -91,4 +91,4 @@ if simclr:
 	data_module = simclr_data_module
 
 for first, second in pairs:
-	print(data_module.train_dataset.sentences[first], '<-->', data_module.train_dataset.sentences[second], ' (', first, ',', second, ')')
+	print(data_module.train_dataset.sentences[first], '<-->', data_module.train_dataset.sentences[second], ' (', data_module.train_dataset.sentences.indices[first], ',', data_module.train_dataset.indices[second], ')')
