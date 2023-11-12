@@ -32,8 +32,8 @@ def visualize_augmentations(data, number, mean, std):
 			mean=[-m / s for m, s in zip(mean,std)],
 			std=[1 / s for s in std]
 		)
-		original = unnormalize(original).cpu().numpy().transpose(1,2,0)
-		augmented = unnormalize(augmented).cpu().numpy().transpose(1,2,0)
+		original = unnormalize(original).numpy().transpose(1,2,0)
+		augmented = unnormalize(augmented).numpy().transpose(1,2,0)
 
 		axes[row, 0].imshow(original)
 		axes[row, 0].set_title(column_titles[0])
@@ -73,9 +73,9 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels):
 	for i in range(image_embeddings.shape[0]):
 		caption_embedding = caption_embeddings[i]
 		
-		image_scores = np.dot(image_embeddings, caption_embedding)
+		image_scores = torch.matmul(image_embeddings, caption_embedding).cpu().numpy()
 
-		relevant_labels = ground_truth_labels[i]
+		relevant_labels = ground_truth_labels[i].cpu().numpy()
 
 		ranked_indices = np.argsort(image_scores)[::-1]
 
