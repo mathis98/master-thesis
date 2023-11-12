@@ -84,6 +84,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 		train_indices, val_indices, test_indices = shuffled_indices[:train_size], shuffled_indices[train_size:(train_size+val_size)], shuffled_indices[(train_size+val_size):]
 
 		self.dataset = SimCLRDataset([sentences[i] for i in shuffled_indices], self.tokenizer, shuffled_indices)
+		print(self.dataset[:5])
 		self.train_dataset = self.dataset
 
 		# self.train_dataset = SimCLRDataset([sentences[i] for i in train_indices], self.tokenizer, train_indices)
@@ -91,7 +92,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 		self.test_dataset = SimCLRDataset([sentences[i] for i in test_indices], self.tokenizer, test_indices)
 
 	def train_dataloader(self):	
-		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=30)
+		return DataLoader(self.train_dataset, batch_size=self.batch_size)
 
 	def val_dataloader(self):
 		return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=30)
