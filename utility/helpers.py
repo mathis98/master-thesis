@@ -86,7 +86,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels):
 		else:
 			ranked = ranked_indices.copy()
 			precision = np.cumsum(relevant_labels[ranked]) / (np.arange(len(relevant_labels)) + 1)
-			AP = torch.sum(precision * relevant_labels) / num_relevant_images
+			AP = np.sum(precision * relevant_labels) / num_relevant_images
 
 		mAP_values.append(AP)
 
