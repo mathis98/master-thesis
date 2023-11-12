@@ -24,7 +24,7 @@ class SimCLRModule(pl.LightningModule):
 		return z_original, z_augmented
 
 	def training_step(self, batch, batch_idx):
-		original, augmented = batch
+		original, augmented, _, _ = batch
 		z_original, z_augmented = self(original, augmented)
 		z_original = z_original.squeeze()
 		z_augmented = z_augmented.squeeze()
