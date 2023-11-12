@@ -23,8 +23,8 @@ class SimCLRLoss(nn.Module):
 		
 		similarity_matrix = self.calc_similarity_batch(z_i, z_j)
 
-		sim_ij = torch.diag(similarity_matrix, self.batch_size)
-		sim_ji = torch.diag(similarity_matrix, -self.batch_size)
+		sim_ij = torch.diag(similarity_matrix, int(self.batch_size))
+		sim_ji = torch.diag(similarity_matrix, -int(self.batch_size))
 
 		positives = torch.cat([sim_ij, sim_ji], dim=0)
 
@@ -33,6 +33,6 @@ class SimCLRLoss(nn.Module):
 
 		all_losses = -torch.log(nominator / torch.sum(denominator), dim=1)
 
-		loss = torch.sum(all_losses) / (2 * self.batch_size)
+		loss = torch.sum(all_losses) / (2 * int(self.batch_size)
 
 		return loss
