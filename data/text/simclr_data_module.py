@@ -73,6 +73,8 @@ class SimCLRDataModule(pl.LightningDataModule):
 		total_size = len(sentences)
 		indices = list(range(total_size))
 
+		print('total size: ', total_size)
+
 		np.random.seed(self.seed)
 		shuffled_indices = np.random.permutation(indices)
 

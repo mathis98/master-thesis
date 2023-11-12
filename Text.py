@@ -25,7 +25,7 @@ args = parse_arguments()
 
 
 model_name = 'prajjwal1/bert-small'
-batch_size = 64
+batch_size = 256
 path = '../Datasets/UCM/dataset.json' if not args.ucm else '../Datasets/RSICD/dataset_rsicd.json'
 max_epochs = 500
 simclr = True
