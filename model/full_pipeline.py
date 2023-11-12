@@ -11,7 +11,6 @@ from model.text_embedding import BERTSentenceEmbedding
 
 # Embedding for image
 from model.image_embedding import ImageEmbeddingModule
-from torchvision.models import resnet18 as resnet
 
 # SimCLR loss
 from loss.contrastive_loss import SimCLRLoss
@@ -30,9 +29,7 @@ class FullPipeline(pl.LightningModule):
 		self.weight_decay = weight_decay
 		self.hidden_dim = hidden_dim
 
-		self.resnet_embedding_module = resnet(weights=None)
-		self.resnet_embedding_module = torch.nn.Sequential(*(list(self.resnet_embedding_module.children())[:-1]))
-
+		self.resnet_embedding_module = ImageEmbeddingModule()
 		self.bert_embedding_module = BERTSentenceEmbedding()
 
 		self.projection_head = nn.Sequential(
@@ -57,7 +54,8 @@ class FullPipeline(pl.LightningModule):
 		print('caption: ')
 		print(caption)
 
-		image_embed = self.resnet_embedding_module(image[0])
+		image_embed = self.resnet_embedding_module(image)
+		image_embed = image_embed.view(image_embed.size(0), -1)
 		image_embed = self.projection_head(image_embed)
 
 		text_embed = self.bert_embedding_module(caption)
