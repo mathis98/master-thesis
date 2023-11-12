@@ -20,7 +20,7 @@ class SimCLRModule(pl.LightningModule):
 		self.learning_rate = learning_rate
 		self.hidden_dim = hidden_dim
 
-		self.model.fc = nn.Sequential(self.model.fc, nn.ReLU(inplace=True), nn.Linear(4*hidden_dim, hidden_dim))
+		# self.model.fc = nn.Sequential(self.model.fc, nn.ReLU(inplace=True), nn.Linear(4*hidden_dim, hidden_dim))
 
 	def forward(self, original, augmented):
 		z_original = self.model(original)
