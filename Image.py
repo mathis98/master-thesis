@@ -55,7 +55,7 @@ trainer = pl.Trainer(accelerator='cuda', devices=devices)
 
 if simclr:
 
-	summary(simclr_module, ((1, 3, 224, 224), (1, 3, 224, 224)))
+	summary(simclr_module, ((1, 3, 224, 224), (1, 3, 224, 224)), col_names=['input_size', 'output_size', 'num_params', 'kernel_size', 'trainable'])
 
 	trainer.fit(simclr_module, simclr_data_module.train_dataloader())
 
