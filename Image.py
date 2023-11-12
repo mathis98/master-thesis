@@ -23,7 +23,7 @@ torchvision.disable_beta_transforms_warning()
 data_dir = '../Datasets/UCM/imgs'
 batch_size = 64
 image_size = (224, 224)
-simclr = False
+simclr = True
 
 
 # Embedding Only

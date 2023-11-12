@@ -30,6 +30,7 @@ class SimCLRModule(pl.LightningModule):
 		z_augmented = z_augmented.squeeze()
 		loss = self.criterion(z_original, z_augmented)
 		# self.log("train_loss", loss)
+		print('loss: ', loss)
 		return loss
 
 	def configure_optimizers(self):

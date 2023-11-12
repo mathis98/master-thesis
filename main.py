@@ -1,6 +1,7 @@
 import pytorch_lightning as pl
 from torchvision.transforms import v2
 import torchvision
+from lightning.pytorch.accelerators import find_usable_cuda_devices
 
 # Full pipeline
 from model.full_pipeline import FullPipeline
