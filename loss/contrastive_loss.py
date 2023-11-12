@@ -11,7 +11,7 @@ class SimCLRLoss(nn.Module):
 		super(SimCLRLoss, self).__init__()
 		self.batch_size = batch_size
 		self.temperature = temperature
-		self.mask = (~torch.eye(128, 128, dtype=bool)).float()
+		self.mask = (~torch.eye(int(batch_size), int(batch_size), dtype=bool)).float()
 
 		print(self.mask)
 
@@ -21,7 +21,7 @@ class SimCLRLoss(nn.Module):
 
 	def forward(self, z_i, z_j):
 		batch_size = z_i.shape[0]
-		
+
 		z_i = F.normalize(z_i, p=2, dim=1)
 		z_j = F.normalize(z_j, p=2, dim=1)
 
