@@ -14,7 +14,7 @@ class SimCLRModule(pl.LightningModule):
 	def __init__(self, image_size=(224, 224), temperature=.07, learning_rate=1e-4, hidden_dim=128, weight_decay=1e-4, max_epochs=300):
 		super(SimCLRModule, self).__init__()
 		self.model = resnet(weights=None, num_classes=4*hidden_dim)
-		# self.model = torch.nn.Sequential(*(list(self.model.children())[:-1]))
+		self.model = torch.nn.Sequential(*(list(self.model.children())[:-1]))
 		self.temperature = temperature
 		self.criterion = SimCLRLoss(temperature=temperature)
 		self.learning_rate = learning_rate
@@ -22,15 +22,20 @@ class SimCLRModule(pl.LightningModule):
 		self.max_epochs = max_epochs
 		self.hidden_dim = hidden_dim
 
-		self.model.fc = nn.Sequential(
-			self.model.fc, 
-			nn.ReLU(inplace=True), 
+		self.projection_head = nn.Sequential(
+			nn.Linear(self.model.fc.in_features, 4*hidden_dim),
+			nn.ReLU(),
 			nn.Linear(4*hidden_dim, hidden_dim)
 		)
 
+
 	def forward(self, original, augmented):
 		z_original = self.model(original)
+		z_original = self.projection_head(original)
+
 		z_augmented = self.model(augmented)
+		z_augmented = self.projection_head(augmented)
+
 		return z_original, z_augmented
 
 	def training_step(self, batch, batch_idx):
