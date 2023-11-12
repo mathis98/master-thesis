@@ -1,5 +1,6 @@
 import pytorch_lightning as pl
 from torchvision.transforms import v2
+from transformers import AutoTokenizer
 import torchvision
 from lightning.pytorch.accelerators import find_usable_cuda_devices
 
@@ -14,6 +15,8 @@ from data.image.simclr_data_module import SimCLRDataModule as SimCLRImageDataMod
 from data.text.simclr_data_module import SimCLRDataModule as SimCLRTextDataModule
 
 torchvision.disable_beta_transforms_warning()
+
+tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 text_path = '../Datasets/UCM/dataset.json'
 img_path = '../Datasets/UCM/imgs'
@@ -37,7 +40,7 @@ if intra == True:
 	image_data_module.prepare_data()
 	image_data_module.setup(stage="fit")
 
-	text_data_module = SimCLRTextDataModule(model_name, batch_size, text_path)
+	text_data_module = SimCLRTextDataModule(batch_size, text_path, tokenizer)
 	text_data_module.prepare_data()
 	text_data_module.setup()
 
