@@ -64,7 +64,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 
 	def setup(self, stage=None):
 
-		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
+		self.tokenizer = tokenizer
 
 		with open(self.json_file_path, 'r') as json_file:
 			data = json.load(json_file)
