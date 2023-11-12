@@ -41,6 +41,8 @@ class FullPipeline(pl.LightningModule):
 		self.criterion = SimCLRLoss(temperature)
 		self.max_epochs = max_epochs
 
+		self.intra = intra
+
 		self.validation_step_outputs = []
 		self.test_step_outputs = []
 
@@ -48,7 +50,7 @@ class FullPipeline(pl.LightningModule):
 
 		image, caption = batch
 
-		if intra:
+		if self.intra:
 			image = image[0], image[2]
 			augmented_image = image[1], image[2]
 
@@ -62,7 +64,7 @@ class FullPipeline(pl.LightningModule):
 		caption_embed = self.bert_embedding_module(caption)
 		caption_embed = self.projection_head(caption_embed)
 
-		if intra:
+		if self.intra:
 			augmented_image_embed = self.resnet_embedding_module(augmented_image)
 			augmented_image_embed = augmented_image_embed.view(augmented_image_embed.size(0), -1)
 			augmented_image_embed = self.projection_head(augmented_image_embed)
@@ -78,7 +80,7 @@ class FullPipeline(pl.LightningModule):
 
 		# NT-Xent loss between image and caption
 
-		if intra:
+		if self.intra:
 			image_embed, augmented_image_embed, caption_embed, augmented_caption_embed = self(batch)
 
 		else:
@@ -86,7 +88,7 @@ class FullPipeline(pl.LightningModule):
 		
 		loss = self.criterion(image_embed, caption_embed)
 
-		if intra:
+		if self.intra:
 			intra_image_loss = self.criterion(image_embed, augmented_image_embed)
 			intra_caption_loss = self.criterion(caption_embed, augmented_caption_embed)
 
@@ -100,7 +102,7 @@ class FullPipeline(pl.LightningModule):
 		# NT-Xent loss between image and caption
 		image, caption = batch
 
-		if intra:
+		if self.intra:
 			image = image[0], image[2]
 			caption = caption[0], caption[2], caption[4]
 
@@ -127,7 +129,7 @@ class FullPipeline(pl.LightningModule):
 		# NT-Xent loss between image and caption
 		image, caption = batch
 
-		if intra:
+		if self.intra:
 			image = image[0], image[2]
 			caption = caption[0], caption[2], caption[4]
 
