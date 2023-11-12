@@ -77,7 +77,8 @@ class SimCLRDataModule(pl.LightningDataModule):
 		return DataLoader(self.dataset, batch_size=self.batch_size)
 
 	def train_dataloader(self):
-		return DataLoader(self.train_dataset, batch_size=self.batch_size)
+		# return DataLoader(self.train_dataset, batch_size=self.batch_size)
+		return DataLoader(self.dataset, batch_size=self.batch_size)
 
 	def val_dataloader(self):
 		return DataLoader(self.val_dataset, batch_size=self.batch_size)
