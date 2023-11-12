@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 import pytorch_lightning as pl
 from torchvision.models import resnet50 as resnet
 from torchvision.models import ResNet50_Weights as ResNet_Weights
