@@ -32,7 +32,7 @@ print(f"Using {path}")
 print(f"Using {args.embedding}")
 
 # Embeddding only
-data_module = SentenceDataModule(batch_size, path, tokenizer)
+data_module = SentenceDataModule(model_name, batch_size, path)
 data_module.prepare_data()
 data_module.setup()
 
@@ -40,7 +40,7 @@ bert_embedding = BERTSentenceEmbedding(model_name, args.embedding)
 
 
 # SimCLR only
-simclr_data_module = SimCLRDataModule(model_name, batch_size, path)
+simclr_data_module = SimCLRDataModule(batch_size, path, tokenizer)
 simclr_data_module.prepare_data()
 simclr_data_module.setup()
 
