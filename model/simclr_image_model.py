@@ -29,7 +29,8 @@ class SimCLRModule(pl.LightningModule):
 		)
 
 
-	def forward(self, original, augmented):
+	def forward(self, batch):
+		original, augmented, _, _ = batch
 		z_original = self.model(original)
 		z_original = z_original.view(z_original.size(0), -1)
 		z_original = self.projection_head(z_original)
@@ -41,8 +42,8 @@ class SimCLRModule(pl.LightningModule):
 		return z_original, z_augmented
 
 	def training_step(self, batch, batch_idx):
-		original, augmented, _, _ = batch
-		z_original, z_augmented = self(original, augmented)
+		
+		z_original, z_augmented = self(batch)
 		z_original = z_original.squeeze()
 		z_augmented = z_augmented.squeeze()
 		loss = self.criterion(z_original, z_augmented)

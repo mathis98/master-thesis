@@ -82,9 +82,8 @@ if simclr:
 	simclr_data_module_single.prepare_data()
 	simclr_data_module_single.setup()
 
-	simclr_module.to('cpu')
-
-	embeddings = simclr_module.embed_data(simclr_data_module_single.train_dataloader())
+	with torch.no_grad():
+		predictions = trainer.predict(simclr_module, dataloaders=simclr_data_module_single.train_dataloader())
 
 else:
 	summary(image_embedding_model)
@@ -92,8 +91,8 @@ else:
 	with torch.no_grad():
 		predictions = trainer.predict(image_embedding_model, dataloaders=data_module.train_dataloader())
 
-	embeddings = torch.vstack(predictions)
-	embeddings = embeddings.view(embeddings.size(0), -1)
+embeddings = torch.vstack(predictions)
+embeddings = embeddings.view(embeddings.size(0), -1)
 
 	
 print('Shape: ', embeddings.shape)
