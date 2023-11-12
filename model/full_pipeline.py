@@ -52,7 +52,7 @@ class FullPipeline(pl.LightningModule):
 		image, caption = batch
 
 		print('image:')
-		print(image)
+		print(image[0])
 
 		print('caption: ')
 		print(caption)
