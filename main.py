@@ -1,5 +1,6 @@
 import pytorch_lightning as pl
 from torchvision.transforms import v2
+import torchvision
 
 # Full pipeline
 from model.full_pipeline import FullPipeline
@@ -10,6 +11,8 @@ from data.imagetext.image_text_pair import ImageTextPairDataModule
 
 from data.image.simclr_data_module import SimCLRDataModule as SimCLRImageDataModule
 from data.text.simclr_data_module import SimCLRDataModule as SimCLRTextDataModule
+
+torchvision.disable_beta_transforms_warning()
 
 text_path = '../Datasets/UCM/dataset.json'
 img_path = '../Datasets/UCM/imgs'

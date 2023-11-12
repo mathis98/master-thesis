@@ -6,6 +6,9 @@ from PIL import Image
 import imageio
 import numpy as np
 from torchvision.transforms import v2
+import torchvision
+
+torchvision.disable_beta_transforms_warning()
 
 
 class SimCLRDataset(Dataset):
