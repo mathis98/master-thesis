@@ -100,6 +100,10 @@ class FullPipeline(pl.LightningModule):
 		# NT-Xent loss between image and caption
 		image, caption = batch
 
+		if intra:
+			image = image[0], image[2]
+			caption = caption[0], caption[2], caption[4]
+
 		indeces = caption[2]
 		labels = indeces // 100
 		groundtruth = relevant_list(labels)
@@ -122,6 +126,10 @@ class FullPipeline(pl.LightningModule):
 
 		# NT-Xent loss between image and caption
 		image, caption = batch
+
+		if intra:
+			image = image[0], image[2]
+			caption = caption[0], caption[2], caption[4]
 
 		indeces = caption[2]
 		labels = indeces // 100
