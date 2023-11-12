@@ -7,11 +7,10 @@ def device_as(t1, t2):
 	return t1.to(t2.device)
 
 class SimCLRLoss(nn.Module):
-	def __init__(self, batch_size=64, temperature=.07):
+	def __init__(self,temperature=.07):
 		super(SimCLRLoss, self).__init__()
 		self.batch_size = batch_size
 		self.temperature = temperature
-		self.mask = (~torch.eye(int(self.batch_size) * 2, int(self.batch_size) * 2, dtype=bool)).float()
 
 		print(self.batch_size)
 		print(self.mask)
@@ -22,6 +21,8 @@ class SimCLRLoss(nn.Module):
 
 	def forward(self, z_i, z_j):
 		batch_size = z_i.shape[0]
+
+		mask = (~torch.eye(batch_size * 2, batch_size * 2, dtype=bool)).float()
 
 		z_i = F.normalize(z_i, p=2, dim=1)
 		z_j = F.normalize(z_j, p=2, dim=1)
