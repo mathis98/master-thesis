@@ -90,7 +90,7 @@ else:
 	summary(image_embedding_model)
 
 	with torch.no_grad():
-		predictions = trainer.predict(image_embedding_model, dataloaders=data_module.train_dataloader())
+		predictions = trainer.predict(image_embedding_model, dataloaders=data_module.dataloader())
 
 embeddings = torch.vstack(predictions)
 embeddings = embeddings.view(embeddings.size(0), -1)

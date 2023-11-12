@@ -89,7 +89,6 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels):
 			AP = torch.sum(precision * relevant_labels) / num_relevant_images
 
 		mAP_values.append(AP)
-
-	mAP = np.mean(mAP_values)
-	return mAP
+		
+	return mAP_values
 

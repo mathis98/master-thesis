@@ -22,7 +22,7 @@ image_size = (224, 224)
 batch_size = 64
 num_repeats = 5
 
-simclr = True
+intra = False
 
 # SimCLR
 augmentation_transform = v2.Compose([
@@ -31,7 +31,7 @@ augmentation_transform = v2.Compose([
 		v2.ConvertImageDtype(),
 ])
 
-if simclr == True:
+if intra == True:
 	image_data_module = SimCLRImageDataModule(img_path, image_size, batch_size, augmentation_transform)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage="fit")
@@ -40,7 +40,7 @@ if simclr == True:
 	text_data_module.prepare_data()
 	text_data_module.setup()
 
-elif simclr == False:
+elif intra == False:
 	image_data_module = ImageDataModule(img_path, image_size, batch_size, num_repeats)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='fit')
@@ -54,46 +54,19 @@ elif simclr == False:
 image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
 image_text_pair_data_module.setup(stage='fit')
 
-# print('image: ')
-# print(image_data_module.train_dataset.image_paths[0])
-# print('text: ')
-# print(text_data_module.train_dataset.sentences[0])
-# print('both: ')
-# elem = image_text_pair_data_module.train_dataset[0]
-
-# print('shape: ', len(elem))
-
-# image, caption = elem
-# print('len image: ', len(image))
-# print('len caption: ', len(caption))
-
-# orig_img = image[0]
-# aug_img = image[1]
-# img_path = image[2]
-
-# inputs = caption[0]
-# inputs_aug = caption[1]
-# sentence = caption[2]
-# sentence_aug = caption[3]
-# idx = caption[4]
-
-# print('original image: ', orig_img)
-# print('augmented image: ', aug_img)
-# print('path: ', img_path)
-# print('-----------------')
-
-# print('inputs: ', inputs)
-# print('aug inputs: ', inputs_aug)
-# print('sentence: ', sentence)
-# print('sentence aug: ', sentence_aug)
-# print('index: ', idx)
-# print('+++++++++++++++++++++++++++')
+# RETURNS pairs from image_data_module, text_data_module so one of
+# SIMCLR: ((original_image, augmented_image, image_path, source_image), (inputs, inputs_aug, sentence, aug_sentence, index))
+# NO SIMCLR: ((image, image_path), (inputs, sentence, index))
 
 
-full_pipeline = FullPipeline(batch_size, simclr=simclr)
+full_pipeline = FullPipeline(batch_size, intra=intra)
 
 logger = pl.loggers.CSVLogger('logs', name='full_pipeline_simple')
-trainer = pl.Trainer(logger=logger)
+
+devices = find_usable_cuda_devices(1)
+print(f'training on GPU {devices}')
+
+trainer = pl.Trainer(logger=logger, accelerator='cuda', devices=devices, max_epochs=max_epochs)
 
 trainer.fit(
 	full_pipeline, 
