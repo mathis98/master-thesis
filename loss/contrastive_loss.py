@@ -13,6 +13,7 @@ class SimCLRLoss(nn.Module):
 		self.temperature = temperature
 		self.mask = (~torch.eye(int(self.batch_size) * 2, int(self.batch_size) * 2, dtype=bool)).float()
 
+		print(self.batch_size)
 		print(self.mask)
 
 	def calc_similarity_batch(self, a, b):
