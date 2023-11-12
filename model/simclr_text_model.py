@@ -68,7 +68,6 @@ class SimCLRModule(pl.LightningModule):
 
 	def training_step(self, batch, batch_idx):
 		original, augmented, _, _, _ = batch
-		print(batch[2], batch[3])
 		z_original, z_augmented = self(original, augmented)
 		loss = self.criterion(z_original, z_augmented)
 		self.log("train_loss", loss, prog_bar=True)
