@@ -59,22 +59,19 @@ if simclr:
 	
 	trainer.fit(simclr_module, simclr_data_module.train_dataloader())
 
-	print('fitting is done!')
+	with torch.no_grad():
+		predictions = trainer.predict(simclr_module, simclr_data_module.train_dataloader())
+		predictions = [elem[0] for elem in predictions]
 
 else:
 
 	summary(bert_embedding)
 
-embeddings = []
+	with torch.no_grad():
+		predictions = trainer.predict(bert_embedding, data_module.train_dataloader())
 
-with torch.no_grad():
-	predictions = trainer.predict(bert_embedding, data_module.train_dataloader())
-
-
-for batch in predictions:
-	embeddings.extend(batch.tolist())
-
-embeddings = np.vstack(embeddings)
+embeddings = torch.vstack(predictions)
+embeddings = embeddings.view(embeddings.size(0), -1)
 
 
 print(f"Shape: {embeddings.shape}")

@@ -37,7 +37,10 @@ class SimCLRModule(pl.LightningModule):
 				nn.Linear(4*hidden_dim, hidden_dim)
 			)
 
-	def forward(self, original, augmented):
+	def forward(self, batch):
+
+		original, augmented, _, _, _ = batch
+
 		if self.embedding != 'sbert':
 			outputs = self.model(original['input_ids'], original['attention_mask'])
 			outputs_aug = self.model(augmented['input_ids'], augmented['attention_mask'])
@@ -67,8 +70,7 @@ class SimCLRModule(pl.LightningModule):
 
 
 	def training_step(self, batch, batch_idx):
-		original, augmented, _, _, _ = batch
-		z_original, z_augmented = self(original, augmented)
+		z_original, z_augmented = self(batch)
 		loss = self.criterion(z_original, z_augmented)
 		self.log("train_loss", loss, prog_bar=True)
 		return loss
