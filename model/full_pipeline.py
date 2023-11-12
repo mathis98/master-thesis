@@ -112,7 +112,11 @@ class FullPipeline(pl.LightningModule):
 		labels = indeces // 100
 		groundtruth = relevant_list(labels)
 
-		image_embed, caption_embed = self(batch)
+		if self.intra:
+			image_embed, augmented_image_embed, caption_embed, augmented_caption_embed = self(batch)
+
+		else:
+			image_embed, caption_embed = self(batch)
 		
 		# image_embed = torch.squeeze(image_embed)
 		
@@ -139,9 +143,11 @@ class FullPipeline(pl.LightningModule):
 		labels = indeces // 100
 		groundtruth = relevant_list(labels)
 
-		image_embed, caption_embed = self(batch)
-	
-		# image_embed = torch.squeeze(image_embed)
+		if self.intra:
+			image_embed, augmented_image_embed, caption_embed, augmented_caption_embed = self(batch)
+
+		else:
+			image_embed, caption_embed = self(batch)
 		
 		mAP = calculate_mAP(image_embed, caption_embed, groundtruth)
 		self.log('validation mAP:',np.mean(mAP), batch_size=self.batch_size)
