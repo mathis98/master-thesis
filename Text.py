@@ -1,6 +1,3 @@
-import tokenizers
-tokenizers.init()
-
 from torchinfo import summary
 import pytorch_lightning as pl
 import torch
