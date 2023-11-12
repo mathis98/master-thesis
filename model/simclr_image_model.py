@@ -17,7 +17,6 @@ class SimCLRModule(pl.LightningModule):
 		self.temperature = temperature
 		self.criterion = SimCLRLoss(temperature=temperature)
 		self.learning_rate = learning_rate
-		self.hidden_dim = hidden_dim
 
 		self.model.fc = nn.Sequential(self.model.fc, nn.ReLu, nn.Linear(512, hidden_dim))
 
