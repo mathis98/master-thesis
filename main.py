@@ -23,7 +23,7 @@ batch_size = 64
 num_repeats = 5
 max_epochs = 500
 
-intra = False
+intra = True
 
 # SimCLR
 augmentation_transform = v2.Compose([

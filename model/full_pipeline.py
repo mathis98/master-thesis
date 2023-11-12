@@ -48,24 +48,49 @@ class FullPipeline(pl.LightningModule):
 
 		image, caption = batch
 
+		if intra:
+			image = image[0], image[2]
+			augmented_image = image[1], image[2]
+
+			caption = caption[0], caption[2], caption[4]
+			augmented_caption = caption[1], caption[3], caption[4]
+
 		image_embed = self.resnet_embedding_module(image)
 		image_embed = image_embed.view(image_embed.size(0), -1)
 		image_embed = self.projection_head(image_embed)
 
-		text_embed = self.bert_embedding_module(caption)
-		text_embed = self.projection_head(text_embed)
+		caption_embed = self.bert_embedding_module(caption)
+		caption_embed = self.projection_head(caption_embed)
+
+		if intra:
+			augmented_image_embed = self.resnet_embedding_module(augmented_image)
+			augmented_image_embed = augmented_image_embed.view(augmented_image_embed.size(0), -1)
+			augmented_image_embed = self.projection_head(augmented_image_embed)
+
+			augmented_caption_embed = self.bert_embedding_module(augmented_caption)
+			augmented_caption_embed = self.projection_head(augmented_caption_embed)
+
+			return image_embed, augmented_image_embed, caption_embed, augmented_caption_embed
 		
-		return image_embed, text_embed
+		return image_embed, caption_embed
 
 	def training_step(self, batch, batch_idx):
 
 		# NT-Xent loss between image and caption
 
-		image_embed, caption_embed = self(batch)
-		
-		# image_embed = torch.squeeze(image_embed)
+		if intra:
+			image_embed, augmented_image_embed, caption_embed, augmented_caption_embed = self(batch)
+
+		else:
+			image_embed, caption_embed = self(batch)
 		
 		loss = self.criterion(image_embed, caption_embed)
+
+		if intra:
+			intra_image_loss = self.criterion(image_embed, augmented_image_embed)
+			intra_caption_loss = self.criterion(caption_embed, augmented_caption_embed)
+
+			loss = loss + intra_image_loss + intra_caption_loss
 
 		self.log('train-loss', loss, prog_bar=True)
 		return loss
