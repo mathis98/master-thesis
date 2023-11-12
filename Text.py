@@ -41,6 +41,8 @@ simclr_data_module = SimCLRDataModule(model_name, batch_size, path)
 simclr_data_module.prepare_data()
 simclr_data_module.setup()
 
+print(simclr_data_module.train_dataset[:5])
+
 simclr_module = SimCLRModule(model_name, args.embedding)
 
 
