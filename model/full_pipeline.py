@@ -84,9 +84,8 @@ class FullPipeline(pl.LightningModule):
 		# image_embed = torch.squeeze(image_embed)
 		
 		mAP = calculate_mAP(image_embed, caption_embed, groundtruth)
-		self.log('train mAP:',mAP)
+		self.log('train mAP:',np.mean(mAP))
 		self.test_step_outputs.append(mAP)
-		return mAP
 
 	def on_test_epoch_end(self):
 		avg_mAP = np.mean(self.test_step_outputs)
@@ -108,9 +107,8 @@ class FullPipeline(pl.LightningModule):
 		# image_embed = torch.squeeze(image_embed)
 		
 		mAP = calculate_mAP(image_embed, caption_embed, groundtruth)
-		self.log('validation mAP:',mAP)
+		self.log('validation mAP:',np.mean(mAP))
 		self.validation_step_outputs.append(mAP)
-		return mAP
 
 	def on_validation_epoch_end(self):
 		avg_mAP = np.mean(self.validation_step_outputs)
