@@ -56,7 +56,7 @@ if simclr:
 
 	print('fitting is done!')
 
-	visualize_text_augmentations(simclr_data_module.dataset, 5)
+	visualize_text_augmentations(simclr_data_module.train_dataset, 5)
 
 	embeddings = simclr_module.embed_data(simclr_data_module.train_dataloader())
 
