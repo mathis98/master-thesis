@@ -62,7 +62,7 @@ else:
 
 	summary(bert_embedding)
 
-	embeddings = []
+embeddings = []
 
 with torch.no_grad():
 	predictions = trainer.predict(bert_embedding, data_module.train_dataloader())
