@@ -1,3 +1,7 @@
+import os
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+
 from torchinfo import summary
 import pytorch_lightning as pl
 import torch
