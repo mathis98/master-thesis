@@ -67,8 +67,17 @@ class SimCLRDataModule(pl.LightningDataModule):
 		with open(self.json_file_path, 'r') as json_file:
 			data = json.load(json_file)
 
-		sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
-		sentences = list(itertools.chain.from_iterable(sentences))
+		images = [item for item in data['images']]
+
+		sentences = []
+
+		for image in images:
+			sents = image['sentences']
+			for idx in range(5):
+				sentences.append(sents[idx]['raw'])
+
+		# sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
+		# sentences = list(itertools.chain.from_iterable(sentences))
 
 		total_size = len(sentences)
 		indices = list(range(total_size))
