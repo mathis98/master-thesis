@@ -33,6 +33,8 @@ class SimCLRModule(pl.LightningModule):
 
 	def forward(self, batch):
 		original, augmented, _, _ = batch
+		print('image:')
+		print(original)
 		z_original = self.model(original)
 		z_original = z_original.view(z_original.size(0), -1)
 		z_original = self.projection_head(z_original)
