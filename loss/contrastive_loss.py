@@ -11,7 +11,7 @@ class SimCLRLoss(nn.Module):
 		super(SimCLRLoss, self).__init__()
 		self.batch_size = batch_size
 		self.temperature = temperature
-		self.mask = (~torch.eye(int(batch_size), int(batch_size), dtype=bool)).float()
+		self.mask = (~torch.eye(int(self.batch_size) * 2, int(self.batch_size) * 2, dtype=bool)).float()
 
 		print(self.mask)
 
