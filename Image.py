@@ -45,7 +45,7 @@ simclr_data_module = SimCLRDataModule(data_dir, image_size, batch_size, augmenta
 simclr_data_module.prepare_data()
 simclr_data_module.setup(stage="fit")
 
-simclr_module = SimCLRModule(image_size, batch_size=batch_size)
+simclr_module = SimCLRModule(image_size=image_size, batch_size=batch_size)
 
 devices = find_usable_cuda_devices(1)
 print(f'training on GPU {devices}')

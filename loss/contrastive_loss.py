@@ -7,7 +7,7 @@ def device_as(t1, t2):
 	return t1.to(t2.device)
 
 class SimCLRLoss(nn.Module):
-	def __init__(self, batch_size, temperature=.07):
+	def __init__(self, batch_size=64, temperature=.07):
 		super(SimCLRLoss, self).__init__()
 		self.batch_size = batch_size
 		self.temperature = temperature
