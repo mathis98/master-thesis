@@ -82,6 +82,8 @@ if simclr:
 	simclr_data_module_single.prepare_data()
 	simclr_data_module_single.setup()
 
+	simclr_module.to('cpu')
+
 	embeddings = simclr_module.embed_data(simclr_data_module_single.train_dataloader())
 
 else:
