@@ -54,6 +54,9 @@ print(f'training on GPU {devices}')
 trainer = pl.Trainer(accelerator='cuda', devices=devices)
 
 if simclr:
+
+	summary(simlr_module)
+
 	trainer.fit(simclr_module, simclr_data_module.train_dataloader())
 
 
