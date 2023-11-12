@@ -111,6 +111,7 @@ class FullPipeline(pl.LightningModule):
 		self.validation_step_outputs.append(mAP)
 
 	def on_validation_epoch_end(self):
+		print(self.validation_step_outputs)
 		avg_mAP = np.mean([output for output in self.validation_step_outputs])
 		self.log('avg_val_mAP: ', avg_mAP, batch_size=self.batch_size, prog_bar=True)
 		print('avg_val_mAP: ', avg_mAP)
