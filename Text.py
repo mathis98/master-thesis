@@ -58,8 +58,6 @@ if simclr:
 
 	visualize_text_augmentations(simclr_data_module.train_dataset, 5)
 
-	embeddings = simclr_module.embed_data(simclr_data_module.train_dataloader())
-
 else:
 
 	summary(bert_embedding)
