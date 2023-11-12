@@ -1,6 +1,7 @@
 import os
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader, Dataset, random_split
+import torchvision
 from torchvision import transforms
 from torchvision.datasets import ImageFolder
 from PIL import Image
