@@ -19,7 +19,7 @@ class SimCLRModule(pl.LightningModule):
 		self.criterion = SimCLRLoss(temperature=temperature)
 		self.learning_rate = learning_rate
 
-		self.model.fc = nn.Sequential(self.model, nn.ReLu, nn.Linear(512, hidden_dim))
+		self.model.fc = nn.Sequential(self.model, nn.ReLU, nn.Linear(512, hidden_dim))
 
 	def forward(self, original, augmented):
 		z_original = self.model(original)
