@@ -3,6 +3,7 @@ import pytorch_lightning as pl
 from torchvision.transforms import v2
 from torchinfo import summary
 import matplotlib.pyplot as plt
+from lightning.pytorch.accelerators import find_usable_cuda_devices
 
 # Data Modules
 from data.image.data_module import ImageDataModule
@@ -43,8 +44,10 @@ simclr_data_module.setup(stage="fit")
 
 simclr_module = SimCLRModule(image_size)
 
+devices = find_usable_cuda_devices(1)
+print(f'training on GPU {devices}')
 
-trainer = pl.Trainer(accelerator='gpu', devices=[0])
+trainer = pl.Trainer(accelerator='cuda', devices=devices)
 
 if simclr:
 	trainer.fit(simclr_module, simclr_data_module.train_dataloader())
