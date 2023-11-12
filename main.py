@@ -21,6 +21,7 @@ model_name = 'prajjwal1/bert-small'
 image_size = (224, 224)
 batch_size = 64
 num_repeats = 5
+max_epochs = 500
 
 intra = False
 
