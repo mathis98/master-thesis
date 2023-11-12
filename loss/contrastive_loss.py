@@ -9,11 +9,7 @@ def device_as(t1, t2):
 class SimCLRLoss(nn.Module):
 	def __init__(self,temperature=.07):
 		super(SimCLRLoss, self).__init__()
-		self.batch_size = batch_size
 		self.temperature = temperature
-
-		print(self.batch_size)
-		print(self.mask)
 
 	def calc_similarity_batch(self, a, b):
 		representations = torch.cat([a, b], dim=0)
