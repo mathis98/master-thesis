@@ -44,7 +44,7 @@ class SimCLRModule(pl.LightningModule):
 
 		with torch.no_grad():
 			for batch in dataloader:
-				original, _ = batch
+				original, _, _, _ = batch
 				z_original, _ = self(original, original)
 				embeddings.append(z_original)
 

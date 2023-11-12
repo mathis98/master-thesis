@@ -60,9 +60,14 @@ class ImageDataModule(pl.LightningDataModule):
 		# print('image paths:')
 		# print(self.image_paths[0:10])
 
+		self.dataset = ImageDataSet(self.image_paths, self.image_size)
+
 		self.train_dataset = ImageDataSet([self.image_paths[i] for i in train_indices], self.image_size)
 		self.val_dataset = ImageDataSet([self.image_paths[i] for i in val_indices], self.image_size)
 		self.test_dataset = ImageDataSet([self.image_paths[i] for i in test_indices], self.image_size)
+
+	def dataloader(self):
+		return DataLoader(self.dataset, batch_size=self.batch_size)
 
 	def train_dataloader(self):
 		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=30)
