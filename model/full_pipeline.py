@@ -48,12 +48,6 @@ class FullPipeline(pl.LightningModule):
 
 		image, caption = batch
 
-		print('image:')
-		print(image[0])
-
-		print('caption: ')
-		print(caption)
-
 		image_embed = self.resnet_embedding_module(image)
 		image_embed = image_embed.view(image_embed.size(0), -1)
 		image_embed = self.projection_head(image_embed)
