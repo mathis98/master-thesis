@@ -1,9 +1,13 @@
+import tokenizers
+tokenizers.init()
+
 from torchinfo import summary
 import pytorch_lightning as pl
 import torch
 import numpy as np
 from lightning.pytorch.accelerators import find_usable_cuda_devices
 from utility.argument_parser import parse_arguments
+from transformers import AutoTokenizer
 
 # Helper functions
 from utility.helpers import closest_indices, visualize_text_augmentations
@@ -25,11 +29,13 @@ path = '../Datasets/UCM/dataset.json' if not args.ucm else '../Datasets/RSICD/da
 max_epochs = 500
 simclr = True
 
+tokeenizer = AutoTokenizer.from_pretrained(model_name)
+
 print(f"Using {path}")
 print(f"Using {args.embedding}")
 
 # Embeddding only
-data_module = SentenceDataModule(model_name, batch_size, path)
+data_module = SentenceDataModule(batch_size, path, tokenizer)
 data_module.prepare_data()
 data_module.setup()
 
@@ -62,6 +68,8 @@ if simclr:
 	with torch.no_grad():
 		predictions = trainer.predict(simclr_module, simclr_data_module.train_dataloader())
 		predictions = [elem[0] for elem in predictions]
+
+		print(len(predictions))
 
 else:
 

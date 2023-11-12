@@ -1,7 +1,7 @@
 import os
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader, Dataset
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModel
 import numpy as np
 import json
 import itertools
@@ -55,15 +55,14 @@ class SimCLRDataset(Dataset):
 
 
 class SimCLRDataModule(pl.LightningDataModule):
-	def __init__(self, model_name, batch_size, json_file_path, seed=42):
+	def __init__(self, batch_size, json_file_path, tokenizer, seed=42):
 		super(SimCLRDataModule, self).__init__()
-		self.model_name = model_name
 		self.batch_size = batch_size
 		self.json_file_path = json_file_path 
 		self.seed = seed
+		self.tokenizer = tokenizer
 
 	def setup(self, stage=None):
-		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
 
 		with open(self.json_file_path, 'r') as json_file:
 			data = json.load(json_file)

@@ -104,4 +104,4 @@ if simclr:
 	data_module = simclr_data_module_single
 
 for first, second in pairs:
-	print(data_module.train_dataset.image_paths[first], '<-->', data_module.train_dataset.image_paths[second], ' (', first, ',', second, ')')
+	print(data_module.train_dataset.image_paths[first], '<-->', data_module.train_dataset.image_paths[second])
