@@ -8,6 +8,7 @@ import numpy as np
 
 # Embedding for text
 from model.text_embedding import BERTSentenceEmbedding
+from transformers import AutoModel
 
 # Embedding for image
 from model.image_embedding import ImageEmbeddingModule
@@ -32,8 +33,8 @@ class FullPipeline(pl.LightningModule):
 
 		self.resnet_embedding_module = resnet(weights=None)
 		self.resnet_embedding_module = torch.nn.Sequential(*(list(self.resnet_embedding_module.children())[:-1]))
-		
-		self.bert_embedding_module = BERTSentenceEmbedding()
+
+		self.bert_embedding_module = AutoModel.from_pretrained('prajjwal1/bert-small', output_hidden_states=True)
 
 		self.projection_head = nn.Sequential(
 			nn.Linear(512, 4*hidden_dim),
