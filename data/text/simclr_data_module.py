@@ -69,6 +69,8 @@ class SimCLRDataModule(pl.LightningDataModule):
 
 		images = [item for item in data['images']]
 
+		print('count images: ', len(images))
+
 		sentences = []
 
 		for image in images:
