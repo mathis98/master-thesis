@@ -52,7 +52,7 @@ simclr_data_module.setup(stage="fit")
 
 simclr_module = SimCLRModule(image_size=image_size)
 
-devices = find_usable_cuda_devices(4)
+devices = find_usable_cuda_devices(1)
 print(f'training on GPU {devices}')
 
 trainer = pl.Trainer(accelerator='cuda', devices=devices)

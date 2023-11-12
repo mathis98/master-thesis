@@ -75,14 +75,14 @@ class SimCLRDataModule(pl.LightningDataModule):
 		self.test_dataset = SimCLRDataset([self.image_paths[i] for i in test_indices], self.image_size, self.augmentation_transform)
 
 	def dataloader(self):
-		return DataLoader(self.dataset, batch_size=self.batch_size,  shuffle=True)
+		return DataLoader(self.dataset, batch_size=self.batch_size, num_workers=30)
 
 	def train_dataloader(self):
 		# return DataLoader(self.train_dataset, batch_size=self.batch_size)
-		return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True)
+		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=30)
 
 	def val_dataloader(self):
-		return DataLoader(self.val_dataset, batch_size=self.batch_size)
+		return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=30)
 
 	def test_dataloader(self):
-		return DataLoader(self.test_dataset, batch_size=self.batch_size)
+		return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=30)
