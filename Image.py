@@ -36,7 +36,11 @@ image_embedding_model = ImageEmbeddingModule(image_size)
 
 # SimCLR
 augmentation_transform = v2.Compose([
-		v2.RandAugment(), # “RandAugment: Practical automated data augmentation with a reduced search space”.
+		v2.RandomResizedCrop(size=image_size),
+		# v2.RandAugment(), # “RandAugment: Practical automated data augmentation with a reduced search space”.
+		v2.RandomHorizontalFlip(p=.5),
+		v2.RandomVerticalFlip(p=.5),
+		v2.RandomRotation(10),
 		v2.ToImageTensor(),
 		v2.ConvertImageDtype(),
 		v2.Normalize(mean=[0.4845, 0.4903, 0.4508],std=[0.2135, 0.1970, 0.1911]),
@@ -48,7 +52,7 @@ simclr_data_module.setup(stage="fit")
 
 simclr_module = SimCLRModule(image_size=image_size)
 
-devices = find_usable_cuda_devices(1)
+devices = find_usable_cuda_devices(4)
 print(f'training on GPU {devices}')
 
 trainer = pl.Trainer(accelerator='cuda', devices=devices)
@@ -60,7 +64,7 @@ if simclr:
 	trainer.fit(simclr_module, simclr_data_module.train_dataloader())
 
 
-	visualize_augmentations(simclr_data_module.train_dataset, 5)
+	visualize_augmentations(simclr_data_module.train_dataset, 5, mean=[0.4845, 0.4903, 0.4508],std=[0.2135, 0.1970, 0.1911])
 
 
 	embeddings = simclr_module.embed_data(simclr_data_module.train_dataloader())	

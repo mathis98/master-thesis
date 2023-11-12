@@ -2,6 +2,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+from torchvision.transforms import v2
 
 def closest_indices(embeddings):
 
@@ -14,7 +15,7 @@ def closest_indices(embeddings):
 	return pairs
 
 
-def visualize_augmentations(data, number):
+def visualize_augmentations(data, number, mean, std):
 
 	fig, axes = plt.subplots(number, 2, figsize=(8,10))
 
@@ -23,8 +24,16 @@ def visualize_augmentations(data, number):
 	for row in range(number):
 
 		images = data[row]
-		original = images[0].permute(1,2,0).numpy()
-		augmented = images[1].permute(1,2,0).numpy()
+		original = images[0]
+		augmented = images[1]
+
+
+		unnormalize = v2.Normalize(
+			mean=[-m / s for m, s in zip(mean,std)],
+			std=[1 / s for s in std]
+		)
+		original = unnormalize(original).numpy().transpose(1,2,0)
+		augmented = unnormalize(augmented).numpy().transpose(1,2,0)
 
 		axes[row, 0].imshow(original)
 		axes[row, 0].set_title(column_titles[0])
