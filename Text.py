@@ -61,8 +61,6 @@ if simclr:
 
 	print('fitting is done!')
 
-	# visualize_text_augmentations(simclr_data_module.train_dataset, 5)
-
 else:
 
 	summary(bert_embedding)
