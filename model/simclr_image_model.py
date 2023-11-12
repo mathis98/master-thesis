@@ -23,7 +23,7 @@ class SimCLRModule(pl.LightningModule):
 		self.hidden_dim = hidden_dim
 
 		self.projection_head = nn.Sequential(
-			nn.Linear(512, 4*hidden_dim),
+			nn.Linear(self.model.out_features, 4*hidden_dim),
 			nn.ReLU(),
 			nn.Linear(4*hidden_dim, hidden_dim)
 		)
