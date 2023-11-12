@@ -56,18 +56,3 @@ class SimCLRModule(pl.LightningModule):
 			optimizer, T_max=self.max_epochs, eta_min=self.learning_rate / 50
 		)
 		return [optimizer], [lr_scheduler]
-
-	def embed_data(self, dataloader):
-		embeddings = []
-
-		self.model.eval()
-
-		with torch.no_grad():
-			for batch in dataloader:
-				original, _, _, _ = batch
-				z_original, _ = self(original, original)
-				embeddings.append(z_original)
-
-			embeddings = torch.vstack(embeddings)
-
-			return embeddings
