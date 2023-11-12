@@ -65,18 +65,6 @@ class SentenceDataModule(pl.LightningDataModule):
 		np.random.seed(self.seed)
 		shuffled_indices = np.random.permutation(indices)
 
-		# print('sentences:')
-		# print(sentences[-10:])
-
-		# 5 captions per image: [0,100] -> [0,500], [3, 20] -> [11, 100]
-
-		# def get_sentences(indeces):
-		# 	items_filter = []
-		# 	for index in indeces:
-		# 		items_filter.append(items[index])
-		# 	all_sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in items_filter]
-		# 	return list(itertools.chain.from_iterable(all_sentences))
-
 		train_indices, val_indices, test_indices = shuffled_indices[:train_size], shuffled_indices[train_size:(train_size+val_size)], shuffled_indices[(train_size+val_size):]
 
 		self.dataset = CustomSentenceDataset([sentences[i] for i in shuffled_indices], self.tokenizer, shuffled_indices)
