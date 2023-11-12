@@ -39,6 +39,7 @@ class FullPipeline(pl.LightningModule):
 		)
 		
 		self.criterion = SimCLRLoss(temperature)
+		self.max_epochs = max_epochs
 
 		self.validation_step_outputs = []
 		self.test_step_outputs = []
