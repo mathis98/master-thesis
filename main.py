@@ -16,8 +16,6 @@ from data.text.simclr_data_module import SimCLRDataModule as SimCLRTextDataModul
 
 torchvision.disable_beta_transforms_warning()
 
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-
 text_path = '../Datasets/UCM/dataset.json'
 img_path = '../Datasets/UCM/imgs'
 model_name = 'prajjwal1/bert-small'
@@ -27,6 +25,8 @@ num_repeats = 5
 max_epochs = 500
 
 intra = True
+
+tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 # SimCLR
 augmentation_transform = v2.Compose([
