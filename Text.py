@@ -78,5 +78,8 @@ print(f"Shape: {embeddings.shape}")
 
 pairs = closest_indices(embeddings)
 
+if simclr:
+	data_module = simclr_data_module
+
 for first, second in pairs:
 	print(data_module.train_dataset.sentences[first], '<-->', data_module.train_dataset.sentences[second], ' (', first, ',', second, ')')

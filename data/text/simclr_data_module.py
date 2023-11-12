@@ -72,23 +72,12 @@ class SimCLRDataModule(pl.LightningDataModule):
 		sentences = list(itertools.chain.from_iterable(sentences))
 
 		total_size = len(sentences)
-		train_size = int(.8 * total_size)
-		val_size = int(.1 * total_size)
-		test_size = total_size - train_size - val_size
-
 		indices = list(range(total_size))
 
 		np.random.seed(self.seed)
 		shuffled_indices = np.random.permutation(indices)
 
-		train_indices, val_indices, test_indices = shuffled_indices[:train_size], shuffled_indices[train_size:(train_size+val_size)], shuffled_indices[(train_size+val_size):]
-
-		self.dataset = SimCLRDataset([sentences[i] for i in shuffled_indices], self.tokenizer, shuffled_indices)
-		self.train_dataset = self.dataset
-
-		# self.train_dataset = SimCLRDataset([sentences[i] for i in train_indices], self.tokenizer, train_indices)
-		self.val_dataset = SimCLRDataset([sentences[i] for i in val_indices], self.tokenizer, val_indices)
-		self.test_dataset = SimCLRDataset([sentences[i] for i in test_indices], self.tokenizer, test_indices)
+		self.train_dataset = SimCLRDataset([sentences[i] for i in shuffled_indices], self.tokenizer, shuffled_indices)
 
 	def train_dataloader(self):	
 		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=30)

@@ -53,19 +53,11 @@ class SimCLRDataModule(pl.LightningDataModule):
 
 	def setup(self, stage=None):
 		total_size = len(self.image_paths)
-		train_size = int(.8 * total_size)
-		val_size = int(.1 * total_size)
-		test_size = total_size - train_size - val_size
 
 		indices = list(range(total_size))
 
 		np.random.seed(self.seed)
 		shuffled_indices = np.random.permutation(indices)
-		
-		train_indices, val_indices, test_indices = shuffled_indices[:train_size], shuffled_indices[train_size:(train_size+val_size)], shuffled_indices[(train_size+val_size):]
-
-		# print('image paths:')
-		# print(self.image_paths[0:10])
 
 		self.train_dataset = SimCLRDataset([self.image_paths[i] for i in list(shuffled_indices)], self.image_size, self.augmentation_transform)
 
