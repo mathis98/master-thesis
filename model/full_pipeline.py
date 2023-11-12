@@ -111,9 +111,10 @@ class FullPipeline(pl.LightningModule):
 		self.validation_step_outputs.append(mAP)
 
 	def on_validation_epoch_end(self):
-		self.validation_step_outputs = [output for output in self.validation_step_outputs]
-		print('validation step outputs: ', self.validation_step_outputs)
-		avg_mAP = torch.mean(self.validation_step_outputs)
+		flat_list = [item for sublist in self.validation_step_outputs for item in sublist]
+		resulting_tensor = torch.cat(flat_list, dim=0)
+
+		avg_mAP = torch.mean(resulting_tensor)
 		self.log('avg_val_mAP: ', avg_mAP, batch_size=self.batch_size, prog_bar=True)
 		print('avg_val_mAP: ', avg_mAP)
 
