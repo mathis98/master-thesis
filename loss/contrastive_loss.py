@@ -11,7 +11,9 @@ class SimCLRLoss(nn.Module):
 		super(SimCLRLoss, self).__init__()
 		self.batch_size = batch_size
 		self.temperature = temperature
-		self.mask = (~torch.eye(int(batch_size * 2), int(batch_size * 2), dtype=bool)).float()
+		self.mask = (~torch.eye(128, 128, dtype=bool)).float()
+
+		print(self.mask)
 
 	def calc_similarity_batch(self, a, b):
 		representations = torch.cat([a, b], dim=0)
@@ -29,6 +31,7 @@ class SimCLRLoss(nn.Module):
 		positives = torch.cat([sim_ij, sim_ji], dim=0)
 
 		nominator = torch.exp(positives / self.temperature)
+		print('batch_size: ', self.batch_size)
 		print('mask: ', self.mask)
 		print('sim matrix: ', similarity_matrix)
 		denominator = device_as(self.mask, similarity_matrix) * torch.exp(similarity_matrix / self.temperature)
