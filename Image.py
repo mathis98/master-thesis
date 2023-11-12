@@ -51,9 +51,9 @@ augmentation_transform = v2.Compose([
 		v2.Normalize(mean=[0.4845, 0.4903, 0.4508],std=[0.2135, 0.1970, 0.1911]),
 ])
 
-simclr_data_module = SimCLRDataModule(data_dir, image_size, batch_size, augmentation_transform)
+simclr_data_module = SimCLRDataModule(data_dir, image_size, batch_size, augmentation_transform, num_repeats=5)
 simclr_data_module.prepare_data()
-simclr_data_module.setup(stage="fit")
+simclr_data_module.setup()
 
 simclr_module = SimCLRModule(
 	image_size=image_size, 
@@ -82,6 +82,9 @@ if simclr:
 else:
 	summary(image_embedding_model)
 
+simclr_data_module_single = SimCLRDataModule(data_dir, image_size, batch_size, augmentation_transform, num_repeats=1)
+simclr_data_module_single.prepare_data()
+simclr_data_module_single.setup()
 
 with torch.no_grad():
 	predictions = trainer.predict(image_embedding_model, dataloaders=data_module.train_dataloader())
