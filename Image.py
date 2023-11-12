@@ -84,6 +84,7 @@ if simclr:
 
 	with torch.no_grad():
 		predictions = trainer.predict(simclr_module, dataloaders=simclr_data_module_single.train_dataloader())
+		print(predictions[0])
 
 else:
 	summary(image_embedding_model)
