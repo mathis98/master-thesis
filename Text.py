@@ -21,7 +21,7 @@ args = parse_arguments()
 model_name = 'prajjwal1/bert-small'
 batch_size = 64
 path = '../Datasets/UCM/dataset.json' if not args.ucm else '../Datasets/RSICD/dataset_rsicd.json'
-simclr = True
+simclr = False
 
 print(f"Using {path}")
 print(f"Using {args.embedding}")
@@ -61,14 +61,14 @@ else:
 
 	embeddings = []
 
-	with torch.no_grad():
-		predictions = trainer.predict(bert_embedding, data_module.train_dataloader())
+with torch.no_grad():
+	predictions = trainer.predict(bert_embedding, data_module.train_dataloader())
 
 
-	for batch in predictions:
-		embeddings.extend(batch.tolist())
+for batch in predictions:
+	embeddings.extend(batch.tolist())
 
-	embeddings = np.vstack(embeddings)
+embeddings = np.vstack(embeddings)
 
 
 print(f"Shape: {embeddings.shape}")
