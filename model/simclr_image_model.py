@@ -13,7 +13,7 @@ from loss.contrastive_loss import SimCLRLoss
 class SimCLRModule(pl.LightningModule):
 	def __init__(self, image_size=(224, 224), temperature=.07, learning_rate=1e-4, hidden_dim=128):
 		super(SimCLRModule, self).__init__()
-		self.model = resnet(weights=ResNet_Weights.DEFAULT, num_classes=4*hidden_dim)
+		self.model = resnet(pretrained=False, num_classes=4*hidden_dim)
 		# self.model = torch.nn.Sequential(*(list(self.model.children())[:-1]))
 		self.temperature = temperature
 		self.criterion = SimCLRLoss(temperature=temperature)
