@@ -22,8 +22,10 @@ class SimCLRModule(pl.LightningModule):
 		self.max_epochs = max_epochs
 		self.hidden_dim = hidden_dim
 
+		in_features = self.model[-1][-1].in_features
+
 		self.projection_head = nn.Sequential(
-			nn.Linear(self.model.out_features, 4*hidden_dim),
+			nn.Linear(in_features, 4*hidden_dim),
 			nn.ReLU(),
 			nn.Linear(4*hidden_dim, hidden_dim)
 		)
