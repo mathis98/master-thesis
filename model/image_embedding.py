@@ -7,8 +7,9 @@ from torchvision.models import ResNet18_Weights as ResNet_Weights
 class ImageEmbeddingModule(pl.LightningModule):
 	def __init__(self, image_size=(224, 224)):
 		super(ImageEmbeddingModule, self).__init__()
-		self.model = resnet(weights=ResNet_Weights.DEFAULT)
+
+		self.model = resnet(weights=None)
 		self.model = torch.nn.Sequential(*(list(self.model.children())[:-1])) # Remove classification layer
 
-	def forward(self, input):
-		return self.model(input[0])
+	def forward(self, batch):
+		return self.model(batch[0])

@@ -29,8 +29,8 @@ class FullPipeline(pl.LightningModule):
 		self.weight_decay = weight_decay
 		self.hidden_dim = hidden_dim
 
-		self.bert_embedding_module = BERTSentenceEmbedding()
 		self.resnet_embedding_module = ImageEmbeddingModule()
+		self.bert_embedding_module = BERTSentenceEmbedding()
 
 		self.projection_head = nn.Sequential(
 			nn.Linear(512, 4*hidden_dim),
