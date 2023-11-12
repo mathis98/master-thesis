@@ -11,13 +11,15 @@ from loss.contrastive_loss import SimCLRLoss
 
 
 class SimCLRModule(pl.LightningModule):
-	def __init__(self, image_size=(224, 224), temperature=.07, learning_rate=1e-4, hidden_dim=128):
+	def __init__(self, image_size=(224, 224), temperature=.07, learning_rate=1e-4, hidden_dim=128, weight_decay=1e-4, max_epochs=300):
 		super(SimCLRModule, self).__init__()
 		self.model = resnet(weights=None, num_classes=4*hidden_dim)
 		# self.model = torch.nn.Sequential(*(list(self.model.children())[:-1]))
 		self.temperature = temperature
 		self.criterion = SimCLRLoss(temperature=temperature)
 		self.learning_rate = learning_rate
+		self.weight_decay = weight_decay
+		self.max_epochs = max_epochs
 		self.hidden_dim = hidden_dim
 
 		self.model.fc = nn.Sequential(
@@ -41,8 +43,11 @@ class SimCLRModule(pl.LightningModule):
 		return loss
 
 	def configure_optimizers(self):
-		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate)
-		return optimizer
+		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
+		lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+			optimizer, T_max=self.max_epochs, eta_min=self.learning_rate / 50
+		)
+		return [optimizer], [lr_scheduler]
 
 	def embed_data(self, dataloader):
 		embeddings = []
