@@ -26,7 +26,7 @@ path = '../Datasets/UCM/dataset.json' if not args.ucm else '../Datasets/RSICD/da
 max_epochs = 500
 simclr = True
 
-tokeenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 print(f"Using {path}")
 print(f"Using {args.embedding}")
