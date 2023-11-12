@@ -78,18 +78,16 @@ if simclr:
 
 	# visualize_augmentations(simclr_data_module.train_dataset, 5, mean=[0.4845, 0.4903, 0.4508],std=[0.2135, 0.1970, 0.1911])
 
-	embeddings = trainer.predict(image_embedding_model, dataloaders=data_module.train_dataloader())	
-
 
 else:
 	summary(image_embedding_model)
 
 
-	with torch.no_grad():
-		predictions = trainer.predict(image_embedding_model, dataloaders=data_module.train_dataloader())
+with torch.no_grad():
+	predictions = trainer.predict(image_embedding_model, dataloaders=data_module.train_dataloader())
 
-	embeddings = torch.vstack(predictions)
-	embeddings = embeddings.view(embeddings.size(0), -1)
+embeddings = torch.vstack(predictions)
+embeddings = embeddings.view(embeddings.size(0), -1)
 
 	
 print('Shape: ', embeddings.shape)
