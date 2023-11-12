@@ -79,7 +79,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels):
 
 		ranked_indices = np.argsort(image_scores)[::-1]
 
-		num_relevant_images = torch.sum(relevant_labels)
+		num_relevant_images = np.sum(relevant_labels)
 
 		if num_relevant_images == 0:
 			AP = .0
