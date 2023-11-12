@@ -75,7 +75,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels):
 		
 		image_scores = torch.matmul(image_embeddings, caption_embedding).cpu().numpy()
 
-		relevant_labels = ground_truth_labels[i].cpu().numpy()
+		relevant_labels = ground_truth_labels[i].cpu()
 
 		ranked_indices = np.argsort(image_scores)[::-1]
 
