@@ -31,12 +31,9 @@ class SimCLRLoss(nn.Module):
 		positives = torch.cat([sim_ij, sim_ji], dim=0)
 
 		nominator = torch.exp(positives / self.temperature)
-		print('batch_size: ', self.batch_size)
-		print('mask: ', self.mask)
-		print('sim matrix: ', similarity_matrix)
 		denominator = device_as(self.mask, similarity_matrix) * torch.exp(similarity_matrix / self.temperature)
 
-		all_losses = -torch.log(nominator / torch.sum(denominator), dim=1)
+		all_losses = -torch.log(nominator / torch.sum(denominator, dim=1))
 
 		loss = torch.sum(all_losses) / (2 * int(self.batch_size))
 
