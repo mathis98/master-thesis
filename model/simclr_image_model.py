@@ -16,7 +16,7 @@ class SimCLRModule(pl.LightningModule):
 		self.model = torch.nn.Sequential(*(list(self.model.children())[:-1]))
 		self.temperature = temperature
 		self.batch_size = batch_size
-		self.criterion = SimCLRLoss(temperature, batch_size=self.batch_size)
+		self.criterion = SimCLRLoss(temperature=self.temperature, batch_size=self.batch_size)
 		self.learning_rate = learning_rate
 
 	def forward(self, original, augmented):
