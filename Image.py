@@ -37,6 +37,7 @@ image_embedding_model = ImageEmbeddingModule(image_size)
 # SimCLR
 augmentation_transform = v2.Compose([
 		v2.RandAugment(), # “RandAugment: Practical automated data augmentation with a reduced search space”.
+		v2.Normalize(mean=[0.4845, 0.4903, 0.4508],std=[0.2135, 0.1970, 0.1911])
 		v2.ToImageTensor(),
 		v2.ConvertImageDtype(),
 ])
