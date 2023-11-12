@@ -11,7 +11,7 @@ class SimCLRLoss(nn.Module):
 		super(SimCLRLoss, self).__init__()
 		self.bach_size = batch_size
 		self.temperature = temperature
-		self.mask = (~torch.eye(batch_size * 2, batch_size * 2, dtype=bool)).float()
+		self.mask = (~torch.eye(self.batch_size * 2, self.batch_size * 2, dtype=bool)).float()
 
 	def calc_similarity_batch(self, a, b):
 		representations = torch.cat([a, b], dim=0)
