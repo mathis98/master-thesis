@@ -76,7 +76,7 @@ if simclr:
 	trainer.fit(simclr_module, simclr_data_module.train_dataloader())
 
 
-	visualize_augmentations(simclr_data_module.train_dataset, 5, mean=[0.4845, 0.4903, 0.4508],std=[0.2135, 0.1970, 0.1911])
+	# visualize_augmentations(simclr_data_module.train_dataset, 5, mean=[0.4845, 0.4903, 0.4508],std=[0.2135, 0.1970, 0.1911])
 
 
 	embeddings = simclr_module.embed_data(simclr_data_module.train_dataloader())	
