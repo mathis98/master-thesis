@@ -67,7 +67,7 @@ def relevant_list(labels):
 	return relevant_list
 
 
-def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels):
+def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
 	mAP_values = []
 
 	for i in range(image_embeddings.shape[0]):
@@ -84,7 +84,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels):
 		if num_relevant_images == 0:
 			AP = .0
 		else:
-			ranked = ranked_indices.copy()
+			ranked = ranked_indices.copy()[:top_k]
 			precision = np.cumsum(relevant_labels[ranked]) / (np.arange(len(relevant_labels)) + 1)
 			AP = np.sum(precision * relevant_labels) / num_relevant_images
 
