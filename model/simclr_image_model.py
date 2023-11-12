@@ -31,10 +31,12 @@ class SimCLRModule(pl.LightningModule):
 
 	def forward(self, original, augmented):
 		z_original = self.model(original)
-		z_original = self.projection_head(original)
+		z_original = z_original.view(z_original.size(0), -1)
+		z_original = self.projection_head(z_original)
 
 		z_augmented = self.model(augmented)
-		z_augmented = self.projection_head(augmented)
+		z_augmented = z_augmented.view(z_augmented.size(0), -1)
+		z_augmented = self.projection_head(z_augmented)
 
 		return z_original, z_augmented
 
