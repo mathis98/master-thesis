@@ -9,7 +9,7 @@ def device_as(t1, t2):
 class SimCLRLoss(nn.Module):
 	def __init__(self, batch_size=64, temperature=.07):
 		super(SimCLRLoss, self).__init__()
-		self.bach_size = batch_size
+		self.batch_size = batch_size
 		self.temperature = temperature
 		self.mask = (~torch.eye(self.batch_size * 2, self.batch_size * 2, dtype=bool)).float()
 
