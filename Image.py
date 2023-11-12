@@ -21,8 +21,13 @@ torchvision.disable_beta_transforms_warning()
 
 
 data_dir = '../Datasets/UCM/imgs'
-batch_size = 64
+batch_size = 256
 image_size = (224, 224)
+max_epochs = 500
+hidden_dim = 128
+lr = 5e-4
+temperature = .07
+weight_decay = 1e-4
 simclr = True
 
 
@@ -50,12 +55,19 @@ simclr_data_module = SimCLRDataModule(data_dir, image_size, batch_size, augmenta
 simclr_data_module.prepare_data()
 simclr_data_module.setup(stage="fit")
 
-simclr_module = SimCLRModule(image_size=image_size)
+simclr_module = SimCLRModule(
+	image_size=image_size, 
+	max_epochs=max_epochs,
+	temperature=temperature,
+	learning_rate=lr,
+	weight_decay=weight_decay,
+	hidden_dim=hidden_dim,
+)
 
 devices = find_usable_cuda_devices(1)
 print(f'training on GPU {devices}')
 
-trainer = pl.Trainer(accelerator='cuda', devices=devices)
+trainer = pl.Trainer(accelerator='cuda', devices=devices, max_epochs=max_epochs)
 
 if simclr:
 
