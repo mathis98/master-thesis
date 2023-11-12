@@ -28,7 +28,7 @@ hidden_dim = 128
 lr = 5e-4
 temperature = .07
 weight_decay = 1e-4
-simclr = True
+simclr = False
 
 
 # Embedding Only
