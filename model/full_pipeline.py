@@ -51,11 +51,13 @@ class FullPipeline(pl.LightningModule):
 		image, caption = batch
 
 		if self.intra:
+			copy_img = image
 			image = image[0], image[2]
-			augmented_image = image[1], image[2]
+			augmented_image = copy_img[1], copy_img[2]
 
+			copy_caption = caption
 			caption = caption[0], caption[2], caption[4]
-			augmented_caption = caption[1], caption[3], caption[4]
+			augmented_caption = copy_caption[1], copy_caption[3], copy_caption[4]
 
 		image_embed = self.resnet_embedding_module(image)
 		image_embed = image_embed.view(image_embed.size(0), -1)
