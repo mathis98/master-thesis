@@ -67,7 +67,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 		# print('image paths:')
 		# print(self.image_paths[0:10])
 
-		self.dataset = SimCLRDataset(self.image_paths, self.iamge_size, self.augmentation_transform)
+		self.dataset = SimCLRDataset(self.image_paths, self.image_size, self.augmentation_transform)
 
 		self.train_dataset = SimCLRDataset([self.image_paths[i] for i in train_indices], self.image_size, self.augmentation_transform)
 		self.val_dataset = SimCLRDataset([self.image_paths[i] for i in val_indices], self.image_size, self.augmentation_transform)
