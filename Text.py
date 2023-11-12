@@ -2,6 +2,7 @@ from torchinfo import summary
 import pytorch_lightning as pl
 import torch
 import numpy as np
+from lightning.pytorch.accelerators import find_usable_cuda_devices
 from utility.argument_parser import parse_arguments
 
 # Helper functions
@@ -21,7 +22,7 @@ args = parse_arguments()
 model_name = 'prajjwal1/bert-small'
 batch_size = 64
 path = '../Datasets/UCM/dataset.json' if not args.ucm else '../Datasets/RSICD/dataset_rsicd.json'
-simclr = False
+simclr = True
 
 print(f"Using {path}")
 print(f"Using {args.embedding}")
@@ -42,7 +43,10 @@ simclr_data_module.setup()
 simclr_module = SimCLRModule(model_name, args.embedding)
 
 
-trainer = pl.Trainer()
+devices = find_usable_cuda_devices(1)
+print(f'training on GPU {devices}')
+
+trainer = pl.Trainer(accelerator='cuda', devices=devices, max_epochs=max_epochs)
 
 
 if simclr:
