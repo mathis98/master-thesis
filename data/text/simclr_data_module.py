@@ -91,7 +91,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 		self.test_dataset = SimCLRDataset([sentences[i] for i in test_indices], self.tokenizer, test_indices)
 
 	def train_dataloader(self):	
-		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=30)
+		return DataLoader(self.train_dataset, batch_size=self.batch_size)
 
 	def val_dataloader(self):
 		return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=30)

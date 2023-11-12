@@ -44,13 +44,17 @@ simclr_data_module.setup()
 simclr_module = SimCLRModule(model_name, args.embedding)
 
 
-devices = find_usable_cuda_devices(1)
-print(f'training on GPU {devices}')
+# devices = find_usable_cuda_devices(1)
+# print(f'training on GPU {devices}')
 
-trainer = pl.Trainer(accelerator='cuda', devices=devices, max_epochs=max_epochs)
+# trainer = pl.Trainer(accelerator='cuda', devices=devices, max_epochs=max_epochs)
+
+trainer = pl.Trainer()
 
 
 if simclr:
+
+	summary(simclr_module)
 	
 	trainer.fit(simclr_module, simclr_data_module.train_dataloader())
 
