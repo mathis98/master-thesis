@@ -2,6 +2,7 @@ import sys
 sys.path.append('..')
 
 import pytorch_lightning as pl
+from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
 import torch
 import torch.nn as nn
 import numpy as np
@@ -159,7 +160,7 @@ class FullPipeline(pl.LightningModule):
 	def configure_optimizers(self):
 
 		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate)
-		lr_scheduler = torch.optim.lr_scheduler.LinearWarmupCosineAnnealingLR(
+		lr_scheduler = LinearWarmupCosineAnnealingLR(
 			optimizer, warmup_epochs=10, max_epochs=max_epochs, warmup_start_lr=0.0
 		)
 		return [optimizer], [lr_scheduler]
