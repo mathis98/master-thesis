@@ -1,6 +1,6 @@
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
-from lightning.pytorch.callbacks.early_stopping import EarlyStopping
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from torchvision.transforms import v2
 from transformers import AutoTokenizer
 import torchvision
