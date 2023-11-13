@@ -85,7 +85,7 @@ trainer = pl.Trainer(
 			filename='{epoch}-{val_loss:.2f}-{other_metric:.2f}'
 		),
 		LearningRateMonitor('epoch'),
-		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=5, verbose=False, mode='max'),
+		# EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=5, verbose=False, mode='max'),
 	]
 )
 
