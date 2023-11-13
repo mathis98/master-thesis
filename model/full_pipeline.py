@@ -114,12 +114,11 @@ class FullPipeline(pl.LightningModule):
 		groundtruth = relevant_list(labels)
 
 		if self.intra:
-			image_embed, augmented_image_embed, caption_embed, augmented_caption_embed = self(batch)
+			image_embed, _, caption_embed, _ = self(batch)
 
 		else:
 			image_embed, caption_embed = self(batch)
 		
-		# image_embed = torch.squeeze(image_embed)
 		
 		mAP = calculate_mAP(image_embed, caption_embed, groundtruth)
 		self.log('train mAP',np.mean(mAP), batch_size=self.batch_size)
@@ -144,7 +143,7 @@ class FullPipeline(pl.LightningModule):
 		groundtruth = relevant_list(labels)
 
 		if self.intra:
-			image_embed, augmented_image_embed, caption_embed, augmented_caption_embed = self(batch)
+			image_embed, _, caption_embed, _ = self(batch)
 
 		else:
 			image_embed, caption_embed = self(batch)
