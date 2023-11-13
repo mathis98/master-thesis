@@ -26,7 +26,7 @@ batch_size = 64
 num_repeats = 5
 max_epochs = 500
 
-intra = True
+intra = False
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
