@@ -161,6 +161,6 @@ class FullPipeline(pl.LightningModule):
 
 		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate)
 		lr_scheduler = LinearWarmupCosineAnnealingLR(
-			optimizer, warmup_epochs=10, max_epochs=max_epochs, warmup_start_lr=0.0
+			optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=0.0
 		)
 		return [optimizer], [lr_scheduler]
