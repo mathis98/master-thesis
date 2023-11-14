@@ -143,8 +143,8 @@ class FullPipeline(pl.LightningModule):
 		# image: (original_image, image_path)
 		# caption: (inputs, sentence, index)
 
-		print(image)
-		print(caption)
+		# print(image)
+		# print(caption)
 
 		indeces = caption[2]
 		labels = indeces // 100
