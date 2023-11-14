@@ -15,6 +15,7 @@ from model.image_embedding import ImageEmbeddingModule
 
 # SimCLR loss
 from loss.contrastive_loss import SimCLRLoss
+from lightly.loss import NTXentLoss
 
 # for mAP calculation
 from utility.helpers import relevant_list, calculate_mAP
@@ -39,7 +40,8 @@ class FullPipeline(pl.LightningModule):
 			nn.Linear(4*hidden_dim, hidden_dim)
 		)
 		
-		self.criterion = SimCLRLoss(temperature)
+		# self.criterion = SimCLRLoss(temperature)
+		self.criterion = NTXentLoss()
 		self.max_epochs = max_epochs
 
 		self.intra = intra
