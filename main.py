@@ -74,8 +74,8 @@ logger = pl.loggers.CSVLogger('logs', name='full_pipeline_simple')
 
 trainer = pl.Trainer(
 	logger=logger, 
-	accelerator='cpu', 
-	devices=devices, 
+	# accelerator='cpu', 
+	# devices=devices, 
 	max_epochs=max_epochs,
 	callbacks=[
 		ModelCheckpoint(
