@@ -69,12 +69,12 @@ full_pipeline = FullPipeline(batch_size, intra=intra)
 
 logger = pl.loggers.CSVLogger('logs', name='full_pipeline_simple')
 
-devices = find_usable_cuda_devices(1)
-print(f'training on GPU {devices}')
+# devices = find_usable_cuda_devices(1)
+# print(f'training on GPU {devices}')
 
 trainer = pl.Trainer(
 	logger=logger, 
-	accelerator='cuda', 
+	accelerator='cpu', 
 	devices=devices, 
 	max_epochs=max_epochs,
 	callbacks=[
