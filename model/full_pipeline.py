@@ -32,7 +32,15 @@ class FullPipeline(pl.LightningModule):
 		self.hidden_dim = hidden_dim
 
 		self.resnet_embedding_module = ImageEmbeddingModule()
+		# Freeze weights
+		for param in resnet_embedding_module.parameters():
+			param.requires_grad = False
+
+
 		self.bert_embedding_module = BERTSentenceEmbedding()
+		# Freeze weights
+		for param in bert_embedding_module.parameters():
+			param.requires_grad = False
 
 		self.projection_head = nn.Sequential(
 			nn.Linear(512, 4*hidden_dim),
@@ -99,11 +107,9 @@ class FullPipeline(pl.LightningModule):
 
 			loss = loss + intra_image_loss + intra_caption_loss
 
-		sch = self.lr_schedulers()
+		# sch = self.lr_schedulers()
 
-		print(sch)
-
-		sch.step()
+		# sch.step()
 
 		self.log('train-loss', loss, prog_bar=True)
 		return loss
@@ -167,7 +173,7 @@ class FullPipeline(pl.LightningModule):
 	def configure_optimizers(self):
 
 		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate)
-		lr_scheduler = LinearWarmupCosineAnnealingLR(
-			optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=0.0
-		)
-		return [optimizer], [lr_scheduler]
+		# lr_scheduler = LinearWarmupCosineAnnealingLR(
+		# 	optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=0.0
+		# )
+		return optimizer
