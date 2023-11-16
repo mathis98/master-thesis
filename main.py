@@ -22,7 +22,7 @@ text_path = '../Datasets/UCM/dataset.json'
 img_path = '../Datasets/UCM/imgs'
 model_name = 'prajjwal1/bert-small'
 image_size = (224, 224)
-batch_size = 64
+batch_size = 200
 num_repeats = 5
 max_epochs = 100
 
@@ -78,14 +78,14 @@ trainer = pl.Trainer(
 	devices=devices, 
 	max_epochs=max_epochs,
 	callbacks=[
-		ModelCheckpoint(
-			save_weights_only=True, 
-			mode='max', 
-			monitor='avg_val_mAP', 
-			filename='{epoch}-{val_loss:.2f}-{other_metric:.2f}'
-		),
+		# ModelCheckpoint(
+		# 	save_weights_only=True, 
+		# 	mode='max', 
+		# 	monitor='avg_val_mAP', 
+		# 	filename='{epoch}-{val_loss:.2f}-{other_metric:.2f}'
+		# ),
 		LearningRateMonitor('epoch'),
-		# EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=5, verbose=False, mode='max'),
+		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=5, verbose=False, mode='max'),
 	]
 )
 

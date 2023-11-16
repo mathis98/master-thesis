@@ -22,7 +22,7 @@ from utility.helpers import relevant_list, calculate_mAP
 
 
 class FullPipeline(pl.LightningModule):
-	def __init__(self, batch_size=64, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-4, max_epochs=500, hidden_dim=128):
+	def __init__(self, batch_size=200, intra=False, temperature=.5, learning_rate=3e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
 		self.intra = intra
@@ -43,9 +43,11 @@ class FullPipeline(pl.LightningModule):
 			param.requires_grad = False
 
 		self.projection_head = nn.Sequential(
-			nn.Linear(512, 4*hidden_dim),
+			nn.Linear(512, 512),
+			nn.BatchNorm1d(512),
 			nn.ReLU(),
-			nn.Linear(4*hidden_dim, hidden_dim)
+			nn.Linear(512, 128),
+			nn.BatchNorm1d(128)
 		)
 		
 		self.criterion = SimCLRLoss(temperature)
@@ -107,7 +109,7 @@ class FullPipeline(pl.LightningModule):
 
 			loss = loss + intra_image_loss + intra_caption_loss
 
-		# sch = self.lr_schedulers()
+		# sch = self.lr_schedulers(epoch=self.epoch)
 
 		# sch.step()
 
