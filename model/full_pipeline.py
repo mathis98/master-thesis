@@ -22,7 +22,7 @@ from utility.helpers import relevant_list, calculate_mAP
 
 
 class FullPipeline(pl.LightningModule):
-	def __init__(self, batch_size=64, intra=False, temperature=.07, learning_rate=1e-4, weight_decay=1e-4, max_epochs=500, hidden_dim=128):
+	def __init__(self, batch_size=64, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-4, max_epochs=500, hidden_dim=128):
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
 		self.intra = intra
@@ -48,8 +48,8 @@ class FullPipeline(pl.LightningModule):
 			nn.Linear(4*hidden_dim, hidden_dim)
 		)
 		
-		# self.criterion = SimCLRLoss(temperature)
-		self.criterion = NTXentLoss()
+		self.criterion = SimCLRLoss(temperature)
+		# self.criterion = NTXentLoss(temperature)
 		self.max_epochs = max_epochs
 
 		self.intra = intra
