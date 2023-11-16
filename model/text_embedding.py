@@ -5,7 +5,7 @@ from sentence_transformers import SentenceTransformer
 
 
 class BERTSentenceEmbedding(pl.LightningModule):
-	def __init__(self, model_name='prajjwal1/bert-small', embedding='CLS'):
+	def __init__(self, model_name='prajjwal1/bert-small', embedding='pooler'):
 		super(BERTSentenceEmbedding, self).__init__()
 		self.model_name = model_name
 		self.tokenizer = AutoTokenizer.from_pretrained(model_name)

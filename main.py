@@ -24,9 +24,9 @@ model_name = 'prajjwal1/bert-small'
 image_size = (224, 224)
 batch_size = 64
 num_repeats = 5
-max_epochs = 500
+max_epochs = 100
 
-intra = True
+intra = False
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 

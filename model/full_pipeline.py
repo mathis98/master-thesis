@@ -99,6 +99,12 @@ class FullPipeline(pl.LightningModule):
 
 			loss = loss + intra_image_loss + intra_caption_loss
 
+		sch = self.learning_rate_schedulers()
+
+		print(sch)
+
+		sch.step()
+
 		self.log('train-loss', loss, prog_bar=True)
 		return loss
 
@@ -139,12 +145,6 @@ class FullPipeline(pl.LightningModule):
 		if self.intra:
 			image = image[0], image[2]
 			caption = caption[0], caption[2], caption[4]
-
-		# image: (original_image, image_path)
-		# caption: (inputs, sentence, index)
-
-		# print(image)
-		# print(caption)
 
 		indeces = caption[2]
 		labels = indeces // 100
