@@ -99,7 +99,7 @@ class FullPipeline(pl.LightningModule):
 
 			loss = loss + intra_image_loss + intra_caption_loss
 
-		sch = self.learning_rate_schedulers()
+		sch = self.lr_schedulers()
 
 		print(sch)
 
