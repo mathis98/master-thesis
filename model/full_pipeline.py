@@ -178,4 +178,4 @@ class FullPipeline(pl.LightningModule):
 		lr_scheduler = LinearWarmupCosineAnnealingLR(
 			optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=0.0
 		)
-		return [optimizer] [lr_scheduler]
+		return [optimizer], [lr_scheduler]
