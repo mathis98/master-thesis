@@ -111,7 +111,7 @@ class FullPipeline(pl.LightningModule):
 
 		# sch = self.lr_schedulers()
 
-		# sch.step()
+		# sch.step(epoch)
 
 		self.log('train-loss', loss, prog_bar=True)
 		return loss
@@ -175,7 +175,7 @@ class FullPipeline(pl.LightningModule):
 	def configure_optimizers(self):
 
 		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate)
-		# lr_scheduler = LinearWarmupCosineAnnealingLR(
-		# 	optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=0.0
-		# )
-		return optimizer
+		lr_scheduler = LinearWarmupCosineAnnealingLR(
+			optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=0.0
+		)
+		return [optimizer] [lr_scheduler]
