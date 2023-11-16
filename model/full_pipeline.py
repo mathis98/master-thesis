@@ -33,14 +33,14 @@ class FullPipeline(pl.LightningModule):
 
 		self.resnet_embedding_module = ImageEmbeddingModule()
 		# Freeze weights
-		for param in self.resnet_embedding_module.parameters():
-			param.requires_grad = False
+		# for param in self.resnet_embedding_module.parameters():
+		# 	param.requires_grad = False
 
 
 		self.bert_embedding_module = BERTSentenceEmbedding()
 		# Freeze weights
-		for param in self.bert_embedding_module.parameters():
-			param.requires_grad = False
+		# for param in self.bert_embedding_module.parameters():
+		# 	param.requires_grad = False
 
 		self.projection_head = nn.Sequential(
 			nn.Linear(512, 512),
