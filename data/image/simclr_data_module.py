@@ -23,17 +23,10 @@ class SimCLRDataset(Dataset):
 	def __getitem__(self, idx):
 		image_path = self.image_paths[idx]
 		image = Image.open(image_path).convert('RGB')
-		original_image = self.transform(image)
+		original_image = image
 		augmented_image = self.transform(image)
 
-		augmentation_transform = v2.Compose([
-			v2.ToImageTensor(),
-			v2.ConvertImageDtype(),
-		])
-
-		source_image = augmentation_transform(image)
-
-		return original_image, augmented_image, image_path, source_image
+		return original_image, augmented_image, image_path
 
 
 class SimCLRDataModule(pl.LightningDataModule):
@@ -62,7 +55,25 @@ class SimCLRDataModule(pl.LightningDataModule):
 		np.random.seed(self.seed)
 		shuffled_indices = np.random.permutation(indices)
 		
-		train_indices, val_indices, test_indices = shuffled_indices[:train_size], shuffled_indices[train_size:(train_size+val_size)], shuffled_indices[(train_size+val_size):]
+		train_indices = []
+		val_indices = []
+		test_indices = []
+
+		elements_per_group = 100
+
+		# Iterate through each group
+		for group_start in range(0, len(indices), elements_per_group):
+			group_end = group_start + elements_per_group
+			group = indices[group_start:group_end]
+
+			# Calculate the indices for train, val, and test
+			train_end = int(len(group) * 0.8)
+			val_end = train_end + int(len(group) * 0.1)
+
+			# Split the group into train, val, and test
+			train.extend(group[:train_end])
+			val.extend(group[train_end:val_end])
+			test.extend(group[val_end:])
 
 		self.dataset = SimCLRDataset([self.image_paths[i] for i in list(shuffled_indices)], self.image_size, self.augmentation_transform)
 

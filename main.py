@@ -26,7 +26,7 @@ batch_size = 200
 num_repeats = 5
 max_epochs = 100
 
-intra = True
+intra = False
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
@@ -85,7 +85,7 @@ trainer = pl.Trainer(
 			filename='{epoch}-{val_loss:.2f}-{other_metric:.2f}'
 		),
 		LearningRateMonitor('epoch'),
-		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=5, verbose=False, mode='max'),
+		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=3, verbose=False, mode='max'),
 	]
 )
 

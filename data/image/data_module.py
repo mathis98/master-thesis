@@ -52,13 +52,25 @@ class ImageDataModule(pl.LightningDataModule):
 
 		indices = list(range(total_size))
 
-		np.random.seed(self.seed)
-		shuffled_indices = np.random.permutation(indices)
-		
-		train_indices, val_indices, test_indices = shuffled_indices[:train_size], shuffled_indices[train_size:(train_size+val_size)], shuffled_indices[(train_size+val_size):]
+		train_indices = []
+		val_indices = []
+		test_indices = []
 
-		# print('image paths:')
-		# print(self.image_paths[0:10])
+		elements_per_group = 100
+
+		# Iterate through each group
+		for group_start in range(0, len(indices), elements_per_group):
+			group_end = group_start + elements_per_group
+			group = indices[group_start:group_end]
+
+			# Calculate the indices for train, val, and test
+			train_end = int(len(group) * 0.8)
+			val_end = train_end + int(len(group) * 0.1)
+
+			# Split the group into train, val, and test
+			train.extend(group[:train_end])
+			val.extend(group[train_end:val_end])
+			test.extend(group[val_end:])
 
 		self.dataset = ImageDataSet(self.image_paths, self.image_size)
 
