@@ -75,6 +75,10 @@ class ImageDataModule(pl.LightningDataModule):
 			val_indices.extend(group[train_end:val_end])
 			test_indices.extend(group[val_end:])
 
+		print(train_indices[:10])
+		print(val_indices[:10])
+		print(test_indices[:10])
+
 		self.dataset = ImageDataSet(self.image_paths, self.image_size)
 
 		self.train_dataset = ImageDataSet([self.image_paths[i] for i in train_indices], self.image_size)
