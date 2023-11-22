@@ -96,9 +96,9 @@ class SimCLRDataModule(pl.LightningDataModule):
 			val_end = train_end + int(len(group) * 0.1)
 
 			# Split the group into train, val, and test
-			train.extend(group[:train_end])
-			val.extend(group[train_end:val_end])
-			test.extend(group[val_end:])
+			train_indices.extend(group[:train_end])
+			val_indices.extend(group[train_end:val_end])
+			test_indices.extend(group[val_end:])
 
 		self.dataset = SimCLRDataset([sentences[i] for i in shuffled_indices], self.tokenizer, shuffled_indices)
 
