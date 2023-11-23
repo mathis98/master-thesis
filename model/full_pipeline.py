@@ -44,7 +44,7 @@ class FullPipeline(pl.LightningModule):
 
 		self.projection_head = nn.Sequential(
 			nn.Linear(512, 512),
-			nn.BatchNorm1d(512),
+			# nn.BatchNorm1d(512),
 			nn.ReLU(),
 			nn.Linear(512, 128),
 			# nn.BatchNorm1d(128)
