@@ -39,15 +39,15 @@ class FullPipeline(pl.LightningModule):
 
 		self.bert_embedding_module = BERTSentenceEmbedding()
 		# Freeze weights
-		# for param in self.bert_embedding_module.parameters():
-		# 	param.requires_grad = False
+		for param in self.bert_embedding_module.parameters():
+			param.requires_grad = False
 
 		self.projection_head = nn.Sequential(
 			nn.Linear(512, 512),
-			# nn.BatchNorm1d(512),
+			nn.BatchNorm1d(512),
 			nn.ReLU(),
 			nn.Linear(512, 128),
-			# nn.BatchNorm1d(128)
+			nn.BatchNorm1d(128)
 		)
 		
 		self.criterion = SimCLRLoss(temperature)
@@ -175,7 +175,7 @@ class FullPipeline(pl.LightningModule):
 	def configure_optimizers(self):
 
 		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate)
-		lr_scheduler = LinearWarmupCosineAnnealingLR(
-			optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=self.learning_rate/10
-		)
-		return [optimizer], [lr_scheduler]
+		# lr_scheduler = LinearWarmupCosineAnnealingLR(
+		# 	optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=self.learning_rate/10
+		# )
+		return optimizer
