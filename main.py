@@ -101,7 +101,7 @@ trainer = pl.Trainer(
 	]
 )
 
-trainer.log_hyperparams({
+trainer._log_hyperparams({
 	"batch_size": batch_size, 
 	"learning_rate": learning_rate,
 	"max_epochs": max_epochs,
