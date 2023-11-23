@@ -22,7 +22,7 @@ from utility.helpers import relevant_list, calculate_mAP
 
 
 class FullPipeline(pl.LightningModule):
-	def __init__(self, batch_size=200, intra=False, temperature=.5, learning_rate=3e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
+	def __init__(self, batch_size=200, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
 		self.intra = intra
@@ -176,6 +176,6 @@ class FullPipeline(pl.LightningModule):
 
 		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate)
 		lr_scheduler = LinearWarmupCosineAnnealingLR(
-			optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=0.0
+			optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=self.learning_rate/10
 		)
 		return [optimizer], [lr_scheduler]
