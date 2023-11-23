@@ -25,6 +25,10 @@ image_size = (224, 224)
 batch_size = 128
 num_repeats = 5
 max_epochs = 100
+temperature=.5
+learning_rate=1e-4
+weight_decay=1e-6
+max_epochs=100
 
 intra = False
 
@@ -65,7 +69,14 @@ image_text_pair_data_module.setup(stage='fit')
 # NO SIMCLR: ((image, image_path), (inputs, sentence, index))
 
 
-full_pipeline = FullPipeline(batch_size, intra=intra)
+full_pipeline = FullPipeline(
+	batch_size=batch_size, 
+	max_epochs=max_epochs, 
+	temperature=temperature, 
+	learning_rate=learning_rate, 
+	weight_decay=weight_decay, 
+	intra=intra
+)
 
 logger = pl.loggers.CSVLogger('logs', name='full_pipeline_simple')
 
@@ -86,9 +97,18 @@ trainer = pl.Trainer(
 			filename='{epoch}-{val_loss:.2f}-{other_metric:.2f}'
 		),
 		LearningRateMonitor('epoch'),
-		# EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=3, verbose=False, mode='max'),
+		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=5, verbose=False, mode='max'),
 	]
 )
+
+trainer.log_hyperparams({
+	"batch_size": batch_size, 
+	"learning_rate": learning_rate,
+	"max_epochs": max_epochs,
+	"temperature": temperature,
+	"weight_decay": weight_decay,
+	"intra": intra,
+})
 
 trainer.fit(
 	full_pipeline, 
