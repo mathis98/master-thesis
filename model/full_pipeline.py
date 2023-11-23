@@ -47,7 +47,7 @@ class FullPipeline(pl.LightningModule):
 			nn.BatchNorm1d(512),
 			nn.ReLU(),
 			nn.Linear(512, 128),
-			nn.BatchNorm1d(128)
+			# nn.BatchNorm1d(128)
 		)
 		
 		self.criterion = SimCLRLoss(temperature)
