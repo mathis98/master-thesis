@@ -4,7 +4,6 @@ sys.path.append('..')
 import pytorch_lightning as pl
 from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
 import torch
-from torch.optim import AdamW
 import torch.nn as nn
 import numpy as np
 
@@ -19,7 +18,7 @@ from loss.contrastive_loss import SimCLRLoss
 from lightly.loss import NTXentLoss
 
 # for mAP calculation
-from utility.helpers import relevant_list, calculate_mAP
+from utility.helpers import relevant_list, calculate_mAP, define_param_groups
 
 
 class FullPipeline(pl.LightningModule):
@@ -175,16 +174,9 @@ class FullPipeline(pl.LightningModule):
 
 	def configure_optimizers(self):
 
-		optimizer = AdamW(self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
+		param_groups = define_param_groups(self, self.weight_decay, 'adam')
 
-		bn_params = set(param for name, param in self.named_parameters() if 'bn' in name)
-
-		bn_optimizer = AdamW(bn_params, lr=self.learning_rate, weight_decay=0.0)
-
-		non_bn_params = [param for param in self.parameters() if param not in bn_params]
-
-		optimizer.add_param_group({'params': non_bn_params, 'lr': self.learning_rate, 'weight_decay': self.weight_decay})
-
+		optimizer = torch.optim.AdamW(param_groups, lr=self.learning_rate, weight_decay=self.weight_decay)
 		# lr_scheduler = LinearWarmupCosineAnnealingLR(
 		# 	optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=self.learning_rate/10
 		# )
