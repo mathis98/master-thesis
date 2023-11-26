@@ -97,14 +97,14 @@ trainer = pl.Trainer(
 	accelerator='cuda', 
 	devices=devices, 
 	max_epochs=max_epochs,
-	log_every_n_steps=5,
+	log_every_n_steps=10,
 	callbacks=[
-		ModelCheckpoint(
-			save_weights_only=True, 
-			mode='max', 
-			monitor='avg_val_mAP', 
-			filename='{epoch}-{val_loss:.2f}-{other_metric:.2f}'
-		),
+		# ModelCheckpoint(
+		# 	save_weights_only=True, 
+		# 	mode='max', 
+		# 	monitor='avg_val_mAP', 
+		# 	filename='{epoch}-{val_loss:.2f}-{other_metric:.2f}'
+		# ),
 		LearningRateMonitor('epoch'),
 		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=5, verbose=False, mode='max'),
 	]

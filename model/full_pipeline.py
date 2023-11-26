@@ -44,14 +44,14 @@ class FullPipeline(pl.LightningModule):
 
 		self.projection_head = nn.Sequential(
 			nn.Linear(512, 512),
-			# nn.BatchNorm1d(512),
+			nn.BatchNorm1d(512),
 			nn.ReLU(),
 			nn.Linear(512, 128),
-			# nn.BatchNorm1d(128)
+			nn.BatchNorm1d(128)
 		)
 		
-		self.criterion = SimCLRLoss(temperature)
-		# self.criterion = NTXentLoss(temperature)
+		# self.criterion = SimCLRLoss(temperature)
+		self.criterion = NTXentLoss(temperature)
 		self.max_epochs = max_epochs
 
 		self.intra = intra
@@ -172,9 +172,32 @@ class FullPipeline(pl.LightningModule):
 		avg_mAP = np.mean(np.concatenate(self.validation_step_outputs))
 		self.log('avg_val_mAP', avg_mAP, batch_size=self.batch_size, prog_bar=True)
 
+	def define_param_groups(model, weight_decay, optimizer_name):
+		def exclude_from_wd_and_adaptation(name):
+			if 'bn' in name:
+				return True
+			if optimizer_name == 'lars' and 'bias' in name:
+				return True
+
+			param_groups = [
+				{
+					'params': [p for name, p in model.named_parameters() if not exclude_from_wd_and_adaptation(name)],
+					'weight_decay': weight_decay,
+					'layer_adaptation': True,
+				},
+				{
+					'params': [p for name, p in model.named_parameters() if exclude_from_wd_and_adaptation(name)],
+					'weight_decay': 0.,
+					'layer_adaptation': False,
+				},
+			]
+			return param_groups
+
 	def configure_optimizers(self):
 
-		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate)
+		param_groups = define_param_groups(self.model, self.weight_decay, 'adam')
+
+		optimizer = torch.optim.AdamW(param_groups, lr=self.learning_rate, weight_decay=self.weight_decay)
 		# lr_scheduler = LinearWarmupCosineAnnealingLR(
 		# 	optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=self.learning_rate/10
 		# )

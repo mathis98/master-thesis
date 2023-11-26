@@ -8,8 +8,8 @@ class ImageEmbeddingModule(pl.LightningModule):
 	def __init__(self, image_size=(224, 224)):
 		super(ImageEmbeddingModule, self).__init__()
 
-		self.model = resnet(weights=None)
-		self.model = torch.nn.Sequential(*(list(self.model.children())[:-1])) # Remove classification layer
+		self.model = resnet(weights=None, num_classes=128)
+		# self.model = torch.nn.Sequential(*(list(self.model.children())[:-1])) # Remove classification layer
 
 	def forward(self, batch):
 		return self.model(batch[0])
