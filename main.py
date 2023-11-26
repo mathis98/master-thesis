@@ -65,7 +65,7 @@ image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_da
 image_text_pair_data_module.setup(stage='fit')
 
 # RETURNS pairs from image_data_module, text_data_module so one of
-# SIMCLR: ((original_image, augmented_image, image_path, source_image), (inputs, inputs_aug, sentence, aug_sentence, index))
+# SIMCLR: ((original_image, augmented_image, image_path), (inputs, inputs_aug, sentence, aug_sentence, index))
 # NO SIMCLR: ((image, image_path), (inputs, sentence, index))
 
 

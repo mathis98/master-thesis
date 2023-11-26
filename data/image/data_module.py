@@ -75,6 +75,7 @@ class ImageDataModule(pl.LightningDataModule):
 			val_indices.extend(group[train_end:val_end])
 			test_indices.extend(group[val_end:])
 
+		print('IMAGE:')
 		print(train_indices)
 		print(val_indices)
 		print(test_indices)
