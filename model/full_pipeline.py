@@ -4,6 +4,7 @@ sys.path.append('..')
 import pytorch_lightning as pl
 from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
 import torch
+from torch.optim import AdamW
 import torch.nn as nn
 import numpy as np
 
@@ -174,7 +175,7 @@ class FullPipeline(pl.LightningModule):
 
 	def configure_optimizers(self):
 
-		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
+		optimizer = AdamW(self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
 
 		bn_params = set(param for name, param in self.named_parameters() if 'bn' in name)
 
