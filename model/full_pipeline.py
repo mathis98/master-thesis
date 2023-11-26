@@ -176,11 +176,13 @@ class FullPipeline(pl.LightningModule):
 
 		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
 
-		bn_params = [param for name, param in self.named_parameters() if 'bn' in name]
+		bn_params = set(param for name, param in self.named_parameters() if 'bn' in name)
 
-		bn_optimizer = torch.optim.AdamW(bn_params, lr=self.learning_rate, weight_decay=0.0)
+		bn_optimizer = AdamW(bn_params, lr=self.learning_rate, weight_decay=0.0)
 
-		optimizer.add_param_group({'params': bn_params, 'lr': self.learning_rate, 'weight_decay': 0.0})
+		non_bn_params = [param for param in self.parameters() if param not in bn_params]
+
+		optimizer.add_param_group({'params': non_bn_params, 'lr': self.learning_rate, 'weight_decay': self.weight_decay})
 
 		# lr_scheduler = LinearWarmupCosineAnnealingLR(
 		# 	optimizer, warmup_epochs=10, max_epochs=self.max_epochs, warmup_start_lr=self.learning_rate/10
