@@ -18,7 +18,7 @@ from loss.contrastive_loss import SimCLRLoss
 from lightly.loss import NTXentLoss
 
 # for mAP calculation
-from utility.helpers import relevant_list, calculate_mAP
+from utility.helpers import relevant_list, calculate_mAP, define_param_groups
 
 
 class FullPipeline(pl.LightningModule):
@@ -171,27 +171,6 @@ class FullPipeline(pl.LightningModule):
 	def on_validation_epoch_end(self):
 		avg_mAP = np.mean(np.concatenate(self.validation_step_outputs))
 		self.log('avg_val_mAP', avg_mAP, batch_size=self.batch_size, prog_bar=True)
-
-	def define_param_groups(model, weight_decay, optimizer_name):
-		def exclude_from_wd_and_adaptation(name):
-			if 'bn' in name:
-				return True
-			if optimizer_name == 'lars' and 'bias' in name:
-				return True
-
-			param_groups = [
-				{
-					'params': [p for name, p in model.named_parameters() if not exclude_from_wd_and_adaptation(name)],
-					'weight_decay': weight_decay,
-					'layer_adaptation': True,
-				},
-				{
-					'params': [p for name, p in model.named_parameters() if exclude_from_wd_and_adaptation(name)],
-					'weight_decay': 0.,
-					'layer_adaptation': False,
-				},
-			]
-			return param_groups
 
 	def configure_optimizers(self):
 
