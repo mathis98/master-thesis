@@ -94,7 +94,8 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 def define_param_groups(model, weight_decay, optimizer_name):
 
-	print([name for name, p in model.named_parameters()])
+	print([name for name, p in model.named_parameters() if not 'bn' in name])
+	print([name for name, p in model.named_parameters() if 'bn' in name])
 
 	def exclude_from_wd_and_adaptation(name):
 
@@ -110,6 +111,8 @@ def define_param_groups(model, weight_decay, optimizer_name):
 				'layer_adaptation': False,
 			},
 		]
+
+		print(param_groups)
 
 		return param_groups
 
