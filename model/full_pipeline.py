@@ -18,7 +18,7 @@ from loss.contrastive_loss import SimCLRLoss
 from lightly.loss import NTXentLoss
 
 # for mAP calculation
-from utility.helpers import relevant_list, calculate_mAP, define_param_groups
+from utility.helpers import relevant_list, calculate_mAP
 
 
 class FullPipeline(pl.LightningModule):
