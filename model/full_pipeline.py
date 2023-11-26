@@ -13,6 +13,9 @@ from model.text_embedding import BERTSentenceEmbedding
 # Embedding for image
 from model.image_embedding import ImageEmbeddingModule
 
+# Projection Head
+from model.projection_head import MyProjectionhead
+
 # SimCLR loss
 from loss.contrastive_loss import SimCLRLoss
 from lightly.loss import NTXentLoss
@@ -42,13 +45,7 @@ class FullPipeline(pl.LightningModule):
 		for param in self.bert_embedding_module.parameters():
 			param.requires_grad = False
 
-		self.projection_head = nn.Sequential(
-			nn.Linear(512, 512),
-			nn.BatchNorm1d(512),
-			nn.ReLU(),
-			nn.Linear(512, 128),
-			nn.BatchNorm1d(128)
-		)
+		self.projection_head = MyProjectionhead(512, 512, 128)
 		
 		# self.criterion = SimCLRLoss(temperature)
 		self.criterion = NTXentLoss(temperature)
@@ -108,10 +105,6 @@ class FullPipeline(pl.LightningModule):
 			intra_caption_loss = self.criterion(caption_embed, augmented_caption_embed)
 
 			loss = loss + intra_image_loss + intra_caption_loss
-
-		# sch = self.lr_schedulers()
-
-		# sch.step(epoch)
 
 		self.log('train-loss', loss, prog_bar=True)
 		return loss
