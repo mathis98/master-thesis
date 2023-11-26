@@ -174,7 +174,7 @@ class FullPipeline(pl.LightningModule):
 
 	def configure_optimizers(self):
 
-		optimizer = torch.optim.AdamW(param_groups, lr=self.learning_rate, weight_decay=self.weight_decay)
+		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
 
 		bn_params = [param for name, param in self.named_parameters() if 'bn' in name]
 
