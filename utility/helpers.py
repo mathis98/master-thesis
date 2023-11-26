@@ -94,7 +94,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 def define_param_groups(model, weight_decay, optimizer_name):
 
-	print(name for name, p in moel.named_parameters)
+	print(name for name, p in model.named_parameters)
 
 	return[
 		{
