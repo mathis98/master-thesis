@@ -5,6 +5,7 @@ import pytorch_lightning as pl
 from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import numpy as np
 
 # Embedding for text
@@ -97,6 +98,9 @@ class FullPipeline(pl.LightningModule):
 
 		else:
 			image_embed, caption_embed = self(batch)
+
+		image_embed = F.normalize(image_embed, dim=-1, p=2)
+		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 		
 		loss = self.criterion(image_embed, caption_embed)
 
