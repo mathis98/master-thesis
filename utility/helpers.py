@@ -73,7 +73,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 	rmap = RetrievalMAP(top_k=top_k)
 
-	for caption_embedding in range(caption_embeddings.shape[0]):
+	for i in range(caption_embeddings.shape[0]):
 
 		caption_embedding = caption_embeddings[i]
 		
