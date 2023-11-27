@@ -73,18 +73,18 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	for i in range(image_embeddings.shape[0]):
 		caption_embedding = caption_embeddings[i]
 		
-		image_scores = torch.matmul(image_embeddings, caption_embedding).cpu().numpy()
+		image_scores = torch.matmul(image_embeddings, caption_embedding)
 
-		relevant_labels = ground_truth_labels[i].cpu().numpy()
+		relevant_labels = ground_truth_labels[i]
 
-		ranked_indices = np.argsort(image_scores)[::-1]
+		ranked_indices = torch.argsort(image_scores, descending=True)
 
-		num_relevant_images = np.sum(relevant_labels)
+		num_relevant_images = torch.sum(relevant_labels).item()
 
 		if num_relevant_images == 0:
-			AP = .0
+			AP = 0.0
 		else:
-			ranked = ranked_indices[:top_k]
+			ranked = ranked_indices.cpu().numpy()[:top_k]
 			precision = np.cumsum(relevant_labels[ranked]) / (np.arange(1, top_k+1))
 			AP = np.sum(precision * relevant_labels[ranked]) / num_relevant_images
 
