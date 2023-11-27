@@ -37,4 +37,4 @@ class SimCLRLoss(nn.Module):
 		all_losses = -torch.log(nominator / torch.sum(denominator, dim=1))
 		loss = torch.sum(all_losses) / (2 * batch_size)
 		
-		return loss
+		return loss / batch_size

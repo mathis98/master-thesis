@@ -47,8 +47,8 @@ class FullPipeline(pl.LightningModule):
 
 		self.projection_head = MyProjectionhead(512, 512, 128)
 		
-		# self.criterion = SimCLRLoss(temperature)
-		self.criterion = NTXentLoss(temperature)
+		self.criterion = SimCLRLoss(temperature)
+		# self.criterion = NTXentLoss(temperature)
 		self.max_epochs = max_epochs
 
 		self.intra = intra
