@@ -60,7 +60,7 @@ class ImageDataModule(pl.LightningDataModule):
 		val_indices = []
 		test_indices = []
 
-		elements_per_group = 100 * num_repeats
+		elements_per_group = 100 * self.num_repeats
 
 		# Iterate through each group
 		for group_start in range(0, len(indices), elements_per_group):
