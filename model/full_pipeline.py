@@ -113,7 +113,7 @@ class FullPipeline(pl.LightningModule):
 		self.log('train-loss', loss, prog_bar=True)
 		return loss
 
-	def shared_step(self, batch, batch_idx):
+	def shared_step(self, batch):
 		image, caption = batch
 
 		if self.intra:
