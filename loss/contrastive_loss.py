@@ -37,6 +37,6 @@ class SimCLRLoss(nn.Module):
 		num_valid_pairs = torch.sum(mask) / 2
 
 		all_losses = -torch.log(nominator / torch.sum(denominator, dim=1))
-		loss = torch.sum(all_losses) / num_valid_pairs
+		loss = torch.sum(all_losses) / (2 * batch_size)
 		
 		return loss

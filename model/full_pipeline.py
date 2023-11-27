@@ -102,11 +102,11 @@ class FullPipeline(pl.LightningModule):
 		image_embed = F.normalize(image_embed, dim=-1, p=2)
 		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 		
-		loss = self.criterion(image_embed, caption_embed) * self.batch_size
+		loss = self.criterion(image_embed, caption_embed)
 
 		if self.intra:
-			intra_image_loss = self.criterion(image_embed, augmented_image_embed) * self.batch_size
-			intra_caption_loss = self.criterion(caption_embed, augmented_caption_embed) * self.batch_size
+			intra_image_loss = self.criterion(image_embed, augmented_image_embed)
+			intra_caption_loss = self.criterion(caption_embed, augmented_caption_embed)
 
 			loss = loss + intra_image_loss + intra_caption_loss
 
