@@ -97,7 +97,7 @@ trainer = pl.Trainer(
 	accelerator='cuda', 
 	devices=devices, 
 	max_epochs=max_epochs,
-	log_every_n_steps=1,
+	# log_every_n_steps=1,
 	callbacks=[
 		# ModelCheckpoint(
 		# 	save_weights_only=True, 
