@@ -81,7 +81,10 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		relevant_labels = ground_truth_labels[i]
 
-		rmap.update(image_scores.unsqueeze(0), relevant_labels.unsqueeze(0), torch.zeros(len(image_scores), dtype=torch.long))
+		print(image_scores)
+		print(relevant_labels)
+
+		rmap.update(image_scores, relevant_labels, torch.zeros(len(image_scores), dtype=torch.long))
 
 		mAP_values.append(rmap.compute().item())
 
