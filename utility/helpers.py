@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from torchvision.transforms import v2
-from torchmetrics import RetrievalMAP
 
 def closest_indices(embeddings):
 
@@ -71,8 +70,6 @@ def relevant_list(labels):
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
 	mAP_values = []
 
-	retrieval_map = RetrievalMAP(top_k=top_k)
-
 	for i in range(image_embeddings.shape[0]):
 		caption_embedding = caption_embeddings[i]
 		
@@ -80,20 +77,18 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		relevant_labels = ground_truth_labels[i]
 
-		# ranked_indices = torch.argsort(image_scores, descending=True)
+		ranked_indices = torch.argsort(image_scores, descending=True)
 
-		# num_relevant_images = torch.sum(relevant_labels).item()
+		num_relevant_images = torch.sum(relevant_labels).item()
 
-		# if num_relevant_images == 0:
-		# 	AP = 0.0
-		# else:
-		# 	ranked = ranked_indices.cpu().numpy()[:top_k]
-		# 	precision = np.cumsum(relevant_labels[ranked].cpu().numpy()) / (np.arange(1, top_k+1))
-		# 	AP = np.sum(precision * relevant_labels[ranked].cpu().numpy()) / num_relevant_images
+		if num_relevant_images == 0:
+			AP = 0.0
+		else:
+			ranked = ranked_indices.cpu().numpy()[:top_k]
+			precision = np.cumsum(relevant_labels[ranked].cpu().numpy()) / (np.arange(1, top_k+1))
+			AP = np.sum(precision * relevant_labels[ranked].cpu().numpy()) / num_relevant_images
 
-		retrieval_map.update(image_scores.unsqueeze(0), relevant_labels.unsqueeze(0))
-
-		mAP_values.append(retrieval_map.compute().item())
+		mAP_values.append(AP)
 
 	return mAP_values
 
