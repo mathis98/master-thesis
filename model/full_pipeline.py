@@ -102,20 +102,18 @@ class FullPipeline(pl.LightningModule):
 		image_embed = F.normalize(image_embed, dim=-1, p=2)
 		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 		
-		loss = self.criterion(image_embed, caption_embed)
+		loss = self.criterion(image_embed, caption_embed) * self.batch_size
 
 		if self.intra:
-			intra_image_loss = self.criterion(image_embed, augmented_image_embed)
-			intra_caption_loss = self.criterion(caption_embed, augmented_caption_embed)
+			intra_image_loss = self.criterion(image_embed, augmented_image_embed) * self.batch_size
+			intra_caption_loss = self.criterion(caption_embed, augmented_caption_embed) * self.batch_size
 
 			loss = loss + intra_image_loss + intra_caption_loss
 
 		self.log('train-loss', loss, prog_bar=True)
 		return loss
 
-	def test_step(self, batch, batch_idx):
-
-		# NT-Xent loss between image and caption
+	def shared_step(self, batch, batch_idx):
 		image, caption = batch
 
 		if self.intra:
@@ -123,7 +121,7 @@ class FullPipeline(pl.LightningModule):
 			caption = caption[0], caption[2], caption[4]
 
 		indeces = caption[2]
-		labels = indeces // 100
+		labels = indeces // 500 # They need to be same if in same class
 		groundtruth = relevant_list(labels)
 
 		if self.intra:
@@ -131,9 +129,17 @@ class FullPipeline(pl.LightningModule):
 
 		else:
 			image_embed, caption_embed = self(batch)
-		
-		
+
+		image_embed = F.normalize(image_embed, dim=-1, p=2)
+		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+
 		mAP = calculate_mAP(image_embed, caption_embed, groundtruth)
+
+		return mAP
+
+	def test_step(self, batch, batch_idx):
+
+		mAP = self.shared_step(batch)
 		self.log('train mAP',np.mean(mAP), batch_size=self.batch_size)
 		self.test_step_outputs.append(mAP)
 
@@ -144,24 +150,7 @@ class FullPipeline(pl.LightningModule):
 
 	def validation_step(self, batch, batch_idx):
 
-		# NT-Xent loss between image and caption
-		image, caption = batch
-
-		if self.intra:
-			image = image[0], image[2]
-			caption = caption[0], caption[2], caption[4]
-
-		indeces = caption[2]
-		labels = indeces // 100
-		groundtruth = relevant_list(labels)
-
-		if self.intra:
-			image_embed, _, caption_embed, _ = self(batch)
-
-		else:
-			image_embed, caption_embed = self(batch)
-		
-		mAP = calculate_mAP(image_embed, caption_embed, groundtruth)
+		mAP = self.shared_step(batch)
 		self.log('validation mAP',np.mean(mAP), batch_size=self.batch_size)
 		self.validation_step_outputs.append(mAP)
 

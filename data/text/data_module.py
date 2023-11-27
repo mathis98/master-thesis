@@ -56,6 +56,7 @@ class SentenceDataModule(pl.LightningDataModule):
 		sentences = list(itertools.chain.from_iterable(sentences))
 
 		total_size = len(sentences)
+		print('total sentences: ', total_size)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
 		test_size = total_size - train_size - val_size
@@ -69,7 +70,7 @@ class SentenceDataModule(pl.LightningDataModule):
 		val_indices = []
 		test_indices = []
 
-		elements_per_group = 100
+		elements_per_group = 100 * num_repeats
 
 		# Iterate through each group
 		for group_start in range(0, len(indices), elements_per_group):

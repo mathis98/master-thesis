@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from torchvision.transforms import v2
+from torchmetrics.retrieval import RetrievalMAP
 
 def closest_indices(embeddings):
 
@@ -61,7 +62,7 @@ def relevant_list(labels):
 	relevant_list = []
 
 	for label in labels:
-		relevants = torch.where(labels == label, 1, 0)
+		relevants = torch.where(labels == label, True, False)
 		relevant_list.append(relevants)
 
 	return relevant_list
@@ -70,32 +71,23 @@ def relevant_list(labels):
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
 	mAP_values = []
 
-	for i in range(image_embeddings.shape[0]):
+	rmap = RetrievalMAP(top_k=top_k)
+
+	for caption_embedding in range(caption_embeddings.shape[0]):
+
 		caption_embedding = caption_embeddings[i]
 		
 		image_scores = torch.matmul(image_embeddings, caption_embedding)
 
 		relevant_labels = ground_truth_labels[i]
 
-		ranked_indices = torch.argsort(image_scores, descending=True)
+		rmap.update(image_scores.unsqueeze(0), relevant_labels.unsqueeze(0), torch.zeros(len(image_scores), dtype=torch.long))
 
-		num_relevant_images = torch.sum(relevant_labels).item()
-
-		if num_relevant_images == 0:
-			AP = 0.0
-		else:
-			ranked = ranked_indices.cpu().numpy()[:top_k]
-			precision = np.cumsum(relevant_labels[ranked].cpu().numpy()) / (np.arange(1, top_k+1))
-			AP = np.sum(precision * relevant_labels[ranked].cpu().numpy()) / num_relevant_images
-
-		mAP_values.append(AP)
+		mAP_values.append(rmap.compute().item())
 
 	return mAP_values
 
 def define_param_groups(model, weight_decay, optimizer_name):
-
-	print([name for name, p in model.named_parameters()])
-
 	return[
 		{
 			'params': [p for name, p in model.named_parameters() if not 'bn' in name],

@@ -46,6 +46,7 @@ class ImageDataModule(pl.LightningDataModule):
 
 	def setup(self, stage=None):
 		total_size = len(self.image_paths)
+		print('total images: ', total_size)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
 		test_size = total_size - train_size - val_size
@@ -59,7 +60,7 @@ class ImageDataModule(pl.LightningDataModule):
 		val_indices = []
 		test_indices = []
 
-		elements_per_group = 100
+		elements_per_group = 100 * num_repeats
 
 		# Iterate through each group
 		for group_start in range(0, len(indices), elements_per_group):
