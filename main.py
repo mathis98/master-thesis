@@ -111,6 +111,8 @@ trainer = pl.Trainer(
 	]
 )
 
+trainer.tune(full_pipeline)
+
 trainer.fit(
 	full_pipeline, 
 	image_text_pair_data_module.train_dataloader(),
