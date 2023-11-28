@@ -22,7 +22,7 @@ text_path = '../Datasets/UCM/dataset.json'
 img_path = '../Datasets/UCM/imgs'
 model_name = 'prajjwal1/bert-small'
 image_size = (224, 224)
-batch_size = 512
+batch_size = 200
 num_repeats = 5
 max_epochs = 100
 temperature=.5
@@ -93,6 +93,7 @@ devices = find_usable_cuda_devices(1)
 print(f'training on GPU {devices}')
 
 trainer = pl.Trainer(
+	auto_lr_find=True,
 	logger=logger, 
 	accelerator='cuda', 
 	devices=devices, 
