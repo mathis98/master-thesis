@@ -26,7 +26,7 @@ batch_size = 200
 num_repeats = 5
 max_epochs = 100
 temperature=.5
-learning_rate=1e-4
+learning_rate=1e-5
 weight_decay=1e-6
 max_epochs=100
 
@@ -93,7 +93,6 @@ devices = find_usable_cuda_devices(1)
 print(f'training on GPU {devices}')
 
 trainer = pl.Trainer(
-	auto_lr_find=True,
 	logger=logger, 
 	accelerator='cuda', 
 	devices=devices, 
@@ -109,12 +108,6 @@ trainer = pl.Trainer(
 		LearningRateMonitor('epoch'),
 		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=5, verbose=False, mode='max'),
 	]
-)
-
-trainer.tune(
-	full_pipeline,
-	image_text_pair_data_module.train_dataloader(),
-	image_text_pair_data_module.val_dataloader(),
 )
 
 trainer.fit(
