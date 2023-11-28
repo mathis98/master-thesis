@@ -26,7 +26,7 @@ batch_size = 200
 num_repeats = 5
 max_epochs = 100
 temperature=.5
-learning_rate=1e-5
+learning_rate=1e-4
 weight_decay=1e-6
 max_epochs=100
 
