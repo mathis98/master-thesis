@@ -27,7 +27,7 @@ num_repeats = 5
 max_epochs = 100
 temperature=.5
 learning_rate=5e-4
-weight_decay=1e-6
+weight_decay=1e-5
 max_epochs=100
 
 intra = False
