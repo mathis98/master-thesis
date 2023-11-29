@@ -71,6 +71,8 @@ def relevant_list(labels):
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
 	mAP_values = []
 
+	rmap = RetrievalMAP(top_k=top_k)
+
 	for i in range(caption_embeddings.shape[0]):
 
 		caption_embedding = caption_embeddings[i]
@@ -79,13 +81,13 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		relevant_labels = ground_truth_labels[i]
 
-		rmap = RetrievalMAP()
+		mAP = rmap.update(image_scores, relevant_labels, torch.zeros(len(image_scores), dtype=torch.long))
 
-		mAP = rmap(image_scores, relevant_labels, torch.zeros(len(image_scores), dtype=torch.long))
+		mAP_values.append(rmap.compute().item())
 
-		mAP_values.append(mAP)
+		rmap.reset()
 
-	return mAP_values.cpu().numpy()
+	return mAP_values
 
 def define_param_groups(model, weight_decay, optimizer_name):
 	return[
