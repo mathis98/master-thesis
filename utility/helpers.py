@@ -85,7 +85,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		mAP_values.append(mAP)
 
-	return mAP_values
+	return mAP_values.cpu().numpy()
 
 def define_param_groups(model, weight_decay, optimizer_name):
 	return[
