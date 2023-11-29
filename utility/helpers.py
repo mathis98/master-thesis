@@ -79,7 +79,9 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		relevant_labels = ground_truth_labels[i]
 
-		mAP = RetrievalMAP(image_scores, relevant_labels, torch.zeros(len(image_scores), dtype=torch.long))
+		rmap = RetrievalMAP()
+
+		mAP = rmap(image_scores, relevant_labels, torch.zeros(len(image_scores), dtype=torch.long))
 
 		mAP_values.append(mAP)
 
