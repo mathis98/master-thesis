@@ -10,6 +10,11 @@ import torchvision
 
 torchvision.disable_beta_transforms_warning()
 
+basic_transform = v2.Compose([
+		v2.ToImageTensor(),
+		v2.ConvertImageDtype(),
+])
+
 
 class SimCLRDataset(Dataset):
 	def __init__(self, image_paths, image_size, transform):
@@ -23,7 +28,7 @@ class SimCLRDataset(Dataset):
 	def __getitem__(self, idx):
 		image_path = self.image_paths[idx]
 		image = Image.open(image_path).convert('RGB')
-		original_image = image
+		original_image = basic_transform(image)
 		augmented_image = self.transform(image)
 
 		return original_image, augmented_image, image_path
