@@ -30,13 +30,38 @@ class FullPipeline(pl.LightningModule):
 	Full Pipeline using Pytorch Lightning with a Text classifier, image classifier, and projection head
 
 	Args:
-		batch_size: batch size for train, val, and test
-		intra: whether to use intra modal loss
-		temperature: ntxent temperature
-		learning_rate: AdamW learning rate
-		weight_decay: AdamW weight decay (L2 regularization)
-		max_epochs: maximum epochs to train for
-		hidden_dim: dimension of embedding
+		batch_size (int): batch size for train, val, and test.
+		intra (bool): whether to use intra modal loss.
+		temperature (float): ntxent temperature.
+		learning_rate (float): AdamW learning rate.
+		weight_decay (float): AdamW weight decay (L2 regularization).
+		max_epochs (int): maximum epochs to train for.
+		hidden_dim (int): dimension of embedding.
+
+	Attributes:
+		batch_size (int): batch size for train, val, and test.
+		intra (bool): whether to use intra modal loss.
+		temperature (float): ntxent temperature.
+		learning_rate (float): AdamW learning rate.
+		weight_decay (float): AdamW weight decay (L2 regularization).
+		hidden_dim (int): dimension of embedding.
+		resnet_embedding_module (model.image_embedding.ImageEmbeddingModule): Image embedding module.
+		bert_embedding_module (model.text_embedding.BERTSentenceEmbeddingModule): Caption embedding module.
+		projection_head (model.projection_head.MyProjectionHead): Projection head to shared embedding space.
+		criterion (loss.contrastive_loss.SimCLRLoss): NT-Xent loss function.
+		max_epochs (int): Maximum epochs to train for.
+		validation_step_outputs (list): List to store mAP values during validation.
+		test_step_outputs (list): List to store mAP values during testing.
+
+	Methods:
+		forward(batch): Forward pass through the model.
+		training_step(batch, batch_idx): Training step.
+		shared_step(batch): Shared step for both validation and testing.
+		test_step(batch, batch_idx): Test step.
+		on_test_epoch_end(): Called at the end of the test epoch to calculate and log avg mAP.
+		validation_step(batch, batch_idx): Validation step.
+		on_validation_epoch_end(): Called at the end of the validation epoch to calculate and log avg mAP.
+		configure_optimizers(): Configure the optimizer.
 	"""
 	def __init__(self, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
 		super(FullPipeline, self).__init__()
@@ -63,8 +88,6 @@ class FullPipeline(pl.LightningModule):
 		self.criterion = SimCLRLoss(temperature)
 		# self.criterion = NTXentLoss(temperature)
 		self.max_epochs = max_epochs
-
-		self.intra = intra
 
 		self.validation_step_outputs = []
 		self.test_step_outputs = []

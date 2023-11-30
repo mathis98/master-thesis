@@ -11,6 +11,33 @@ from loss.contrastive_loss import SimCLRLoss
 
 
 class SimCLRModule(pl.LightningModule):
+	"""
+	SimCLR Module for Self-Supervised Contrastive Learning on Images.
+
+	Args:
+		image_size (tuple): Size of the input images (height, width).
+		temperature (float): Temperature parameter for NT-Xent loss.
+		learning_rate (float): Learning rate for AdamW optimizer.
+		hidden_dim (int): Dimension of the hidden layer in the projection head.
+		weight_decay (float): Weight decay of AdamW (L2 Regularization).
+		max_epochs (int): Maximum number of training epochs.
+
+	Attributes:
+		model (torchvision.models.resnet.Resnet): Pretrained ResNet model.
+		temperature (float): Temperature parameter for NT-Xent loss.
+		criterion (loss.contrastive_loss.SimCRLLoss): Contrastive loss function (NT-Xent).
+		learning_rate (float): Learning rate for AdamW optimizer.
+		weight_decay (float): Weight decay for AdamW (L2 Regularization).
+		max_epochs (int): Maximum number of training epochs.
+		hidden_dim (int): Dimension of the hidden layer in the projection head.
+		projection_head (torch.nn.Sequential): Projection head for embedding.
+
+	Methods:
+		forward(batch): Forward pass through the SimCLR image model.
+		training_step(batch, batch_idx): Training step for the SimCLR image model.
+		configure_optimizers(): Configure the AdamW optimizer and learning rate scheduler.
+	"""
+
 	def __init__(self, image_size=(224, 224), temperature=.07, learning_rate=1e-4, hidden_dim=128, weight_decay=1e-4, max_epochs=300):
 		super(SimCLRModule, self).__init__()
 		
@@ -32,6 +59,16 @@ class SimCLRModule(pl.LightningModule):
 
 
 	def forward(self, batch):
+		"""
+		Forward pass through the SimCLR image model.
+
+		Args:
+			batch (tuple): Tuple containing original and augmented images.
+
+		Returns:
+			torch.Tensor: Projected embeddings for original and augmented images.
+		"""
+
 		original, augmented, _, _ = batch
 		z_original = self.model(original)
 		z_original = z_original.view(z_original.size(0), -1)
@@ -44,6 +81,16 @@ class SimCLRModule(pl.LightningModule):
 		return z_original, z_augmented
 
 	def training_step(self, batch, batch_idx):
+		"""
+		Training step for the SimCLR image model.
+
+		Args:
+			batch (tuple): Tuple containing original and augmented images.
+			batch_idx (int): Batch index.
+
+		Returns:
+			torch.Tensor: NT-Xent loss between original and augmented image.
+		"""
 		
 		z_original, z_augmented = self(batch)
 		z_original = z_original.squeeze()
@@ -53,6 +100,14 @@ class SimCLRModule(pl.LightningModule):
 		return loss
 
 	def configure_optimizers(self):
+		"""
+		Configure the optimizer and learning rate scheduler.
+
+		Returns:
+			list: List containing the optimizer.
+			list: List containing the learning rate scheduler.
+		"""
+
 		optimizer = torch.optim.AdamW(self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
 		lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
 			optimizer, T_max=self.max_epochs, eta_min=self.learning_rate / 50

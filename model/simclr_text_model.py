@@ -15,6 +15,31 @@ from loss.contrastive_loss import SimCLRLoss
 
 
 class SimCLRModule(pl.LightningModule):
+	"""
+	SimCLR module for contrastive self-supervised learning on captions.
+
+	Args:
+		model_name (str): Name of the pretrained model or SentenceTransformer.
+		embedding (str): Type of embedding method ('CLS', 'last', 'last_n', 'sbert')
+		temperature (float): NT-Xent temperature.
+		learning_rate (float): Adam learning rate.
+		hidden_dim (int): Dimension of hidden layer in projection head. 
+
+	Attributes:
+		model_name (str): Name of the pretrained model or SentenceTransformer.
+		embedding (str): Type of embedding method ('CLS', 'last', 'last_n', 'sbert')
+		temperature (float): NT-Xent temperature.
+		criterion (loss.contrastive_loss.SimCLRLoss): NT-Xent loss.
+		learning_rate (float): Adam learning rate.
+		model (torch.nn.Module): Pre-trained model or SentenceTransformer.
+		projection_head (torch.nn.Sequential): Projection head for embedding (only non sbert).
+
+	Methods:
+		forward(batch): Forward pass through the model.
+		training_step(batch, batch_idx): Training step.
+		configure_optimziers(): Configure Adam optimizer. 
+	"""
+
 	def __init__(self, model_name='prajjwal1/bert-small', embedding='CLS', temperature=.07, learning_rate=1e-4, hidden_dim=128):
 		super(SimCLRModule, self).__init__()
 		self.model_name = model_name
@@ -36,6 +61,15 @@ class SimCLRModule(pl.LightningModule):
 			)
 
 	def forward(self, batch):
+		"""
+		Forward pass through the model.
+
+		Args:
+			batch: Input batch with original and augmented text.
+
+		Returns:
+			tuple: Embeddings of original and augmented text.
+		"""
 
 		original, augmented, _, _, _ = batch
 
@@ -68,11 +102,29 @@ class SimCLRModule(pl.LightningModule):
 
 
 	def training_step(self, batch, batch_idx):
+		"""
+		Training step.
+
+		Args:
+			batch: Input batch for the training (original, augmented pairs).
+			batch_idx: Index of the current batch.
+
+		Returns:
+			torch.Tensor: NT-Xent loss. 
+		"""
+
 		z_original, z_augmented = self(batch)
 		loss = self.criterion(z_original, z_augmented)
 		self.log("train_loss", loss, prog_bar=True)
 		return loss
 
 	def configure_optimizers(self):
+		"""
+		Configure Adam optimizer.
+
+		Returns:
+			torch.optim.Optimizer: Configured optimizer (Adam).
+		"""
+
 		optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 		return optimizer

@@ -5,6 +5,23 @@ from sentence_transformers import SentenceTransformer
 
 
 class BERTSentenceEmbedding(pl.LightningModule):
+	"""
+	BERT-based sentence Embedding module.
+
+	Args:
+		model_name (str): Pretrained BERT model name.
+		embedding (str): Type of sentence embedding to use ('pooler', 'CLS', 'last', last_n', 'sbert')
+
+	Attributes:
+		model_name (str): Pretrained BERT model name.
+		tokenizer (transformers.AutoTokenizer): Tokenizer for the specified BERT model. 
+		embedding (str): Type of sentence embedding.
+		model (transforms.Automodel or sentence_transformers.SentenceTransformer): BERT or Sentence Transformer model. 
+
+	Methods:
+		forward(inputs): Forward pass through the model to obtain sentence embeddings. 
+	"""
+
 	def __init__(self, model_name='prajjwal1/bert-small', embedding='pooler'):
 		super(BERTSentenceEmbedding, self).__init__()
 		self.model_name = model_name
@@ -18,6 +35,16 @@ class BERTSentenceEmbedding(pl.LightningModule):
 			self.model = AutoModel.from_pretrained(model_name, output_hidden_states=True)
 
 	def forward(self, inputs):
+		"""
+		Forward pass through the model to obtain sentence embeddings.
+
+		Args:
+			inputs (tuple): Tuple containing input tensors (input_ids, attention_mask).
+
+		Returns:
+			torch.Tensor: Computed sentence embeddings.
+		"""
+
 		if self.embedding != 'sbert':
 			outputs = self.model(inputs[0]['input_ids'], inputs[0]['attention_mask'])
 
