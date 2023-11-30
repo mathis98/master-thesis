@@ -14,7 +14,7 @@ def parse_arguments():
 		'text_path': '../Datasets/UCM/dataset.json',
 		'img_path': '../Datasets/UCM/imgs',
 		'model_name': 'prajjwal1/bert-small',
-		'image_size': [224,224],
+		'image_size': (224,224),
 		'num_repeats': 5,
 		'max_epochs': 100,
 		'embedding': 'pooler',
@@ -22,7 +22,7 @@ def parse_arguments():
 
 	p.add('-c', '--config', required=False, default=defaults['config'], is_config_file=True, help=f'config file path (default: {defaults["config"]})')
 	p.add('-b', '--batch_size', type=int, default=defaults['batch_size'], help=f'Batch size for training (default: {defaults["batch_size"]})')
-	p.add('-i', '--intra', action='store_false', help=f'Use intra-modal training (default: {defaults["intra"]})')
+	p.add('-i', '--intra', action='store_true', help=f'Use intra-modal training (default: {defaults["intra"]})')
 	p.add('-t', '--temperature', type=float, default=defaults['temperature'], help=f'Temperature for SimCLR loss (default: {defaults["temperature"]})')
 	p.add('-l', '--learning_rate', type=float, default=defaults['learning_rate'], help=f'Learning rate for optimizer (default: {defaults["learning_rate"]})')
 	p.add('-w', '--weight_decay', type=float, default=defaults['weight_decay'], help=f'Weight decay for optimizer (default: {defaults["weight_decay"]})')

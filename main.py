@@ -22,21 +22,7 @@ from utility.argument_parser import parse_arguments
 
 torchvision.disable_beta_transforms_warning()
 
-# text_path = '../Datasets/UCM/dataset.json'
-# img_path = '../Datasets/UCM/imgs'
-# model_name = 'prajjwal1/bert-small'
-# image_size = (224, 224)
-# batch_size = 512
-# num_repeats = 5
-# max_epochs = 100
-# temperature=.6
-# learning_rate=5e-4
-# weight_decay=1e-4
-# max_epochs=100
-
 args = parse_arguments()
-
-args.image_size = tuple(args.image_size)
 
 print(args)
 
