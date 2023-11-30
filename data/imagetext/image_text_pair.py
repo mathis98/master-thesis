@@ -1,4 +1,4 @@
-import pytorch_lightning as pl
+import lightning.pytorch as pl
 from torch.utils.data import DataLoader, Dataset
 
 
@@ -15,6 +15,14 @@ class ImageTextPairDataset(Dataset):
 
 
 class ImageTextPairDataModule(pl.LightningDataModule):
+	"""
+	A Data Module for pairs of image and text
+
+	Args:
+		image_data_module: data module for handling images
+		text_data_module: data module for handling captions
+		batch_size: batch size returned by dataloader
+	"""
 	def __init__(self, image_data_module, text_data_module, batch_size=64):
 		super(ImageTextPairDataModule, self).__init__()
 		self.image_data_module = image_data_module

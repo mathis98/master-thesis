@@ -1,7 +1,7 @@
-import pytorch_lightning as pl
-from pytorch_lighting import seed_everything
-from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
-from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+import lightning.pytorch as pl
+from lightning.pytorch  import seed_everything
+from lightning.pytorch .callbacks import LearningRateMonitor, ModelCheckpoint
+from lightning.pytorch .callbacks.early_stopping import EarlyStopping
 from torchvision.transforms import v2
 from transformers import AutoTokenizer
 import torchvision
@@ -17,25 +17,32 @@ from data.imagetext.image_text_pair import ImageTextPairDataModule
 from data.image.simclr_data_module import SimCLRDataModule as SimCLRImageDataModule
 from data.text.simclr_data_module import SimCLRDataModule as SimCLRTextDataModule
 
+# Argument parsing
+from utility.argument_parser import parse_arguments
+
 torchvision.disable_beta_transforms_warning()
 
-text_path = '../Datasets/UCM/dataset.json'
-img_path = '../Datasets/UCM/imgs'
-model_name = 'prajjwal1/bert-small'
-image_size = (224, 224)
-batch_size = 512
-num_repeats = 5
-max_epochs = 100
-temperature=.6
-learning_rate=5e-4
-weight_decay=1e-4
-max_epochs=100
+# text_path = '../Datasets/UCM/dataset.json'
+# img_path = '../Datasets/UCM/imgs'
+# model_name = 'prajjwal1/bert-small'
+# image_size = (224, 224)
+# batch_size = 512
+# num_repeats = 5
+# max_epochs = 100
+# temperature=.6
+# learning_rate=5e-4
+# weight_decay=1e-4
+# max_epochs=100
+
+args = parse_arguments()
+
+args.image_size = tuple(args.image_size)
+
+print(args)
 
 seed_everything(42, workers=True)
 
-intra = False
-
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(args.model_name)
 
 # SimCLR
 augmentation_transform = v2.Compose([
@@ -44,27 +51,27 @@ augmentation_transform = v2.Compose([
 		v2.ConvertImageDtype(),
 ])
 
-if intra == True:
-	image_data_module = SimCLRImageDataModule(img_path, image_size, batch_size, augmentation_transform)
+if args.intra == True:
+	image_data_module = SimCLRImageDataModule(args.img_path, args.image_size, args.batch_size, augmentation_transform)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage="fit")
 
-	text_data_module = SimCLRTextDataModule(batch_size, text_path, tokenizer)
+	text_data_module = SimCLRTextDataModule(args.batch_size, args.text_path, tokenizer)
 	text_data_module.prepare_data()
 	text_data_module.setup()
 
-elif intra == False:
-	image_data_module = ImageDataModule(img_path, image_size, batch_size, num_repeats)
+elif args.intra == False:
+	image_data_module = ImageDataModule(args.img_path, args.image_size, args.batch_size, args.num_repeats)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='fit')
 
 
-	text_data_module = SentenceDataModule(model_name, batch_size, text_path)
+	text_data_module = SentenceDataModule(args.model_name, args.batch_size, args.text_path)
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='fit')
 
 
-image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
+image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, args.batch_size)
 image_text_pair_data_module.setup(stage='fit')
 
 # RETURNS pairs from image_data_module, text_data_module so one of
@@ -73,23 +80,23 @@ image_text_pair_data_module.setup(stage='fit')
 
 
 full_pipeline = FullPipeline(
-	batch_size=batch_size, 
-	max_epochs=max_epochs, 
-	temperature=temperature, 
-	learning_rate=learning_rate, 
-	weight_decay=weight_decay, 
-	intra=intra
+	batch_size=args.batch_size, 
+	max_epochs=args.max_epochs, 
+	temperature=args.temperature, 
+	learning_rate=args.learning_rate, 
+	weight_decay=args.weight_decay, 
+	intra=args.intra
 )
 
 logger = pl.loggers.CSVLogger('logs', name='full_pipeline_simple')
 
 logger.log_hyperparams({
-	"batch_size": batch_size, 
-	"learning_rate": learning_rate,
-	"max_epochs": max_epochs,
-	"temperature": temperature,
-	"weight_decay": weight_decay,
-	"intra": intra,
+	"batch_size": args.batch_size, 
+	"learning_rate": args.learning_rate,
+	"max_epochs": args.max_epochs,
+	"temperature": args.temperature,
+	"weight_decay": args.weight_decay,
+	"intra": args.intra,
 })
 
 devices = find_usable_cuda_devices(1)
@@ -99,7 +106,7 @@ trainer = pl.Trainer(
 	logger=logger, 
 	accelerator='cuda', 
 	devices=devices, 
-	max_epochs=max_epochs,
+	max_epochs=args.max_epochs,
 	log_every_n_steps=5,
 	callbacks=[
 		# ModelCheckpoint(

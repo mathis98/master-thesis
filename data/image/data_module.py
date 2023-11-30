@@ -1,5 +1,5 @@
 import os
-import pytorch_lightning as pl
+import lightning.pytorch as pl
 from torch.utils.data import DataLoader, Dataset, random_split
 import torchvision
 from torchvision import transforms
@@ -31,6 +31,16 @@ class ImageDataSet(Dataset):
 
 
 class ImageDataModule(pl.LightningDataModule):
+	"""
+	A Data Module for images
+
+	Args:
+		data_dir: Directory where images are stored
+		image_size: size of images for training (Resized)
+		batch_size: batch size for data loader
+		num_repeats: how many captions per image (if images should be repeated)
+		seed: random number seed for consistent shuffling
+	"""
 	def __init__(self, data_dir, image_size, batch_size, num_repeats=5, seed=42):
 		super().__init__()
 		self.data_dir = data_dir

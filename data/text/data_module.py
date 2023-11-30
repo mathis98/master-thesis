@@ -1,5 +1,5 @@
 import os
-import pytorch_lightning as pl
+import lightning.pytorch as pl
 from torch.utils.data import DataLoader, Dataset
 from transformers import AutoModel, AutoTokenizer
 import numpy as np
@@ -39,6 +39,15 @@ class CustomSentenceDataset(Dataset):
 
 
 class SentenceDataModule(pl.LightningDataModule):
+	"""
+	A Data Module for captions
+
+	Args:
+		model_name: BERT model to use for embedding
+		batch_size: batch size for data loader
+		json_file_path: path to the json file containing the captions
+		seed: seed for shuffling
+	"""
 	def __init__(self, model_name, batch_size, json_file_path, seed=42):
 		super(SentenceDataModule, self).__init__()
 		self.model_name = model_name

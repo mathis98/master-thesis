@@ -1,7 +1,7 @@
 import sys
 sys.path.append('..')
 
-import pytorch_lightning as pl
+import lightning.pytorch as pl
 # from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
 import torch
 import torch.nn as nn
