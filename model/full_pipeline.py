@@ -70,6 +70,15 @@ class FullPipeline(pl.LightningModule):
 		self.test_step_outputs = []
 
 	def forward(self, batch):
+		"""
+		Forward pass through the model.
+
+		Args:
+			batch: Input batch with image, caption pairs.
+
+		Returns:
+			Tuple: Embeddings of the input pairs.
+		"""
 
 		image, caption = batch
 
@@ -102,6 +111,16 @@ class FullPipeline(pl.LightningModule):
 		return image_embed, caption_embed
 
 	def training_step(self, batch, batch_idx):
+		"""
+		Training step.
+
+		Args:
+			batch: Input batch for the training.
+			batch_idx: Index of the current batch.
+
+		Returns:
+			torch.Tensor: NT-Xent loss inter modal (+optional intra modal)
+		"""
 
 		# NT-Xent loss between image and caption
 
@@ -126,6 +145,16 @@ class FullPipeline(pl.LightningModule):
 		return loss
 
 	def shared_step(self, batch):
+		"""
+		Shared step for both validation and test steps.
+
+		Args:
+			batch: Input batch for validation or test with image, caption pairs.
+
+		Returns:
+			np.array: mAP (mean Average Precision) values for input batch, based on embeddings.
+		"""
+
 		image, caption = batch
 
 		if self.intra:
@@ -150,27 +179,53 @@ class FullPipeline(pl.LightningModule):
 		return mAP
 
 	def test_step(self, batch, batch_idx):
+		"""
+		Test step.
+
+		Args:
+			batch: Input batch for testing. Image, caption pairs.
+			batch_idx: Index of the current batch.
+		"""
 
 		mAP = self.shared_step(batch)
 		self.log('train mAP',np.mean(mAP), batch_size=self.batch_size)
 		self.test_step_outputs.append(mAP)
 
 	def on_test_epoch_end(self):
+		"""
+		Called at the end of the test epoch to calculate and log the average mAP.
+		"""
 		avg_mAP = np.mean(np.concatenate(self.test_step_outputs))
 		self.log('avg_test_mAP', avg_mAP, batch_size=self.batch_size, prog_bar=True)
 
 
 	def validation_step(self, batch, batch_idx):
+		"""
+		Validation step.
+
+		Args:
+			batch: Input batch for validation. Image, caption pairs.
+			batch_idx: Index of the current batch. 
+		"""
 
 		mAP = self.shared_step(batch)
 		self.log('validation mAP',np.mean(mAP), batch_size=self.batch_size)
 		self.validation_step_outputs.append(mAP)
 
 	def on_validation_epoch_end(self):
+		"""
+		Called at the end of the validation epoch to calculate and log the average mAP.
+		"""
 		avg_mAP = np.mean(np.concatenate(self.validation_step_outputs))
 		self.log('avg_val_mAP', avg_mAP, batch_size=self.batch_size, prog_bar=True)
 
 	def configure_optimizers(self):
+		"""
+		Configure the optimizer.
+
+		Returns:
+			toch.optim.Optimizer: Configured optimizer (AdamW)
+		"""
 
 		param_groups = define_param_groups(self, self.weight_decay, 'adam')
 
