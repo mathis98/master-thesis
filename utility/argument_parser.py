@@ -14,7 +14,7 @@ def parse_arguments():
 		'text_path': '../Datasets/UCM/dataset.json',
 		'img_path': '../Datasets/UCM/imgs',
 		'model_name': 'prajjwal1/bert-small',
-		'image_size': (224,224),
+		'image_size': [224,224],
 		'num_repeats': 5,
 		'max_epochs': 100,
 		'embedding': 'pooler',

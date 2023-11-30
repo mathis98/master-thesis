@@ -24,6 +24,8 @@ torchvision.disable_beta_transforms_warning()
 
 args = parse_arguments()
 
+args.image_size = tuple(args.image_size)
+
 print(args)
 
 seed_everything(42, workers=True)
