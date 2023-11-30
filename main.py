@@ -78,14 +78,7 @@ full_pipeline = FullPipeline(
 
 logger = pl.loggers.CSVLogger('logs', name='full_pipeline_simple')
 
-logger.log_hyperparams({
-	"batch_size": args.batch_size, 
-	"learning_rate": args.learning_rate,
-	"max_epochs": args.max_epochs,
-	"temperature": args.temperature,
-	"weight_decay": args.weight_decay,
-	"intra": args.intra,
-})
+logger.log_hyperparams(args)
 
 devices = find_usable_cuda_devices(1)
 print(f'training on GPU {devices}')
