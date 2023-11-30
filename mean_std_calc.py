@@ -14,6 +14,15 @@ loader = data_module.dataloader()
 
 
 def batch_mean_and_sd(loader):
+    """
+    Calculate the mean and standard deviation of images in a PyTorch dataloader.
+
+    Args:
+        loader (torch.utils.data.DataLoader): PyTorch dataloader.
+
+    Returns:
+        tuple: Mean and standard deviation of the images in the dataloader.
+    """
     
     cnt = 0
     fst_moment = torch.empty(3)

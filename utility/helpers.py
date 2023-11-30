@@ -6,6 +6,15 @@ from torchvision.transforms import v2
 from torchmetrics.retrieval import RetrievalMAP
 
 def closest_indices(embeddings):
+	"""
+	Find the indices of the closes embedding pairs based on cosine similarity.
+
+	Args:
+		embeddings (numpy.ndarray): The embeddings for which to find the closest indices.
+
+	Returns:
+		list: List of tuples representing the indices of the closest pairs.
+	"""
 
 	cosine_similarities = cosine_similarity(embeddings, embeddings)
 	np.fill_diagonal(cosine_similarities, -np.inf)
@@ -17,6 +26,15 @@ def closest_indices(embeddings):
 
 
 def visualize_augmentations(data, number, mean, std):
+	"""
+	Visualize augmented image pairs.
+
+	Args:
+		data (list): List of image pairs to visualize.
+		number (int): Number of pairs to visualize.
+		mean (list): Mean values for denormalization.
+		std (list): Standard deviation values for denormalization.
+	"""
 
 	fig, axes = plt.subplots(number, 2, figsize=(8,10))
 
@@ -49,6 +67,13 @@ def visualize_augmentations(data, number, mean, std):
 
 
 def visualize_text_augmentations(data, number):
+	"""
+	Print pairs of original and augmented captions.
+
+	Args:
+		data (list): List of caption pairs to visualize.
+		number (int): Number of pairs to visualize.
+	"""
 
 	for idx in range(number):
 
@@ -59,6 +84,16 @@ def visualize_text_augmentations(data, number):
 		print(original, '->', augmented)
 
 def relevant_list(labels):
+	"""
+	Create a list of relevant indices for each label (index//#elems per class).
+
+	Args:
+		labels (torch.Tensor): indices transformed to class labels.
+	
+	Returns:
+		list: List of relevant indices for each label.
+	"""
+
 	relevant_list = []
 
 	for label in labels:
@@ -69,6 +104,19 @@ def relevant_list(labels):
 
 
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
+	"""
+	Calculate mean Average Precision (mAP) values.
+
+	Args:
+		image_embeddings (torch.Tensor): Image embeddings.
+		caption_embeddings (torch.Tensor): Caption embeddings.
+		ground_truth_labels (torch.Tensor): list of lists of relevant labels.
+		top_k (int): Top-k retrieval (map@k).
+
+	Returns:
+		list: List of mAP values for each input caption.
+	"""
+
 	mAP_values = []
 
 	for i in range(caption_embeddings.shape[0]):
@@ -88,6 +136,18 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	return mAP_values
 
 def define_param_groups(model, weight_decay, optimizer_name):
+	"""
+	Define paramter groups for optimization. Remove weight_decay from batch normalization layers.
+
+	Args:
+		model (torch.nn.Module): Pytorch model to define param groups on.
+		weight_decay (float): Weight decay to apply to non-bn layers.
+		optimizer_name (str): Name of optimizer.
+
+	Returns:
+		list: List of dictionaries containing bn (no weight-decay) and non-bn (weight-decay) layers.
+	"""
+
 	return[
 		{
 			'params': [p for name, p in model.named_parameters() if not 'bn' in name],

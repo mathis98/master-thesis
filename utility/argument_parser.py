@@ -1,6 +1,13 @@
 import configargparse
 
 def parse_arguments():
+	"""
+	Parse arguments from config file or CLI.
+
+	Returns:
+		configargparse.Namespace: Parsed arguments.
+	"""
+
 	p = configargparse.ArgParser(description='Full Pipeline: Image-Caption -> Projection')
 
 	defaults = {
