@@ -1,4 +1,5 @@
 import pytorch_lightning as pl
+from pytorch_lighting import seed_everything
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from torchvision.transforms import v2
@@ -29,6 +30,8 @@ temperature=.6
 learning_rate=5e-4
 weight_decay=1e-4
 max_epochs=100
+
+seed_everything(42, workers=True)
 
 intra = False
 

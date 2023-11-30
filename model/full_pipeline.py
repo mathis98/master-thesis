@@ -2,7 +2,7 @@ import sys
 sys.path.append('..')
 
 import pytorch_lightning as pl
-from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
+# from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -19,13 +19,25 @@ from model.projection_head import MyProjectionhead
 
 # SimCLR loss
 from loss.contrastive_loss import SimCLRLoss
-from lightly.loss import NTXentLoss
+# from lightly.loss import NTXentLoss
 
 # for mAP calculation
 from utility.helpers import relevant_list, calculate_mAP, define_param_groups
 
 
 class FullPipeline(pl.LightningModule):
+	"""
+	Full Pipeline using Pytorch Lightning with a Text classifier, image classifier, and projection head
+
+	Args:
+		batch_size: batch size for train, val, and test
+		intra: whether to use intra modal loss
+		temperature: ntxent temperature
+		learning_rate: AdamW learning rate
+		weight_decay: AdamW weight decay (L2 regularization)
+		max_epochs: maximum epochs to train for
+		hidden_dim: dimension of embedding
+	"""
 	def __init__(self, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
