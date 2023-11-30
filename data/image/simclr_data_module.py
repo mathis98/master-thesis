@@ -17,6 +17,15 @@ basic_transform = v2.Compose([
 
 
 class SimCLRDataset(Dataset):
+	"""
+	Dataset class for SimCLR self-supervised contrastive learning on images.
+
+	Args:
+		image_paths: List of paths to images.
+		image_size: Desired size of images.
+		transform: Augmentation transform for images.
+	"""
+
 	def __init__(self, image_paths, image_size, transform):
 		self.image_paths = image_paths
 		self.image_size = image_size
@@ -35,6 +44,18 @@ class SimCLRDataset(Dataset):
 
 
 class SimCLRDataModule(pl.LightningDataModule):
+	"""
+	Data module for SimCLR self-supervised contrastive learning on images.
+
+	Args:
+		data_dir: Directory containing image data.
+		image_size: Desired size of the images.
+		batch_size: Batch size for DataLoader.
+		augmentation_transform: Augmentation transform for images.
+		num_repeats: Number of times to repeat each image.
+		seed: Seed for reproducibility.
+	"""
+
 	def __init__(self, data_dir, image_size, batch_size, augmentation_transform, num_repeats=5, seed=42):
 		super().__init__()
 		self.data_dir = data_dir
@@ -45,11 +66,22 @@ class SimCLRDataModule(pl.LightningDataModule):
 		self.seed = seed
 
 	def prepare_data(self):
+		"""
+		Prepares image paths by repeating (for multiple captions) and shuffling.
+		"""
+
 		image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
 		image_paths = sorted(image_paths, key=lambda x: int(''.join(filter(str.isdigit, x))))
 		self.image_paths = np.repeat(image_paths, self.num_repeats)
 
 	def setup(self, stage=None):
+		"""
+		Sets up datasets for training, validation, and testing.
+
+		Args:
+			stage: Stage of training (None for overall setup).
+		"""
+
 		total_size = len(self.image_paths)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
@@ -87,4 +119,10 @@ class SimCLRDataModule(pl.LightningDataModule):
 		self.test_dataset = SimCLRDataset([self.image_paths[i] for i in test_indices], self.image_size, self.augmentation_transform)
 
 	def train_dataloader(self):
+		"""
+		Returns DataLoader for training data.
+
+		Returns:
+			DataLoader: DataLoader for training data.
+		"""
 		return DataLoader(self.dataset, batch_size=self.batch_size, num_workers=30)

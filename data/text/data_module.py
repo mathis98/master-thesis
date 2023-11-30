@@ -8,6 +8,16 @@ import itertools
 
 
 class CustomSentenceDataset(Dataset):
+	"""
+	Dataset class for caption embeddings.
+
+	Args:
+		sentences (list): List of captions.
+		tokenizer: Tokenizer for encoding captions.
+		indices (list): List of indices of captions.
+		max_length (int): Maximum length of tokenized caption.
+	"""
+
 	def __init__(self, sentences, tokenizer, indices, max_length=128):
 
 		self.sentences = sentences
@@ -43,10 +53,10 @@ class SentenceDataModule(pl.LightningDataModule):
 	A Data Module for captions
 
 	Args:
-		model_name: BERT model to use for embedding
-		batch_size: batch size for data loader
-		json_file_path: path to the json file containing the captions
-		seed: seed for shuffling
+		model_name (str): BERT model to use for embedding
+		batch_size (int): batch size for data loader
+		json_file_path (str): path to the json file containing the captions
+		seed (int): seed for shuffling
 	"""
 	def __init__(self, model_name, batch_size, json_file_path, seed=42):
 		super(SentenceDataModule, self).__init__()

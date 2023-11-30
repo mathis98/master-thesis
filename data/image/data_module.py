@@ -12,6 +12,14 @@ torchvision.disable_beta_transforms_warning()
 
 
 class ImageDataSet(Dataset):
+	"""
+	Dataset class for images.
+
+	Args:
+		image_paths: List of paths to images.
+		image_size: Desired size of the images.
+	"""
+
 	def __init__(self, image_paths, image_size):
 		self.image_paths = image_paths
 		self.image_size = image_size
@@ -50,11 +58,22 @@ class ImageDataModule(pl.LightningDataModule):
 		self.seed = seed
 
 	def prepare_data(self):
+		"""
+		Prepares image paths by repeating and shuffling.
+		"""
+
 		image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
 		image_paths = sorted(image_paths, key=lambda x: int(''.join(filter(str.isdigit, x))))
 		self.image_paths = np.repeat(image_paths, self.num_repeats)
 
 	def setup(self, stage=None):
+		"""
+		Sets up datasets for training, validation, and testing.
+
+		Args:
+			stage: Stage for training (None for overall setup).
+		"""
+
 		total_size = len(self.image_paths)
 		print('total images: ', total_size)
 		train_size = int(.8 * total_size)
@@ -93,13 +112,41 @@ class ImageDataModule(pl.LightningDataModule):
 		self.test_dataset = ImageDataSet([self.image_paths[i] for i in test_indices], self.image_size)
 
 	def dataloader(self):
+		"""
+		Returns DataLoader for entire data.
+
+		Returns:
+			DataLoader: DataLoader for entire data.
+		"""
+
 		return DataLoader(self.dataset, batch_size=self.batch_size)
 
 	def train_dataloader(self):
+		"""
+		Returns DataLoader for training data.
+
+		Returns:
+			DataLoader: DataLoader for training data.
+		"""
+
 		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=30)
 
 	def val_dataloader(self):
+		"""
+		Returns DataLoader for validation data.
+
+		Returns:
+			DataLoader: DataLoader for validation data.
+		"""
+
 		return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=30)
 
 	def test_dataloader(self):
+		"""
+		Returns DataLoader for test data.
+
+		Returns:
+			DataLoader: DataLoader for test data.
+		"""
+
 		return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=30)

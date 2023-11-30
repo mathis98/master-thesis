@@ -3,6 +3,14 @@ from torch.utils.data import DataLoader, Dataset
 
 
 class ImageTextPairDataset(Dataset):
+	"""
+	Dataset class for pairs of images and captions.
+
+	Args:
+		image_dataset: Dataset for images.
+		text_dataset: Dataset for captions.
+	"""
+
 	def __init__(self, image_dataset, text_dataset):
 		self.image_dataset = image_dataset
 		self.text_dataset = text_dataset
@@ -30,10 +38,21 @@ class ImageTextPairDataModule(pl.LightningDataModule):
 		self.batch_size = batch_size
 
 	def prepare_data(self):
+		"""
+		Prepare data for both image and caption data modules
+		"""
+
 		self.image_data_module.prepare_data()
 		self.text_data_module.prepare_data()
 
 	def setup(self, stage=None):
+		"""
+		Sets up dataset for training, validation, and testing.
+
+		Args:
+			stage: Stage of training (None for overall setup).
+		"""
+
 		self.image_data_module.setup(stage)
 		self.text_data_module.setup(stage)
 

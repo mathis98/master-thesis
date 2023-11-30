@@ -9,6 +9,16 @@ import itertools
 import nlpaug.augmenter.word as naw
 
 class SimCLRDataset(Dataset):
+	"""
+	Dataset Class for SimCLR self-supervised contrastive learning for captions.
+
+	Args:;
+		sentences (list): List of captions.
+		tokenizer: Tokenizer for encoding captions.
+		indices (list): List of indices.
+		max_length (int): Maximum length of the tokenized caption.
+	"""
+
 	def __init__(self, sentences, tokenizer, indices, max_length=128):
 		
 		self.sentences = sentences
@@ -55,6 +65,16 @@ class SimCLRDataset(Dataset):
 
 
 class SimCLRDataModule(pl.LightningDataModule):
+	"""
+	Data module for SimCLR self-supervised contrastive learning for captions.
+
+	Args:
+		batch_size (int): Batch size.
+		json_file_path (str): Path to JSON file containing the data.
+		tokenizer: Tokenizer for encoding captions. 
+		seed (int): Seed for shuffling (for image,caption pairs).
+	"""
+
 	def __init__(self, batch_size, json_file_path, tokenizer, seed=42):
 		super(SimCLRDataModule, self).__init__()
 		self.batch_size = batch_size
