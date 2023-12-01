@@ -190,7 +190,7 @@ class FullPipeline(pl.LightningModule):
 		"""
 
 		# Get the appropriate DataLoader
-		dataloader = self.val_dataloader(collate_fn=lambda x: tuple(x_.to(device) for x_ in default_collate(x))) if validation else self.test_dataloader(collate_fn=lambda x: tuple(x_.to(device) for x_ in default_collate(x)))
+		dataloader = self.val_dataloader() if validation else self.test_dataloader()
 
 		# List to store embeddings
 		image_embeddings = []
