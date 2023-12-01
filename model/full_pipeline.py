@@ -205,6 +205,7 @@ class FullPipeline(pl.LightningModule):
 				image_embed, _, _, _ = self(tuple(tensor.to('cuda') for tensor in data))
 
 			else:
+				print(data)
 				image_embed, _ = self(tuple(tensor.to('cuda') for tensor in data))
 
 			image_embed = F.normalize(image_embed, dim=-1, p=2)
