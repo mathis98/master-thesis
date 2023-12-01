@@ -22,7 +22,7 @@ from loss.contrastive_loss import SimCLRLoss
 # from lightly.loss import NTXentLoss
 
 # for mAP calculation
-from utility.helpers import relevant_list, calculate_mAP, define_param_groups, to_cuda_recursive, print_type_recursive
+from utility.helpers import relevant_list, calculate_mAP, define_param_groups, to_cuda_recursive
 
 
 class FullPipeline(pl.LightningModule):
@@ -201,8 +201,8 @@ class FullPipeline(pl.LightningModule):
 		# Offers speedup, don't calculate gradients
 		with torch.no_grad():		
 			for batch in dataloader:
-				batch = to_cuda_recursive(batch)
-				print_type_recursive(batch)
+				batch = to_cuda_recursive(batch) # NOT WORKING NOW!
+				print(batch)
 				# Forward pass to get image embeddings
 				if self.intra:
 					image_embed, _, _, _ = self(batch)
