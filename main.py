@@ -4,7 +4,6 @@ from lightning.pytorch .callbacks import LearningRateMonitor, ModelCheckpoint
 from lightning.pytorch .callbacks.early_stopping import EarlyStopping
 from torchvision.transforms import v2
 from transformers import AutoTokenizer
-import torchvision
 from lightning.pytorch.accelerators import find_usable_cuda_devices
 
 # Full pipeline
@@ -89,13 +88,14 @@ trainer = pl.Trainer(
 	devices=devices, 
 	max_epochs=args.max_epochs,
 	log_every_n_steps=5,
+	gradient_clip_val=1.0,
 	callbacks=[
-		# ModelCheckpoint(
-		# 	save_weights_only=True, 
-		# 	mode='max', 
-		# 	monitor='avg_val_mAP', 
-		# 	filename='{epoch}-{val_loss:.2f}-{other_metric:.2f}'
-		# ),
+		ModelCheckpoint(
+			save_weights_only=True, 
+			mode='max', 
+			monitor='avg_val_mAP', 
+			filename='{epoch}-{val_loss:.2f}-{other_metric:.2f}'
+		),
 		LearningRateMonitor('epoch'),
 		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=5, verbose=False, mode='max'),
 	]
