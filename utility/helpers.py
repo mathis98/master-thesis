@@ -166,11 +166,11 @@ def to_cuda_recursive(obj):
 	if isinstance(obj, torch.Tensor):
 		return obj.to('cuda')
 	elif isinstance(obj, tuple):
-		return tuple(to_cuda_recursvie(item) for item in obj)
+		return tuple(to_cuda_recursive(item) for item in obj)
 	elif isinstance(obj, list):
-		return [to_cuda_recursvie(item) for item in obj]
+		return [to_cuda_recursive(item) for item in obj]
 	elif isinstance(obj, dict):
-		return {key: to_cuda_recursvie(value) for key, value in obj.items()}
+		return {key: to_cuda_recursive(value) for key, value in obj.items()}
 	else:
 		return obj
 
