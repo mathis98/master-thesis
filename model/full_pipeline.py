@@ -89,6 +89,10 @@ class FullPipeline(pl.LightningModule):
 		# self.criterion = NTXentLoss(temperature)
 		self.max_epochs = max_epochs
 
+		# To calculate all image embeddings at start of val and test epochs
+		self.validation_embeddings = []
+		self.test_embeddings = []
+
 		self.validation_step_outputs = []
 		self.test_step_outputs = []
 
@@ -167,7 +171,47 @@ class FullPipeline(pl.LightningModule):
 		self.log('train-loss', loss, prog_bar=True)
 		return loss
 
-	def shared_step(self, batch):
+	def calculate_embeddings_for_images(self, validation=True):
+		"""
+		Calculate and return embeddings for the entire set of images.
+
+		Args:
+			validation (bool): Whether to calculate embeddings for the validation or test set.
+
+		Returns:
+			List: Embeddings for the entire set of images.
+		"""
+
+		# Get the appropriate DataLoader
+		dataloader = self.val_dataloader() if validation else self.test_dataloader()
+
+		# List to store embeddings
+		image_embeddings = []
+
+		# Set to evaluation mode
+		self.eval()
+
+		# Offers speedup, don't calculate gradients
+		with torch.no_grad():
+			# Iterate through entire image dataset
+			for batch in dataloader:
+				# Forward pass to get image embeddings
+				if self.intra:
+					image_embed, _, _, _ = self(batch)
+
+				else:
+					image_embed, _ = self(batch)
+
+				image_embed = F.normalize(image_embed, dim=-1, p=2)
+				image_embeddings.append(image_embed.detach().cpu().numpy())
+
+		# Concatenate embeddings
+		image_embeddings = np.concatenate(image_embeddings)
+
+		return image_embeddings
+
+
+	def shared_step(self, batch, validation=True):
 		"""
 		Shared step for both validation and test steps.
 
@@ -194,12 +238,24 @@ class FullPipeline(pl.LightningModule):
 		else:
 			image_embed, caption_embed = self(batch)
 
-		image_embed = F.normalize(image_embed, dim=-1, p=2)
+		# image_embed = F.normalize(image_embed, dim=-1, p=2)
 		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
-		mAP = calculate_mAP(image_embed, caption_embed, groundtruth)
+		image_embeddings = self.validation_embeddings if validation else self.test_embeddings
+
+		mAP = calculate_mAP(image_embeddings, caption_embed, groundtruth)
 
 		return mAP
+
+
+	def on_test_epoch_start(self):
+		"""
+		Called at the beginning of the test epoch.
+		"""
+
+		# Calculate and store embeddings for the entire test set.
+		self.test_embeddings = self.calculate_embeddings_for_images(validation=False)
+
 
 	def test_step(self, batch, batch_idx):
 		"""
@@ -220,6 +276,15 @@ class FullPipeline(pl.LightningModule):
 		"""
 		avg_mAP = np.mean(np.concatenate(self.test_step_outputs))
 		self.log('avg_test_mAP', avg_mAP, batch_size=self.batch_size, prog_bar=True)
+
+
+	def on_validation_epoch_start(self):
+		"""
+		Called at the beginning of the validation epoch.
+		"""
+
+		# Calculate and store embeddings for the entire validation set.
+		self.validation_embeddings = self.calculate_embeddings_for_images(validation=True)
 
 
 	def validation_step(self, batch, batch_idx):
