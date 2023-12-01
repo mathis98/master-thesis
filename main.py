@@ -2,6 +2,7 @@ import lightning.pytorch as pl
 from lightning.pytorch  import seed_everything
 from lightning.pytorch .callbacks import LearningRateMonitor, ModelCheckpoint
 from lightning.pytorch .callbacks.early_stopping import EarlyStopping
+import torchvision
 from torchvision.transforms import v2
 from transformers import AutoTokenizer
 from lightning.pytorch.accelerators import find_usable_cuda_devices
