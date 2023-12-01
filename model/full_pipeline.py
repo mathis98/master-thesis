@@ -67,7 +67,7 @@ class FullPipeline(pl.LightningModule):
 		val_dataloader (DataLoader): Dataloader for the validation set.
 		test_dataloader (DataLoasder): Dataloader for the test set.
 	"""
-	def __init__(self, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128, val_dataloader, test_dataloader):
+	def __init__(self, val_dataloader, test_dataloader, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
 		self.intra = intra
