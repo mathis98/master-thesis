@@ -162,7 +162,7 @@ def define_param_groups(model, weight_decay, optimizer_name):
 	]
 
 
-def to_cuda_recursvie(obj):
+def to_cuda_recursive(obj):
 	if isinstance(obj, torch.Tensor):
 		return obj.to('cuda')
 	elif isinstance(obj, tuple):
