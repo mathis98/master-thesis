@@ -204,10 +204,10 @@ class FullPipeline(pl.LightningModule):
 			for batch in dataloader:
 				# Forward pass to get image embeddings
 				if self.intra:
-					image_embed, _, _, _ = self(batch)
+					image_embed, _, _, _ = self(batch.to('cuda'))
 
 				else:
-					image_embed, _ = self(batch)
+					image_embed, _ = self(batch.to('cuda'))
 
 				image_embed = F.normalize(image_embed, dim=-1, p=2)
 				image_embeddings.append(image_embed.detach().cpu().numpy())
