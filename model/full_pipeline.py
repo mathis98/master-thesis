@@ -203,10 +203,10 @@ class FullPipeline(pl.LightningModule):
 			for data in dataset:
 				# Forward pass to get image embeddings
 				if self.intra:
-					image_embed, _, _, _ = self(to_cuda_recursive(data))
+					image_embed, _, _, _ = self([to_cuda_recursive(data)])
 
 				else:
-					image_embed, _ = self(to_cuda_recursive(data))
+					image_embed, _ = self([to_cuda_recursive(data)])
 
 				image_embed = F.normalize(image_embed, dim=-1, p=2)
 				image_embeddings.append(image_embed.detach().cpu().numpy())
