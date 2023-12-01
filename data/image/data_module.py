@@ -75,7 +75,6 @@ class ImageDataModule(pl.LightningDataModule):
 		"""
 
 		total_size = len(self.image_paths)
-		print('total images: ', total_size)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
 		test_size = total_size - train_size - val_size

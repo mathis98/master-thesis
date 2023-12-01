@@ -73,7 +73,9 @@ full_pipeline = FullPipeline(
 	temperature=args.temperature, 
 	learning_rate=args.learning_rate, 
 	weight_decay=args.weight_decay, 
-	intra=args.intra
+	intra=args.intra,
+	val_dataloader = image_text_pair_data_module.val_dataloader(),
+	test_dataloader = image_text_pair_data_module.test_dataloader(),
 )
 
 logger = pl.loggers.CSVLogger('logs', name='full_pipeline_simple')

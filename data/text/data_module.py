@@ -75,7 +75,6 @@ class SentenceDataModule(pl.LightningDataModule):
 		sentences = list(itertools.chain.from_iterable(sentences))
 
 		total_size = len(sentences)
-		print('total sentences: ', total_size)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
 		test_size = total_size - train_size - val_size

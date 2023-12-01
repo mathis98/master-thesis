@@ -52,6 +52,8 @@ class FullPipeline(pl.LightningModule):
 		max_epochs (int): Maximum epochs to train for.
 		validation_step_outputs (list): List to store mAP values during validation.
 		test_step_outputs (list): List to store mAP values during testing.
+		val_dataloader (DataLoader): Dataloader for the validation set.
+		test_dataloader (DataLoasder): Dataloader for the test set.
 
 	Methods:
 		forward(batch): Forward pass through the model.
@@ -62,8 +64,10 @@ class FullPipeline(pl.LightningModule):
 		validation_step(batch, batch_idx): Validation step.
 		on_validation_epoch_end(): Called at the end of the validation epoch to calculate and log avg mAP.
 		configure_optimizers(): Configure the optimizer.
+		val_dataloader (DataLoader): Dataloader for the validation set.
+		test_dataloader (DataLoasder): Dataloader for the test set.
 	"""
-	def __init__(self, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
+	def __init__(self, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128, val_dataloader, test_dataloader):
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
 		self.intra = intra
@@ -95,6 +99,9 @@ class FullPipeline(pl.LightningModule):
 
 		self.validation_step_outputs = []
 		self.test_step_outputs = []
+
+		self.val_dataloader = val_dataloader
+		self.test_dataloader = test_dataloader
 
 	def forward(self, batch):
 		"""
