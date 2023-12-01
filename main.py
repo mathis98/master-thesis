@@ -88,7 +88,8 @@ trainer = pl.Trainer(
 	devices=devices, 
 	max_epochs=args.max_epochs,
 	log_every_n_steps=5,
-	gradient_clip_val=1.0,
+	gradient_clip_val=0.5,
+	precision=16,
 	callbacks=[
 		ModelCheckpoint(
 			save_weights_only=True, 
