@@ -74,8 +74,8 @@ full_pipeline = FullPipeline(
 	learning_rate=args.learning_rate, 
 	weight_decay=args.weight_decay, 
 	intra=args.intra,
-	val_dataloader = image_text_pair_data_module.val_dataloader(),
-	test_dataloader = image_text_pair_data_module.test_dataloader(),
+	val_dataloader = image_text_pair_data_module.val_dataset,
+	test_dataloader = image_text_pair_data_module.test_dataset,
 )
 
 logger = pl.loggers.CSVLogger('logs', name='full_pipeline_simple')
@@ -92,7 +92,7 @@ trainer = pl.Trainer(
 	max_epochs=args.max_epochs,
 	log_every_n_steps=5,
 	gradient_clip_val=0.5,
-	precision=16,
+	precision='16-mixed',
 	callbacks=[
 		ModelCheckpoint(
 			save_weights_only=True, 
