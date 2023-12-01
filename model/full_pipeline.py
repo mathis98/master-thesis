@@ -190,7 +190,7 @@ class FullPipeline(pl.LightningModule):
 		"""
 
 		# Get the appropriate DataLoader
-		dataloader = self.val_dataloader() if validation else self.test_dataloader()
+		dataloader = self.val_dataloader(collate_fn=lambda x: tuple(x_.to(device) for x_ in default_collate(x))) if validation else self.test_dataloader(collate_fn=lambda x: tuple(x_.to(device) for x_ in default_collate(x)))
 
 		# List to store embeddings
 		image_embeddings = []
@@ -201,7 +201,7 @@ class FullPipeline(pl.LightningModule):
 		# Offers speedup, don't calculate gradients
 		with torch.no_grad():		
 			for batch in dataloader:
-				batch = to_cuda_recursive(batch)
+				# batch = to_cuda_recursive(batch)
 				print(batch)
 				# Forward pass to get image embeddings
 				if self.intra:
