@@ -67,7 +67,7 @@ class FullPipeline(pl.LightningModule):
 		val_dataloader (DataLoader): Dataloader for validation set.
 		test_dataloader (DataLoader): Dataloader for test set.
 	"""
-	def __init__(self, val_dataset, test_dataset, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
+	def __init__(self, val_dataloader, test_dataloader, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
 		self.intra = intra
@@ -100,8 +100,8 @@ class FullPipeline(pl.LightningModule):
 		self.validation_step_outputs = []
 		self.test_step_outputs = []
 
-		self.val_dataset = val_dataset
-		self.test_dataset = test_dataset
+		self.val_dataloader = val_dataloader
+		self.test_dataloader = test_dataloader
 
 	def forward(self, batch):
 		"""
@@ -190,7 +190,7 @@ class FullPipeline(pl.LightningModule):
 		"""
 
 		# Get the appropriate DataLoader
-		dataset = self.val_dataset if validation else self.test_dataset
+		dataloader = self.val_dataloader() if validation else self.test_dataloader()
 
 		# List to store embeddings
 		image_embeddings = []
@@ -200,13 +200,15 @@ class FullPipeline(pl.LightningModule):
 
 		# Offers speedup, don't calculate gradients
 		with torch.no_grad():		
-			for data in dataset:
+			for batch in dataloader:
+				batch = to_cuda_recursive(batch)
+				print(batch)
 				# Forward pass to get image embeddings
 				if self.intra:
-					image_embed, _, _, _ = self([to_cuda_recursive(data)])
+					image_embed, _, _, _ = self(batch)
 
 				else:
-					image_embed, _ = self([to_cuda_recursive(data)])
+					image_embed, _ = self(batch)
 
 				image_embed = F.normalize(image_embed, dim=-1, p=2)
 				image_embeddings.append(image_embed.detach().cpu().numpy())
