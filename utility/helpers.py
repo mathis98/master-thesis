@@ -174,3 +174,14 @@ def to_cuda_recursive(obj):
 	else:
 		return obj
 
+def print_types_recursive(data, level=0):
+	indent = "  " * level
+	print(f"{indent}Type: {type(data)}")
+
+	if isinstance(data, (list, tuple, dict)):
+		for key, value in enumerate(data) if isinstance(data, (list, tuple)) else data.items():
+			print(f"{indent}Key/Index: {key}")
+			print_types_recursive(value, level + 1)
+	elif isinstance(data, torch.Tensor):
+		print(f"{indent}Shape: {data.shape}")
+
