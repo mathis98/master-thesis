@@ -218,7 +218,7 @@ class FullPipeline(pl.LightningModule):
 				indeces = caption[2]
 				current_labels = indeces // 500 
 
-				torch.cat((labels, current_labels))
+				torch.cat((labels.to('cuda'), current_labels.to('cuda')))
 
 				# Forward pass to get image embeddings
 				if self.intra:
