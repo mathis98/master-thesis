@@ -1,29 +1,82 @@
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
-import lightning.pytorch as pl
 
-class NTXentLoss(pl.LightningModule):
-	def __init__(self, temperature=0.5):
-		super(NTXentLoss, self).__init__()
+
+def device_as(t1, t2):
+	"""
+	Move the input tensor to the same device as the target tensor.
+
+	Args:
+		t1 (torch.Tensor): Input tensor.
+		t2 (torch.Tensor): Target tensor.
+
+	Returns:
+		torch.Tensor: t1 moved to the same device as t2.
+	"""
+
+	return t1.to(t2.device)
+
+class SimCLRLoss(nn.Module):
+	"""
+	Contrastive loss for SimCRL (NT-Xent).
+
+	Args:
+		temperature (float): Temperature for scaling the logits.
+	"""
+
+	def __init__(self,temperature=.07):
+		super(SimCLRLoss, self).__init__()
 		self.temperature = temperature
 
-	def forward(self, z1, z2):
+	def calc_similarity_batch(self, a, b):
+		"""
+		Calculate cosine similarity between representations of batch a and batch b.
 
-		z1 = F.normalize(z1, dim=-1, p=2)
-		z2 = F.normalize(z2, dim=-1, p=2)
+		Args:
+			a (torch.Tensor): Input tensor a.
+			b (torch.Tensor): Input tensor b.
 
-		z = torch.cat([z1, z2], dim=0)
+		Returns:
+			torch.Tensor: Cosine similarity matrix between representation of batch a and batch b.
+		"""
 
-		sim_matrix = torch.matmul(z, z.t()) / self.temperature
+		representations = torch.cat([a, b], dim=0)
+		return F.cosine_similarity(representations.unsqueeze(1), representations.unsqueeze(0), dim=2)
 
-		mask = torch.eye(len(z), device=self.device)
-		sim_matrix = sim_matrix - mask * 1e9
+	def forward(self, z_i, z_j):
+		"""
+		Forward pass to calculate the NT-Xent loss.
 
-		labels = torch.arange(0, len(z), device=self.device)
-		labels = torch.roll(labels, shifts=len(labels) // 2, dims=0)
+		Args:
+			z_i (torch.Tensor): Embeddings from first batch (Image).
+			z_j (torch.Tensor): Embeddings from the second batch (Caption).
 
-		log_prob_matrix = F.log_softmax(sim_matrix, dim=-1)
+		Returns:
+			torch.Tensor: NT-Xent loss.
+		"""
 
-		loss = F.cross_entropy(log_prob_matrix, labels)
+		batch_size = z_i.shape[0]
 
+		mask = (~torch.eye(batch_size * 2, batch_size * 2, dtype=bool)).float()
+
+		z_i = F.normalize(z_i, p=2, dim=1)
+		z_j = F.normalize(z_j, p=2, dim=1)
+
+		similarity_matrix = self.calc_similarity_batch(z_i, z_j)
+
+		sim_ij = torch.diag(similarity_matrix, batch_size)
+		sim_ji = torch.diag(similarity_matrix, -batch_size)
+
+		positives = torch.cat([sim_ij, sim_ji], dim=0)
+
+		nominator = torch.exp(positives / self.temperature)
+
+		denominator = device_as(mask, similarity_matrix) * torch.exp(similarity_matrix / self.temperature)
+
+		num_valid_pairs = torch.sum(mask) / 2
+
+		all_losses = -torch.log(nominator / torch.sum(denominator, dim=1))
+		loss = torch.sum(all_losses) / (2 * batch_size)
+		
 		return loss
