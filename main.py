@@ -77,7 +77,7 @@ full_pipeline = FullPipeline(
 	test_dataloader = image_text_pair_data_module.test_dataloader,
 )
 
-logger = pl.loggers.CSVLogger('logs', name='full_pipeline_simple')
+logger = pl.loggers.CSVLogger('logs', name='full_pipeline_full_val_test')
 
 logger.log_hyperparams(args)
 
