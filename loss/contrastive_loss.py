@@ -20,10 +20,10 @@ class NTXentLoss(pl.LightningModule):
 		sim_matrix = sim_matrix - mask * 1e9
 
 		labels = torch.arange(0, len(z), device=self.device)
-		labels = torch.cat([labels + len(z) // 2, labels], dim=0)
+		labels = torch.roll(labels, shifts=len(labels) // 2, dims=0)
 
 		log_prob_matrix = F.log_softmax(sim_matrix, dim=-1)
 
-		loss = F.nll_loss(log_prob_matrix, labels.long())
+		loss = F.cross_entropy(log_prob_matrix, labels)
 
 		return loss
