@@ -12,7 +12,7 @@ def parse_arguments():
 
 	defaults = {
 		'config': './config/default.cfg',
-		'batch_size': 1,
+		'batch_size': 512,
 		'intra': False,
 		'temperature': 0.6,
 		'learning_rate': 5e-4,
