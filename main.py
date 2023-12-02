@@ -101,7 +101,7 @@ trainer = pl.Trainer(
 		),
 		LearningRateMonitor('epoch'),
 		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=5, verbose=False, mode='max'),
-		StochasticWeightAveraging(swa_lrs=1e-2),
+		# StochasticWeightAveraging(swa_lrs=1e-2),
 	]
 )
 

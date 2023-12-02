@@ -295,7 +295,7 @@ class FullPipeline(pl.LightningModule):
 		"""
 
 		mAP = self.shared_step(batch)
-		self.log('train mAP',np.mean(mAP), batch_size=self.batch_size)
+		self.log('test_mAP',np.mean(mAP), batch_size=self.batch_size)
 		self.test_step_outputs.append(mAP)
 
 	def on_test_epoch_end(self):
