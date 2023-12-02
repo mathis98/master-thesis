@@ -44,9 +44,6 @@ class SimCLRLoss(nn.Module):
 		representations = torch.cat([a, b], dim=0)
 		return F.cosine_similarity(representations.unsqueeze(1), representations.unsqueeze(0), dim=2)
 
-	def update_temperature(self, current_batch_size):
-		self.temperature = self.temperature / current_batch_size
-
 	def forward(self, z_i, z_j):
 		"""
 		Forward pass to calculate the NT-Xent loss.
@@ -73,8 +70,6 @@ class SimCLRLoss(nn.Module):
 
 		positives = torch.cat([sim_ij, sim_ji], dim=0)
 
-		self.update_temperature(batch_size)
-
 		nominator = torch.exp(positives / self.temperature)
 
 		denominator = device_as(mask, similarity_matrix) * torch.exp(similarity_matrix / self.temperature)
@@ -82,6 +77,8 @@ class SimCLRLoss(nn.Module):
 		num_valid_pairs = torch.sum(mask) / 2
 
 		all_losses = -torch.log(nominator / torch.sum(denominator, dim=1))
-		loss = torch.sum(all_losses) / (2 * batch_size)
+		# loss = torch.sum(all_losses) / (2 * batch_size)
+
+		loss = torch.mean(all_losses)
 		
 		return loss
