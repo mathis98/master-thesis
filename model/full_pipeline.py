@@ -18,7 +18,7 @@ from model.image_embedding import ImageEmbeddingModule
 from model.projection_head import MyProjectionhead
 
 # SimCLR loss
-from loss.contrastive_loss import NTXentLoss
+from loss.contrastive_loss import SimCLRLoss
 # from lightly.loss import NTXentLoss
 
 # for mAP calculation
@@ -91,7 +91,7 @@ class FullPipeline(pl.LightningModule):
 
 		self.projection_head = MyProjectionhead(512, 512, 128)
 		
-		self.criterion = NTXentLoss(temperature)
+		self.criterion = SimCLRLoss(temperature)
 		# self.criterion = NTXentLoss(temperature)
 		self.max_epochs = max_epochs
 

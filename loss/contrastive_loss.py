@@ -1,38 +1,40 @@
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
-import pytorch_lightning as pl
 
-class NTXentLoss(pl.LightningModule):
-	def __init__(self, temperature=0.5):
-		super(NTXentLoss, self).__init__()
+
+def device_as(t1, t2):
+	return t1.to(t2.device)
+
+class SimCLRLoss(nn.Module):
+	def __init__(self,temperature=.07):
+		super(SimCLRLoss, self).__init__()
 		self.temperature = temperature
 
-	def forward(self, z1, z2):
-		# z1 and z2 are the embeddings from two augmented views of the same image
-		# Make sure z1 and z2 have the same shape
+	def calc_similarity_batch(self, a, b):
+		representations = torch.cat([a, b], dim=0)
+		return F.cosine_similarity(representations.unsqueeze(1), representations.unsqueeze(0), dim=2)
 
-		# Normalize the embeddings
-		z1 = F.normalize(z1, dim=-1, p=2)
-		z2 = F.normalize(z2, dim=-1, p=2)
+	def forward(self, z_i, z_j):
+		batch_size = z_i.shape[0]
 
-		# Concatenate the embeddings
-		z = torch.cat([z1, z2], dim=0)
+		mask = (~torch.eye(batch_size * 2, batch_size * 2, dtype=bool)).float()
 
-		# Compute pairwise cosine similarity
-		sim_matrix = torch.matmul(z, z.t()) / self.temperature
+		z_i = F.normalize(z_i, p=2, dim=1)
+		z_j = F.normalize(z_j, p=2, dim=1)
 
-		# Set diagonal elements to a large negative value to avoid them being the maximum
-		mask = torch.eye(len(z), device=self.device)
-		sim_matrix = sim_matrix - mask * 1e9
+		similarity_matrix = self.calc_similarity_batch(z_i, z_j)
 
-		# Create target labels for positive and negative pairs
-		labels = torch.arange(0, len(z), device=self.device)
-		labels = torch.roll(labels, shifts=len(labels) // 2, dims=0)
+		sim_ij = torch.diag(similarity_matrix, batch_size)
+		sim_ji = torch.diag(similarity_matrix, -batch_size)
 
-		# Compute the log probability for each sample
-		log_prob_matrix = F.log_softmax(sim_matrix, dim=-1)
+		positives = torch.cat([sim_ij, sim_ji], dim=0)
 
-		# Compute the loss
-		loss = F.cross_entropy(log_prob_matrix, labels)
+		nominator = torch.exp(positives / self.temperature)
 
+		denominator = device_as(mask, similarity_matrix) * torch.exp(similarity_matrix / self.temperature)
+
+		all_losses = -torch.log(nominator / torch.sum(denominator, dim=1))
+		loss = torch.sum(all_losses) / (2 * batch_size)
+		
 		return loss
