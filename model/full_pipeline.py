@@ -233,6 +233,8 @@ class FullPipeline(pl.LightningModule):
 		# Concatenate embeddings
 		image_embeddings = torch.concatenate(image_embeddings)
 
+		print(labels)
+
 		return image_embeddings, labels
 
 
