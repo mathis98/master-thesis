@@ -100,7 +100,7 @@ def relevant_list(labels_caption, labels_images):
 
 	relevant_list = []
 
-	for label in labels_caption:
+	for label_tensor in labels_caption:
 		# Extract the label value if it's a scalar
 		label_value = label_tensor.item() if label_tensor.numel() == 1 else label_tensor
 
@@ -108,6 +108,7 @@ def relevant_list(labels_caption, labels_images):
 		relevants = [torch.where(labels_images_tensor == label_value, True, False) for labels_images_tensor in labels_images]
 		relevant_list.append(relevants)
 
+	print(relevant_list)
 	return relevant_list
 
 
