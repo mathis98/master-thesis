@@ -18,8 +18,8 @@ from model.image_embedding import ImageEmbeddingModule
 from model.projection_head import MyProjectionhead
 
 # SimCLR loss
-from loss.contrastive_loss import NTXentLoss
-# from lightly.loss import NTXentLoss
+# from loss.contrastive_loss import NTXentLoss
+from lightly.loss import NTXentLoss
 
 # for mAP calculation
 from utility.helpers import relevant_list, calculate_mAP, define_param_groups, to_cuda_recursive
