@@ -14,10 +14,10 @@ class MyProjectionhead(nn.Module):
 		super(MyProjectionhead, self).__init__()
 
 		self.linear1 = nn.Linear(input_dim, hidden_dim)
-		self.bn1 = nn.BatchNorm1d(hidden_dim)
+		self.bn1 = nn.BatchNorm1d(hidden_dim, momentum=0.9)
 		self.relu = nn.ReLU()
 		self.linear2 = nn.Linear(hidden_dim, output_dim)
-		self.bn2 = nn.BatchNorm1d(output_dim)
+		self.bn2 = nn.BatchNorm1d(output_dim, momentum=0.9)
 
 	def forward(self, x):
 		"""
