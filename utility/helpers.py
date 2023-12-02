@@ -105,12 +105,10 @@ def relevant_list(labels_caption, labels_images):
 		label_value = label_tensor.item() if label_tensor.numel() == 1 else label_tensor
 
 		# Use the label value to create the list of relevants
-		relevants = [torch.where(labels_images_tensor == label_value, True, False) for labels_images_tensor in labels_images]
+		relevants = torch.stack([torch.where(labels_images_tensor == label_value, torch.tensor(True), torch.tensor(False)) for labels_images_tensor in labels_images])
 		relevant_list.append(relevants)
 
-	return_list = torch.cat(relevant_list, dim=0)
-
-	return return_list
+	return relevant_list
 
 
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
