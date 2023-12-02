@@ -137,9 +137,6 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		rmap = RetrievalMAP(top_k=top_k)
 
-		print(image_scores, type(image_scores))
-		print(relevant_labels, type(relevant_labels))
-
 		mAP = rmap.update(image_scores, relevant_labels, torch.zeros(len(image_scores), dtype=torch.long))
 
 		mAP_values.append(rmap.compute().item())
