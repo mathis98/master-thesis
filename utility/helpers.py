@@ -167,7 +167,6 @@ def define_param_groups(model, weight_decay, optimizer_name):
 
 
 def to_cuda_recursive(obj):
-	print(f"Type: {type(obj)}")
 	if isinstance(obj, torch.Tensor):
 		# Move the tensor to the CUDA device
 		return obj.to('cuda')
