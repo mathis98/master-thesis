@@ -173,10 +173,7 @@ def to_cuda_recursive(obj):
 		# Recursively move each element of the tuple to the CUDA device
 		return tuple(to_cuda_recursive(item) for item in obj)
 	elif isinstance(obj, dict):
-		if 'input_ids' in obj:
-			obj['input_ids'] = obj['input_ids'].to('cuda:0')
-		if 'attention_mask' in obj:
-			obj['attention_mask'] = obj['attention_mask'].to('cuda:0')
+		print([value for key,value in obj.items()])
 
 		# Recursively move each value of the dictionary to the CUDA device
 		return {key: to_cuda_recursive(value) for key, value in obj.items()}
