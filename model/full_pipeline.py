@@ -201,7 +201,7 @@ class FullPipeline(pl.LightningModule):
 		# Offers speedup, don't calculate gradients
 		with torch.no_grad():		
 			for batch in dataloader:
-				batch = [to_cuda_recursive(batch[0]), to_cuda_recursive(batch[1])] # NOT WORKING NOW!
+				# batch = to_cuda_recursive(batch) # NOT WORKING NOW!
 				print(batch)
 				# Forward pass to get image embeddings
 				if self.intra:
