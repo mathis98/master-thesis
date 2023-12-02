@@ -100,6 +100,8 @@ def relevant_list(labels_caption, labels_images):
 
 	relevant_list = []
 
+	print(labels_caption, labels_images)
+
 	for label in labels_caption:
 		relevants = torch.where(labels_images == label, True, False)
 		relevant_list.append(relevants)
