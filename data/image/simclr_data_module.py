@@ -5,10 +5,10 @@ from torchvision import transforms
 from PIL import Image
 import imageio
 import numpy as np
-from torchvision.transforms import v2
 import torchvision
-
 torchvision.disable_beta_transforms_warning()
+from torchvision.transforms import v2
+
 
 basic_transform = v2.Compose([
 		v2.ToImageTensor(),

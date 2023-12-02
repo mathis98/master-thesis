@@ -1,6 +1,7 @@
 import torch
 import pytorch_lightning as pl
 import torchvision
+torchvision.disable_beta_transforms_warning()
 from torchvision.transforms import v2
 from torchinfo import summary
 import matplotlib.pyplot as plt
@@ -16,8 +17,6 @@ from model.simclr_image_model import SimCLRModule
 
 # Helper functions
 from utility.helpers import closest_indices, visualize_augmentations
-
-torchvision.disable_beta_transforms_warning()
 
 
 data_dir = '../Datasets/UCM/imgs'

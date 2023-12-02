@@ -3,6 +3,7 @@ from lightning.pytorch  import seed_everything
 from lightning.pytorch .callbacks import LearningRateMonitor, ModelCheckpoint
 from lightning.pytorch .callbacks.early_stopping import EarlyStopping
 import torchvision
+torchvision.disable_beta_transforms_warning()
 from torchvision.transforms import v2
 from transformers import AutoTokenizer
 from lightning.pytorch.accelerators import find_usable_cuda_devices
@@ -20,7 +21,6 @@ from data.text.simclr_data_module import SimCLRDataModule as SimCLRTextDataModul
 # Argument parsing
 from utility.argument_parser import parse_arguments
 
-torchvision.disable_beta_transforms_warning()
 
 args = parse_arguments()
 

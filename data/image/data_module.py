@@ -8,8 +8,6 @@ from PIL import Image
 import imageio
 import numpy as np
 
-torchvision.disable_beta_transforms_warning()
-
 
 class ImageDataSet(Dataset):
 	"""
