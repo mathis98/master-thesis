@@ -20,8 +20,7 @@ class NTXentLoss(pl.LightningModule):
 		sim_matrix = sim_matrix - mask * 1e9
 
 		labels = torch.arange(0, len(z), device=self.device)
-		labels = (labels.unsqueeze(0) != labels.unsqueeze(1)).float()
-		labels = torch.cat([labels, labels], dim=0)
+		labels = torch.cat([labels + len(z) // 2, labels], dim=0)
 
 		log_prob_matrix = F.log_softmax(sim_matrix, dim=-1)
 
