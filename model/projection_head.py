@@ -31,9 +31,9 @@ class MyProjectionhead(nn.Module):
 		"""
 
 		x = self.linear1(x)
-		x = self.bn1(x)
+		# x = self.bn1(x)
 		x = self.relu(x)
 		x = self.linear2(x)
-		x = self.bn2(x)
+		# x = self.bn2(x)
 
 		return x
