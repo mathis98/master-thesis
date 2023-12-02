@@ -66,8 +66,8 @@ class FullPipeline(pl.LightningModule):
 		configure_optimizers(): Configure the optimizer.
 		val_dataloader (DataLoader): Dataloader for validation set.
 		test_dataloader (DataLoader): Dataloader for test set.
-		validation_labels (List): list of labels of validation images.
-		test_labels (List): list of labels of test images.
+		validation_labels (Tensor): list of labels of validation images.
+		test_labels (Tensor): list of labels of test images.
 	"""
 	def __init__(self, val_dataloader, test_dataloader, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
 		super(FullPipeline, self).__init__()
@@ -105,8 +105,8 @@ class FullPipeline(pl.LightningModule):
 		self.val_dataloader = val_dataloader
 		self.test_dataloader = test_dataloader
 
-		self.validation_labels = []
-		self.test_labels = []
+		self.validation_labels = torch.Tensor()
+		self.test_labels = torch.Tensor()
 
 	def forward(self, batch):
 		"""
@@ -199,7 +199,7 @@ class FullPipeline(pl.LightningModule):
 
 		# List to store embeddings
 		image_embeddings = []
-		labels = []
+		labels = torch.Tensor()
 
 		# Set to evaluation mode
 		self.eval()
@@ -218,7 +218,7 @@ class FullPipeline(pl.LightningModule):
 				indeces = caption[2]
 				current_labels = indeces // 500 
 
-				labels.concatenate(current_labels)
+				torch.cat(labels, current_labels)
 
 				# Forward pass to get image embeddings
 				if self.intra:
