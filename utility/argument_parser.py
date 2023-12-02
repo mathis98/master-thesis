@@ -43,9 +43,6 @@ def parse_arguments():
 	p.add('-em', '--embedding', type=str, default=defaults['embedding'], help=f'Embedding strategy for BERT (default: {defaults["embedding"]})')
 
 	options =  p.parse_args()
-
-	print(options)
-	print('----------------')
-	print(p.format_help())
-	print('----------------')
 	print(p.format_values())
+
+	return options
