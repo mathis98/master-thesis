@@ -165,7 +165,7 @@ def define_param_groups(model, weight_decay, optimizer_name):
 def to_cuda_recursive(obj):
 	if isinstance(obj, torch.Tensor):
 		# Move the tensor to the CUDA device
-		return obj.to('cuda:0')
+		return obj.to('cuda')
 	elif isinstance(obj, list):
 		# Recursively move each element of the list to the CUDA device
 		return [to_cuda_recursive(item) for item in obj]
@@ -173,6 +173,11 @@ def to_cuda_recursive(obj):
 		# Recursively move each element of the tuple to the CUDA device
 		return tuple(to_cuda_recursive(item) for item in obj)
 	elif isinstance(obj, dict):
+		if 'input_ids' in obj and 'attention_mask' in obj:
+			# Move the tensors in 'input_ids' and 'attention_mask' to the CUDA device
+			obj['input_ids'] = obj['input_ids'].to('cuda:0')
+			obj['attention_mask'] = obj['attention_mask'].to('cuda:0')
+
 		# Recursively move each value of the dictionary to the CUDA device
 		return {key: to_cuda_recursive(value) for key, value in obj.items()}
 	else:
