@@ -1,7 +1,8 @@
 import lightning.pytorch as pl
 from lightning.pytorch  import seed_everything
-from lightning.pytorch .callbacks import LearningRateMonitor, ModelCheckpoint
-from lightning.pytorch .callbacks.early_stopping import EarlyStopping
+from lightning.pytorch.callbacks import LearningRateMonitor, ModelCheckpoint
+from lightning.pytorch.callbacks.early_stopping import EarlyStopping
+from lightning.pytorch.callbacks import StochasticWeightAveraging
 import torchvision
 torchvision.disable_beta_transforms_warning()
 from torchvision.transforms import v2
@@ -100,6 +101,7 @@ trainer = pl.Trainer(
 		),
 		LearningRateMonitor('epoch'),
 		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=5, verbose=False, mode='max'),
+		StochasticWeightAveraging(swa_lrs=1e-2),
 	]
 )
 
