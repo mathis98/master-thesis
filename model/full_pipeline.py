@@ -199,7 +199,7 @@ class FullPipeline(pl.LightningModule):
 
 		# List to store embeddings
 		image_embeddings = []
-		labels = torch.Tensor()
+		labels = []
 
 		# Set to evaluation mode
 		self.eval()
@@ -218,7 +218,7 @@ class FullPipeline(pl.LightningModule):
 				indeces = caption[2]
 				current_labels = indeces // 500 
 
-				torch.cat((labels.to('cuda'), current_labels.to('cuda')))
+				labels.append(current_labels)
 
 				# Forward pass to get image embeddings
 				if self.intra:
@@ -233,7 +233,7 @@ class FullPipeline(pl.LightningModule):
 		# Concatenate embeddings
 		image_embeddings = torch.concatenate(image_embeddings)
 
-		print(labels)
+		labels = torch.cat(labels, dim=0)
 
 		return image_embeddings, labels
 
