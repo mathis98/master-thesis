@@ -73,7 +73,7 @@ class SimCLRLoss(nn.Module):
 
 		positives = torch.cat([sim_ij, sim_ji], dim=0)
 
-		self.update_temperature(z_i.shape[0])
+		self.update_temperature(batch_size)
 
 		nominator = torch.exp(positives / self.temperature)
 
