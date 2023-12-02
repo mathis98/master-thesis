@@ -44,7 +44,7 @@ def parse_arguments():
 
 	options =  p.parse_args()
 
-	print(option)
+	print(options)
 	print('----------------')
 	print(p.format_help())
 	print('----------------')
