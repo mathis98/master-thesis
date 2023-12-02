@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import torch
 from torchvision.transforms import v2
 from torchmetrics.retrieval import RetrievalMAP
+from transformers.tokenization_utils_base import BatchEncoding
 
 def closest_indices(embeddings):
 	"""
@@ -174,13 +175,15 @@ def to_cuda_recursive(obj):
 		# Recursively move each element of the tuple to the CUDA device
 		return tuple(to_cuda_recursive(item) for item in obj)
 	elif isinstance(obj, dict):
-		print('Dictionary:')
-		print(obj)
-		print('Values:')
-		print([value for key, value in obj.items()])
-
 		# Recursively move each value of the dictionary to the CUDA device
 		return {key: to_cuda_recursive(value) for key, value in obj.items()}
+	elif isinstance(obj, BatchEncoding):
+		# Handle BatchEncoding separately
+		obj.data = to_cuda_recursive(obj.data)
+		return obj
+	elif isinstance(obj, np.ndarray):
+		# Handle numpy arrays
+		return torch.from_numpy(obj).to('cuda')
 	else:
 		return obj  # Return unchanged if not a tensor, list, tuple, or dict
 
