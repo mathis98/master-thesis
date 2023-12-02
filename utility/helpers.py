@@ -101,11 +101,9 @@ def relevant_list(labels_caption, labels_images):
 	relevant_list = []
 
 	for label_tensor in labels_caption:
-		# Extract the label value if it's a scalar
 		label_value = label_tensor.item() if label_tensor.numel() == 1 else label_tensor
 
-		# Use the label value to create the list of relevants
-		relevants = torch.stack([torch.where(labels_images_tensor == label_value, torch.tensor(True), torch.tensor(False)) for labels_images_tensor in labels_images])
+		relevants = (labels_images == label_value).to(torch.bool)
 		relevant_list.append(relevants)
 
 	return relevant_list
