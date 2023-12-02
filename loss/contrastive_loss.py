@@ -36,14 +36,3 @@ class NTXentLoss(pl.LightningModule):
 		loss = F.cross_entropy(log_prob_matrix, labels)
 
 		return loss
-
-# Example usage:
-# Instantiate the loss function
-ntxent_loss = NTXentLoss(temperature=0.5)
-
-# Generate two batches of embeddings (z1 and z2)
-z1 = torch.randn((batch_size, embedding_size))
-z2 = torch.randn((batch_size, embedding_size))
-
-# Compute the contrastive loss
-loss = ntxent_loss(z1, z2)
