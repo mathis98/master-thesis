@@ -42,4 +42,11 @@ def parse_arguments():
 	p.add('-e', '--max_epochs', type=int, default=defaults['max_epochs'], help=f'Maximum number of training epochs (default: {defaults["max_epochs"]})')
 	p.add('-em', '--embedding', type=str, default=defaults['embedding'], help=f'Embedding strategy for BERT (default: {defaults["embedding"]})')
 
-	return p.parse_args()
+	options =  p.parse_args()
+
+	for option in options:
+		print(option)
+	print('----------------')
+	print(p.format_help())
+	print('----------------')
+	print(p.format_values())

@@ -26,8 +26,6 @@ args = parse_arguments()
 
 args.image_size = tuple(args.image_size)
 
-print(args)
-
 seed_everything(42, workers=True)
 
 tokenizer = AutoTokenizer.from_pretrained(args.model_name)
