@@ -45,7 +45,7 @@ class SimCLRLoss(nn.Module):
 		return F.cosine_similarity(representations.unsqueeze(1), representations.unsqueeze(0), dim=2)
 
 	def update_temperature(self, current_batch_size):
-		self.temperature = temperature / current_batch_size
+		self.temperature = self.temperature / current_batch_size
 
 	def forward(self, z_i, z_j):
 		"""
