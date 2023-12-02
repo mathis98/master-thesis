@@ -24,6 +24,6 @@ class NTXentLoss(pl.LightningModule):
 
 		log_prob_matrix = F.log_softmax(sim_matrix, dim=-1)
 
-		loss = F.cross_entropy(log_prob_matrix, labels)
+		loss = -torch.sum(F.one_hot(labels, num_classes=len(z))) * log_prob_matrix / torch.sum(F.one_hot(labels, num_classes=len(z)))
 
 		return loss
