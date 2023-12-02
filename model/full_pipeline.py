@@ -66,6 +66,8 @@ class FullPipeline(pl.LightningModule):
 		configure_optimizers(): Configure the optimizer.
 		val_dataloader (DataLoader): Dataloader for validation set.
 		test_dataloader (DataLoader): Dataloader for test set.
+		validation_labels (List): list of labels of validation images.
+		test_labels (List): list of labels of test images.
 	"""
 	def __init__(self, val_dataloader, test_dataloader, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
 		super(FullPipeline, self).__init__()
@@ -102,6 +104,9 @@ class FullPipeline(pl.LightningModule):
 
 		self.val_dataloader = val_dataloader
 		self.test_dataloader = test_dataloader
+
+		self.validation_labels = []
+		self.test_labels = []
 
 	def forward(self, batch):
 		"""
@@ -194,6 +199,7 @@ class FullPipeline(pl.LightningModule):
 
 		# List to store embeddings
 		image_embeddings = []
+		labels = []
 
 		# Set to evaluation mode
 		self.eval()
@@ -201,7 +207,19 @@ class FullPipeline(pl.LightningModule):
 		# Offers speedup, don't calculate gradients
 		with torch.no_grad():		
 			for batch in dataloader:
-				batch = to_cuda_recursive(batch) # NOT WORKING NOW!
+				batch = to_cuda_recursive(batch)
+
+				image, caption = batch
+
+				if self.intra:
+					image = image[0], image[2]
+					caption = caption[0], caption[2], caption[4]
+
+				indeces = caption[2]
+				current_labels = indeces // 500 
+
+				labels.append(current_labels)
+
 				# Forward pass to get image embeddings
 				if self.intra:
 					image_embed, _, _, _ = self(batch)
@@ -215,7 +233,10 @@ class FullPipeline(pl.LightningModule):
 		# Concatenate embeddings
 		image_embeddings = torch.concatenate(image_embeddings)
 
-		return image_embeddings
+		print(image_embeddings, type(image_embeddings))
+		print(image_embeddings.shape)
+
+		return image_embeddings, labels
 
 
 	def shared_step(self, batch, validation=True):
@@ -236,14 +257,16 @@ class FullPipeline(pl.LightningModule):
 			caption = caption[0], caption[2], caption[4]
 
 		indeces = caption[2]
-		labels = indeces // 500 # They need to be same if in same class
-		groundtruth = relevant_list(labels)
+		labels_caption = indeces // 500 # They need to be same if in same class
+		labels_images = self.validation_labels if validation else self.test_labels
+
+		groundtruth = relevant_list(labels_caption, labels_images)
 
 		if self.intra:
-			image_embed, _, caption_embed, _ = self(batch)
+			_, _, caption_embed, _ = self(batch)
 
 		else:
-			image_embed, caption_embed = self(batch)
+			_, caption_embed = self(batch)
 
 		# image_embed = F.normalize(image_embed, dim=-1, p=2)
 		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
@@ -261,7 +284,7 @@ class FullPipeline(pl.LightningModule):
 		"""
 
 		# Calculate and store embeddings for the entire test set.
-		self.test_embeddings = self.calculate_embeddings_for_images(validation=False)
+		self.test_embeddings, self.test_labels = self.calculate_embeddings_for_images(validation=False)
 
 
 	def test_step(self, batch, batch_idx):
@@ -291,7 +314,7 @@ class FullPipeline(pl.LightningModule):
 		"""
 
 		# Calculate and store embeddings for the entire validation set.
-		self.validation_embeddings = self.calculate_embeddings_for_images(validation=True)
+		self.validation_embeddings, self.validation_labels = self.calculate_embeddings_for_images(validation=True)
 
 
 	def validation_step(self, batch, batch_idx):

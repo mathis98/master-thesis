@@ -87,7 +87,7 @@ def visualize_text_augmentations(data, number):
 
 		print(original, '->', augmented)
 
-def relevant_list(labels):
+def relevant_list(labels_caption, labels_images):
 	"""
 	Create a list of relevant indices for each label (index//#elems per class).
 
@@ -100,8 +100,8 @@ def relevant_list(labels):
 
 	relevant_list = []
 
-	for label in labels:
-		relevants = torch.where(labels == label, True, False)
+	for label in labels_caption:
+		relevants = torch.where(labels_images == label, True, False)
 		relevant_list.append(relevants)
 
 	return relevant_list
