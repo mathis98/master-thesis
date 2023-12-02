@@ -2,9 +2,12 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+import torchvision
 from torchvision.transforms import v2
 from torchmetrics.retrieval import RetrievalMAP
 from transformers.tokenization_utils_base import BatchEncoding
+
+torchvision.disable_beta_transforms_warning()
 
 def closest_indices(embeddings):
 	"""
