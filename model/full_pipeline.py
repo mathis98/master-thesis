@@ -210,10 +210,10 @@ class FullPipeline(pl.LightningModule):
 					image_embed, _ = self(batch)
 
 				image_embed = F.normalize(image_embed, dim=-1, p=2)
-				image_embeddings.append(image_embed.detach().cpu().numpy())
+				image_embeddings.append(image_embed)
 
 		# Concatenate embeddings
-		image_embeddings = np.concatenate(image_embeddings)
+		image_embeddings = torch.concatenate(image_embeddings)
 
 		return image_embeddings
 
