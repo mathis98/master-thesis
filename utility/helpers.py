@@ -107,8 +107,6 @@ def relevant_list(labels_caption, labels_images):
 		# Use the label value to create the list of relevants
 		relevants = [torch.where(labels_images_tensor == label_value, True, False) for labels_images_tensor in labels_images]
 		relevant_list.append(relevants)
-
-	print(relevant_list)
 	return relevant_list
 
 
