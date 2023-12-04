@@ -43,33 +43,46 @@ dataloader = image_text_pair_data_module.dataloader()
 embeddings_list = []
 labels_list = []
 
+devices = find_usable_cuda_devices(1)
+print(f'training on GPU {devices}')
+
+trainer = pl.Trainer(accelerator='cuda', devices=devices, max_epochs=100)
+
 with torch.no_grad():
-	for batch in dataloader:
-		# NO SIMCLR: ((image, image_path), (inputs, sentence, index))
-		batch = to_cuda_recursive(batch)
-		embeddings = model.forward(batch)
+		predictions = trainer.predict(model, dataloader)
 
-		combined_embeddings = torch.cat(embeddings, dim=0)
-		labels = batch[1][2]
+embeddings = torch.vstack(predictions)
+embeddings = embeddings.view(embeddings.size(0), -1)
 
-		labels = labels // 500
+print(embeddigns)
 
-		embeddings_list.append(combined_embeddings)
-		labels_list.append(labels)
+# with torch.no_grad():
+# 	for batch in dataloader:
+# 		# NO SIMCLR: ((image, image_path), (inputs, sentence, index))
+# 		batch = to_cuda_recursive(batch)
+# 		embeddings = model.forward(batch)
 
-combined_embeddings = torch.cat(embeddings_list, dim=0).cpu().numpy()
-labels = torch.cat(labels_list, dim=0).cpu().numpy()
+# 		combined_embeddings = torch.cat(embeddings, dim=0)
+# 		labels = batch[1][2]
 
-tsne = TSNE(n_components=2)
-embeddings_2d = tsne.fit_transform(combined_embeddings)
+# 		labels = labels // 500
 
-plt.figure(figsize=(10, 8))
-scatter = plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1], c=labels, cmap='viridis')
+# 		embeddings_list.append(combined_embeddings)
+# 		labels_list.append(labels)
 
-plt.legend(*scatter.legend_elements(), title="Classes")
-plt.title("t-SNE Visualization of Image and Caption Embeddings")
-plt.xlabel("t-SNE Dimension 1")
-plt.ylabel("t-SNE Dimension 2")
+# combined_embeddings = torch.cat(embeddings_list, dim=0).cpu().numpy()
+# labels = torch.cat(labels_list, dim=0).cpu().numpy()
 
-plt.savefig('tsne.png')
+# tsne = TSNE(n_components=2)
+# embeddings_2d = tsne.fit_transform(combined_embeddings)
+
+# plt.figure(figsize=(10, 8))
+# scatter = plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1], c=labels, cmap='viridis')
+
+# plt.legend(*scatter.legend_elements(), title="Classes")
+# plt.title("t-SNE Visualization of Image and Caption Embeddings")
+# plt.xlabel("t-SNE Dimension 1")
+# plt.ylabel("t-SNE Dimension 2")
+
+# plt.savefig('tsne.png')
 
