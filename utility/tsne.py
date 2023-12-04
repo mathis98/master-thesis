@@ -17,7 +17,7 @@ from utility.argument_parser import parse_arguments
 
 
 # Create an instance of your FullPipeline model
-model = FullPipeline.load_from_checkpoint('../full_pipeline_full_val_test/version_35/checkpoints/epoch=99-avg_val_mAP=0.28-validation mAP=0.26.ckpt')
+model = FullPipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/version_35/checkpoints/epoch=99-avg_val_mAP=0.28-validation mAP=0.26.ckpt')
 
 # Ensure the model is in evaluation mode
 model.eval()
@@ -69,5 +69,5 @@ plt.title("t-SNE Visualization of Image and Caption Embeddings")
 plt.xlabel("t-SNE Dimension 1")
 plt.ylabel("t-SNE Dimension 2")
 
-plt.show()
+plt.savefig('tsne.png')
 
