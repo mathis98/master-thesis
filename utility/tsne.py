@@ -48,6 +48,10 @@ trainer = pl.Trainer(accelerator='cuda', devices=devices, max_epochs=100)
 with torch.no_grad():
 		predictions = trainer.predict(model, dataloader)
 
+print(predictions[0])
+
+print(len(predictions[0]))
+
 print(len(predictions))
 print(predictions[:2])
 
