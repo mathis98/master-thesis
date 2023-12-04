@@ -47,8 +47,8 @@ with torch.no_grad():
 		# NO SIMCLR: ((image, image_path), (inputs, sentence, index))
 		embeddings = model.forward(batch)
 
-		combined_embeddings = torch.cat(embeddings, dim=0).numpy()
-		labels = batch[1][2].numpy()
+		combined_embeddings = torch.cat(embeddings, dim=0)
+		labels = batch[1][2]
 
 		labels = labels // 500
 
