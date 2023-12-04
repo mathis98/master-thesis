@@ -45,6 +45,9 @@ print(f'training on GPU {devices}')
 
 trainer = pl.Trainer(accelerator='cuda', devices=devices, max_epochs=100)
 
+images = []
+captions = []
+
 with torch.no_grad():
 		predictions = trainer.predict(model, dataloader)
 
@@ -58,16 +61,25 @@ print(len(predictions[0]))
 print(len(predictions))
 print(predictions[:2])
 
-image_embeddings = torch.vstack(predictions[0])
-image_embeddings = image_embeddings.view(image_embeddings.size(0), -1)
+for prediction in predictions:
+	image = prediction[0]
+	caption = prediction[1]
 
-caption_embeddings = torch.vstack(predictions[1])
-caption_embeddings = caption_embeddings.view(caption_embeddings.size(0), -1)
+	images.append(image)
+	captions.append(caption)
+
+# image_embeddings = torch.vstack(predictions[0])
+# image_embeddings = image_embeddings.view(image_embeddings.size(0), -1)
+
+# caption_embeddings = torch.vstack(predictions[1])
+# caption_embeddings = caption_embeddings.view(caption_embeddings.size(0), -1)
 
 
-print(len(image_embeddings))
+print(len(images))
+print(len(captions))
 
-print(len(caption_embeddings))
+print(images[0])
+print(captions[0])
 
 labels_simple = np.repeat(range(21), 500)
 labels = np.repeat(labels_simple, 2)
