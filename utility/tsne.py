@@ -53,10 +53,13 @@ trainer = pl.Trainer(accelerator='cuda', devices=devices, max_epochs=100)
 with torch.no_grad():
 		predictions = trainer.predict(model, dataloader)
 
-embeddings = torch.vstack(predictions)
-embeddings = embeddings.view(embeddings.size(0), -1)
+image_embeddings = torch.vstack(predictions)[0]
+image_embeddings = embeddings.view(image_embeddings.size(0), -1)
 
-print(embeddigns)
+caption_embeddings = torch.vstack(predictions)[1]
+caption_embeddings = embeddings.view(caption_embeddings.size(0), -1)
+
+print(image_embeddings.shape)
 
 # with torch.no_grad():
 # 	for batch in dataloader:
