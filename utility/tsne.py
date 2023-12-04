@@ -48,6 +48,9 @@ trainer = pl.Trainer(accelerator='cuda', devices=devices, max_epochs=100)
 with torch.no_grad():
 		predictions = trainer.predict(model, dataloader)
 
+print(predictions.shape)
+print(predictions[:2])
+
 image_embeddings = torch.vstack(predictions[0])
 image_embeddings = image_embeddings.view(image_embeddings.size(0), -1)
 
