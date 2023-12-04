@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 
 # Argument parsing
 from utility.argument_parser import parse_arguments
+from utility.helpers import to_cuda_recursive
 
 
 # Create an instance of your FullPipeline model
@@ -45,6 +46,7 @@ labels_list = []
 with torch.no_grad():
 	for batch in dataloader:
 		# NO SIMCLR: ((image, image_path), (inputs, sentence, index))
+		batch = to_cuda_recursive(batch)
 		embeddings = model.forward(batch)
 
 		combined_embeddings = torch.cat(embeddings, dim=0)
