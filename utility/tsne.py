@@ -57,8 +57,8 @@ with torch.no_grad():
 		embeddings_list.append(combined_embeddings)
 		labels_list.append(labels)
 
-combined_embeddings = torch.cat(embeddings_list, dim=0)
-labels = torch.cat(labels_list, dim=0)
+combined_embeddings = torch.cat(embeddings_list, dim=0).cpu().numpy()
+labels = torch.cat(labels_list, dim=0).cpu().numpy()
 
 tsne = TSNE(n_components=2)
 embeddings_2d = tsne.fit_transform(combined_embeddings)
