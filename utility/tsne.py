@@ -68,18 +68,15 @@ for prediction in predictions:
 	images.append(image)
 	captions.append(caption)
 
-# image_embeddings = torch.vstack(predictions[0])
-# image_embeddings = image_embeddings.view(image_embeddings.size(0), -1)
 
-# caption_embeddings = torch.vstack(predictions[1])
-# caption_embeddings = caption_embeddings.view(caption_embeddings.size(0), -1)
+image_embeddings = torch.vstack(images)
+image_embeddings = image_embeddings.view(image_embeddings.size(0), -1)
 
+caption_embeddings = torch.vstack(captions)
+caption_embeddings = caption_embeddings.view(caption_embeddings.size(0), -1)
 
-print(len(images))
-print(len(captions))
-
-print(images[0])
-print(captions[0])
+print(len(image_embeddings))
+print(len(caption_embeddings))
 
 labels_simple = np.repeat(range(21), 500)
 labels = np.repeat(labels_simple, 2)
