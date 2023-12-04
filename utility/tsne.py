@@ -20,7 +20,7 @@ from utility.helpers import to_cuda_recursive
 
 
 # Create an instance of your FullPipeline model
-model = FullPipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/version_35/checkpoints/epoch=99-avg_val_mAP=0.28-validation mAP=0.26.ckpt')
+model = FullPipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/version_69/checkpoints/epoch=99-avg_val_mAP=0.34-validation mAP=0.47.ckpt')
 
 # Ensure the model is in evaluation mode
 model.eval()
@@ -51,16 +51,6 @@ captions = []
 with torch.no_grad():
 		predictions = trainer.predict(model, dataloader)
 
-print(predictions[0])
-
-print(predictions[0][0])
-print(predictions[0][1])
-
-print(len(predictions[0]))
-
-print(len(predictions))
-print(predictions[:2])
-
 for prediction in predictions:
 	image = prediction[0]
 	caption = prediction[1]
@@ -75,17 +65,12 @@ image_embeddings = image_embeddings.view(image_embeddings.size(0), -1)
 caption_embeddings = torch.vstack(captions)
 caption_embeddings = caption_embeddings.view(caption_embeddings.size(0), -1)
 
-print(len(image_embeddings))
-print(len(caption_embeddings))
-
 labels_simple = np.repeat(range(21), 500)
 labels = np.repeat(labels_simple, 2)
 
 all_embeddings = torch.cat([image_embeddings, caption_embeddings], dim=0).cpu().numpy()
 
 print(len(all_embeddings))
-
-print(all_embeddings[:2])
 
 tsne = TSNE(n_components=2)
 embeddings_2d = tsne.fit_transform(all_embeddings)
@@ -98,5 +83,5 @@ plt.title("t-SNE Visualization of Image and Caption Embeddings")
 plt.xlabel("t-SNE Dimension 1")
 plt.ylabel("t-SNE Dimension 2")
 
-plt.savefig('tsne.png')
+plt.savefig('tsne2.png')
 
