@@ -9,7 +9,7 @@ from data.image.data_module import ImageDataModule
 from data.text.data_module import SentenceDataModule
 from data.imagetext.image_text_pair import ImageTextPairDataModule
 
-from sklearn.manifold import TSNE
+from tsnecuda import TSNE
 import matplotlib.pyplot as plt
 
 # Argument parsing
@@ -57,8 +57,8 @@ with torch.no_grad():
 		embeddings_list.append(combined_embeddings)
 		labels_list.append(labels)
 
-combined_embeddings = torch.cat(embeddings_list, dim=0).numpy()
-labels = torch.cat(labels_list, dim=0).numpy()
+combined_embeddings = torch.cat(embeddings_list, dim=0)
+labels = torch.cat(labels_list, dim=0)
 
 tsne = TSNE(n_components=2, random_state=42)
 embeddings_2d = tsne.fit_transform(combined_embeddings)
