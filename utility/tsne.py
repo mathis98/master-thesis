@@ -64,24 +64,7 @@ caption_embeddings = caption_embeddings.view(caption_embeddings.size(0), -1)
 labels_simple = np.repeat(range(22), 500)
 labels = np.repeat(labels_simple, 2)
 
-print(image_embeddings.shape)
-
-# with torch.no_grad():
-# 	for batch in dataloader:
-# 		# NO SIMCLR: ((image, image_path), (inputs, sentence, index))
-# 		batch = to_cuda_recursive(batch)
-# 		embeddings = model.forward(batch)
-
-# 		combined_embeddings = torch.cat(embeddings, dim=0)
-# 		labels = batch[1][2]
-
-# 		labels = labels // 500
-
-# 		embeddings_list.append(combined_embeddings)
-# 		labels_list.append(labels)
-
-# combined_embeddings = torch.cat(embeddings_list, dim=0).cpu().numpy()
-# labels = torch.cat(labels_list, dim=0).cpu().numpy()
+print(image_embeddings[:2])
 
 all_embeddings = [image_embeddings, caption_embeddings]
 
