@@ -50,6 +50,9 @@ with torch.no_grad():
 
 print(predictions[0])
 
+print(predictions[0][0])
+print(predictions[0][1])
+
 print(len(predictions[0]))
 
 print(len(predictions))
