@@ -63,7 +63,7 @@ class ImageTextPairDataModule(pl.LightningDataModule):
 		self.test_dataset = ImageTextPairDataset(self.image_data_module.test_dataset, self.text_data_module.test_dataset)
 
 	def dataloader(self):
-		return DataLoader(self.dataset, self.batch_size)
+		return DataLoader(self.dataset, self.batch_size, num_workers=30, pin_memory=True)
 
 	def train_dataloader(self):
 		return DataLoader(self.train_dataset, self.batch_size, num_workers=30, shuffle=True, drop_last=True, pin_memory=True)

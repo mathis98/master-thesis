@@ -3,7 +3,6 @@ sys.path.append('..')
 
 import lightning.pytorch as pl
 import numpy as np
-from lightning.pytorch  import seed_everything
 from lightning.pytorch.accelerators import find_usable_cuda_devices
 
 import torch
@@ -26,8 +25,6 @@ model = FullPipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/v
 # Ensure the model is in evaluation mode
 model.eval()
 
-seed_everything(42, workers=True)
-
 
 image_data_module = ImageDataModule('../../Datasets/UCM/imgs', (224,224), 512, 5)
 image_data_module.prepare_data()
@@ -43,9 +40,6 @@ image_text_pair_data_module.setup(stage='predict')
 
 dataloader = image_text_pair_data_module.dataloader()
 
-embeddings_list = []
-labels_list = []
-
 devices = find_usable_cuda_devices(1)
 print(f'training on GPU {devices}')
 
@@ -60,6 +54,10 @@ image_embeddings = image_embeddings.view(image_embeddings.size(0), -1)
 caption_embeddings = torch.vstack(predictions[1])
 caption_embeddings = caption_embeddings.view(caption_embeddings.size(0), -1)
 
+
+print(len(image_embeddings))
+
+print(len(caption_embeddings))
 
 labels_simple = np.repeat(range(21), 500)
 labels = np.repeat(labels_simple, 2)
