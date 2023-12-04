@@ -2,6 +2,7 @@ import sys
 sys.path.append('..')
 
 import lightning.pytorch as pl
+import numpy as np
 from lightning.pytorch  import seed_everything
 from lightning.pytorch.accelerators import find_usable_cuda_devices
 
@@ -53,11 +54,15 @@ trainer = pl.Trainer(accelerator='cuda', devices=devices, max_epochs=100)
 with torch.no_grad():
 		predictions = trainer.predict(model, dataloader)
 
-image_embeddings = torch.vstack(predictions)[0]
+image_embeddings = torch.vstack(predictions[0])
 image_embeddings = embeddings.view(image_embeddings.size(0), -1)
 
-caption_embeddings = torch.vstack(predictions)[1]
+caption_embeddings = torch.vstack(predictions[1])
 caption_embeddings = embeddings.view(caption_embeddings.size(0), -1)
+
+
+labels_simple = np.repeat(range(22), 500)
+labels = np.repeat(labels_simple, 2)
 
 print(image_embeddings.shape)
 
@@ -78,16 +83,18 @@ print(image_embeddings.shape)
 # combined_embeddings = torch.cat(embeddings_list, dim=0).cpu().numpy()
 # labels = torch.cat(labels_list, dim=0).cpu().numpy()
 
-# tsne = TSNE(n_components=2)
-# embeddings_2d = tsne.fit_transform(combined_embeddings)
+all_embeddings = [image_embeddings, caption_embeddings]
 
-# plt.figure(figsize=(10, 8))
-# scatter = plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1], c=labels, cmap='viridis')
+tsne = TSNE(n_components=2)
+embeddings_2d = tsne.fit_transform(combined_embeddings)
 
-# plt.legend(*scatter.legend_elements(), title="Classes")
-# plt.title("t-SNE Visualization of Image and Caption Embeddings")
-# plt.xlabel("t-SNE Dimension 1")
-# plt.ylabel("t-SNE Dimension 2")
+plt.figure(figsize=(10, 8))
+scatter = plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1], c=labels, cmap='viridis')
 
-# plt.savefig('tsne.png')
+plt.legend(*scatter.legend_elements(), title="Classes")
+plt.title("t-SNE Visualization of Image and Caption Embeddings")
+plt.xlabel("t-SNE Dimension 1")
+plt.ylabel("t-SNE Dimension 2")
+
+plt.savefig('tsne.png')
 
