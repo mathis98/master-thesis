@@ -86,7 +86,7 @@ print(image_embeddings.shape)
 all_embeddings = [image_embeddings, caption_embeddings]
 
 tsne = TSNE(n_components=2)
-embeddings_2d = tsne.fit_transform(combined_embeddings)
+embeddings_2d = tsne.fit_transform(all_embeddings)
 
 plt.figure(figsize=(10, 8))
 scatter = plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1], c=labels, cmap='viridis')
