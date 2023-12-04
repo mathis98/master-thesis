@@ -25,6 +25,7 @@ def parse_arguments():
 		'num_repeats': 5,
 		'max_epochs': 100,
 		'embedding': 'pooler',
+		'accumulate': 1,
 	}
 
 	p.add('--config', required=False, default=defaults['config'], is_config_file=True, help=f'config file path (default: {defaults["config"]})')
@@ -41,6 +42,7 @@ def parse_arguments():
 	p.add('--num_repeats', type=int, default=defaults['num_repeats'], help=f'Number of repeats for non-SimCLR data module (default: {defaults["num_repeats"]})')
 	p.add('--max_epochs', type=int, default=defaults['max_epochs'], help=f'Maximum number of training epochs (default: {defaults["max_epochs"]})')
 	p.add('--embedding', type=str, default=defaults['embedding'], help=f'Embedding strategy for BERT (default: {defaults["embedding"]})')
+	p.add('--accumulate', type=int, default=defaults['accumulate'], help=f'Accumulate gradient batches (default: {defaults["accumulate"]})')
 
 	options =  p.parse_args()
 	print(p.format_values())
