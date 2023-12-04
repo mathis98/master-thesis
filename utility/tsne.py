@@ -60,7 +60,7 @@ with torch.no_grad():
 combined_embeddings = torch.cat(embeddings_list, dim=0)
 labels = torch.cat(labels_list, dim=0)
 
-tsne = TSNE(n_components=2, random_state=42)
+tsne = TSNE(n_components=2)
 embeddings_2d = tsne.fit_transform(combined_embeddings)
 
 plt.figure(figsize=(10, 8))
