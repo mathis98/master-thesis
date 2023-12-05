@@ -143,7 +143,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 			# Convert to numpy for indexing
 			ranked = ranked_indices.cpu().numpy()[:top_k]
 			precision = np.cumsum(relevant_labels.cpu().numpy()[ranked]) / (np.arange(1, top_k+1))
-			AP = np.sum(precision * relevant_labels[ranked]) / num_relevant_images
+			AP = np.sum(precision * relevant_labels[ranked]) / num_relevant_images.cpu().numpy()
 
 		mAP_values.append(AP)
 
