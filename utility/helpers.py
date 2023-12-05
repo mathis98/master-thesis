@@ -133,11 +133,19 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		relevant_labels = ground_truth_labels[i]
 
-		rmap = RetrievalMAP(top_k=20)
+		ranked_indices = torch.argsort(image_scores, descending=True)
 
-		mAP = rmap.update(image_scores, relevant_labels, torch.zeros(len(image_scores), dtype=torch.long))
+		num_relevant_images = torch.sum(relevant_labels).item()
 
-		mAP_values.append(rmap.compute().item())
+		if num_relevant_images == 0:
+			AP = 0.0
+		else:
+			# Convert to numpy for indexing
+			ranked = ranked_indices.cpu().numpy()[:top_k]
+			precision = np.cumsum(relevant_labels[ranked]) / (np.arange(1, top_k+1))
+			AP = np.sum(precision * relevant_labels[ranked]) / num_relevant_images
+
+		mAP_values.append(AP)
 
 	return mAP_values
 
