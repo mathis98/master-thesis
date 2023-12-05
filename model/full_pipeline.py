@@ -54,6 +54,7 @@ class FullPipeline(pl.LightningModule):
 		test_step_outputs (list): List to store mAP values during testing.
 		val_dataloader (DataLoader): Dataloader for validation set.
 		test_dataloader (DataLoader): Dataloader for test set.
+		top_k (int): map@k
 
 	Methods:
 		forward(batch): Forward pass through the model.
@@ -69,7 +70,7 @@ class FullPipeline(pl.LightningModule):
 		validation_labels (Tensor): list of labels of validation images.
 		test_labels (Tensor): list of labels of test images.
 	"""
-	def __init__(self, val_dataloader=None, test_dataloader=None, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128):
+	def __init__(self, val_dataloader=None, test_dataloader=None, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128, top_k=10):
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
 		self.intra = intra
@@ -107,6 +108,8 @@ class FullPipeline(pl.LightningModule):
 
 		self.validation_labels = torch.Tensor()
 		self.test_labels = torch.Tensor()
+
+		self.top_k = top_k
 
 	def forward(self, batch):
 		"""

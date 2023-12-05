@@ -65,8 +65,14 @@ image_embeddings = image_embeddings.view(image_embeddings.size(0), -1)
 caption_embeddings = torch.vstack(captions)
 caption_embeddings = caption_embeddings.view(caption_embeddings.size(0), -1)
 
-labels_simple = np.repeat(range(21), 500)
-labels = np.repeat(labels_simple, 2)
+labels = []
+
+for num in range(21):
+	labels.append(f'img{num}')
+for num in range(21):
+	labels.append(f'cap{num}')
+
+np.repeat(labels, 500)
 
 all_embeddings = torch.cat([image_embeddings, caption_embeddings], dim=0).cpu().numpy()
 

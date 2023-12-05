@@ -73,6 +73,7 @@ full_pipeline = FullPipeline(
 	learning_rate=args.learning_rate, 
 	weight_decay=args.weight_decay, 
 	intra=args.intra,
+	top_k=args.top_k,
 	val_dataloader = image_text_pair_data_module.val_dataloader,
 	test_dataloader = image_text_pair_data_module.test_dataloader,
 )
