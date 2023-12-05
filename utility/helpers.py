@@ -110,44 +110,30 @@ def relevant_list(labels_caption, labels_images):
 
 
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
-	"""
-	Calculate mean Average Precision (mAP) values.
-
-	Args:
-		image_embeddings (torch.Tensor): Image embeddings.
-		caption_embeddings (torch.Tensor): Caption embeddings.
-		ground_truth_labels (torch.Tensor): list of lists of relevant labels.
-		top_k (int): Top-k retrieval (map@k).
-
-	Returns:
-		list: List of mAP values for each input caption.
-	"""
-
 	mAP_values = []
 
-	for i in range(caption_embeddings.shape[0]):
-
+	for i in range(image_embeddings.shape[0]):
 		caption_embedding = caption_embeddings[i]
 		
-		image_scores = torch.matmul(image_embeddings, caption_embedding)
+		image_scores = torch.matmul(image_embeddings, caption_embedding).cpu().numpy()
 
-		relevant_labels = ground_truth_labels[i]
+		relevant_labels = ground_truth_labels[i].cpu().numpy()
 
-		ranked_indices = torch.argsort(image_scores, descending=True)
+		ranked_indices = np.argsort(image_scores)[::-1]
 
-		num_relevant_images = torch.sum(relevant_labels).item()
+		num_relevant_images = np.sum(relevant_labels)
 
 		if num_relevant_images == 0:
-			AP = 0.0
+			AP = .0
 		else:
-			# Convert to numpy for indexing
-			ranked = ranked_indices.cpu()[:top_k]
-			precision = torch.cumsum(relevant_labels[ranked], dim=0) / (torch.arange(1, top_k+1).float())
-			AP = torch.sum(precision * relevant_labels[ranked]) / num_relevant_images
+			ranked = ranked_indices[:top_k]
+			precision = np.cumsum(relevant_labels[ranked]) / (np.arange(1, top_k+1))
+			AP = np.sum(precision * relevant_labels[ranked]) / num_relevant_images
 
-		mAP_values.append(AP.item())
+		mAP_values.append(AP)
 
 	return mAP_values
+
 
 def define_param_groups(model, weight_decay, optimizer_name):
 	"""
