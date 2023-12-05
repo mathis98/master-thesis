@@ -112,7 +112,7 @@ def relevant_list(labels_caption, labels_images):
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
 	mAP_values = []
 
-	for i in range(image_embeddings.shape[0]):
+	for i in range(caption_embedding.shape[0]):
 		caption_embedding = caption_embeddings[i]
 		
 		image_scores = torch.matmul(image_embeddings, caption_embedding).cpu().numpy()
