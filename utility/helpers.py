@@ -135,7 +135,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		binary_labels = ground_truth[:top_k]
 
 		# Calculate precision at each position
-		true_positives = torch.sum(binary_labels * torch.tensor([1 if j in top_k_indices else 0 for j in range(len(image_embeddings))][:top_k]))
+		true_positives = torch.sum(binary_labels * torch.tensor([1 if j in top_k_indices.cpu().numpy() else 0 for j in range(len(image_embeddings))][:top_k]).to(caption_embedding.device))
 
 		# Calculate average precision for the current caption
 		precision_at_k = true_positives.float() / top_k
