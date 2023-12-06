@@ -114,17 +114,15 @@ def relevant_list(labels_caption, labels_images):
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
 	mAP_values = []
 
-	# Move image_embeddings to the same device as caption_embeddings
+	# Move all caption_embeddings and image_embeddings to the same device
+	# caption_embeddings = torch.stack(caption_embeddings).cuda()
 	image_embeddings = torch.stack([emb.unsqueeze(0) for emb in image_embeddings]).cuda()
 
-	# Move all caption_embeddings to the same device as image_embeddings
-	caption_embeddings = torch.stack(caption_embeddings).cuda()
-
 	# Calculate cosine similarities for all caption embeddings
-	similarities = torch.nn.functional.cosine_similarity(caption_embeddings, image_embeddings, dim=2)
+	similarities = torch.nn.functional.cosine_similarity(caption_embeddings.unsqueeze(1), image_embeddings, dim=2)
 
 	# Get top-k indices for each caption
-	_, top_k_indices = torch.topk(similarities, k=top_k, dim=1, largest=True)
+	_, top_k_indices = torch.topk(similarities, k=top_k, dim=2, largest=True)
 
 	for i, ground_truth in enumerate(ground_truth_labels):
 		ground_truth = torch.tensor(ground_truth, device=caption_embeddings.device).unsqueeze(0).expand_as(top_k_indices[i])
@@ -145,6 +143,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 # Example usage:
 # mAP_values = calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=5)
+
 
 
 
