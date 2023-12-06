@@ -127,6 +127,8 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		binary_labels = ground_truth
 
+		binary_labels = binary_labels[:top_k]
+
 		precision_at_k = precision_score(binary_labels, [1 if j in top_k_indices else 0 for j in range(len(image_embeddings))][:top_k])
 
 		average_precision = sum(precision_at_k * binary_labels[:top_k]) / min(len(ground_truth), top_k) if len(ground_truth) > 0 else 0.0
