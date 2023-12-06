@@ -111,33 +111,40 @@ def relevant_list(labels_caption, labels_images):
 	return relevant_list
 
 
+import torch
+
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
 	mAP_values = []
 
-	image_embeddings_cpu = [emb.clone().detach().cpu() for emb in image_embeddings]
+	# Move all image embeddings to CPU and convert to PyTorch tensors
+	image_embeddings_cpu = [torch.tensor(emb).cpu() for emb in image_embeddings]
 
 	for i, caption_embedding in enumerate(caption_embeddings):
-
+		# Move caption_embedding to CPU
 		caption_embedding_cpu = caption_embedding.cpu()
-		image_embeddings_cpu = [emb.cpu() for emb in image_embeddings]
 
-		similarities = cosine_similarity(caption_embedding_cpu.unsqueeze(0), torch.stack(image_embeddings_cpu))
-		similarities = similarities[0]
+		# Calculate cosine similarities for the current caption
+		similarities = torch.nn.functional.cosine_similarity(caption_embedding_cpu, torch.stack(image_embeddings_cpu))
 
-		top_k_indices = torch.argsort(torch.tensor(similarities), descending=True)[:top_k]
+		# Get top-k indices for the current caption
+		_, top_k_indices = torch.topk(similarities, k=top_k, largest=True)
 
-		ground_truth = ground_truth_labels[i].clone().detach()
+		# Get ground truth labels for the current caption
+		ground_truth = torch.tensor(ground_truth_labels[i])
 
+		# Create a binary tensor indicating whether each prediction is relevant or not
 		binary_labels = ground_truth[:top_k]
 
-		precision_at_k = precision_score(binary_labels.cpu().numpy(), top_k_indices.cpu().numpy(), average='micro', zero_division=1.0)
+		# Calculate precision at each position
+		true_positives = torch.sum(binary_labels * torch.tensor([1 if j in top_k_indices else 0 for j in range(len(image_embeddings))][:top_k]))
+		precision_at_k = true_positives.float() / top_k
 
-		average_precision = torch.sum(precision_at_k * binary_labels) / min(len(ground_truth), top_k) if len(ground_truth) > 0 else 0.0
+		# Calculate average precision for the current caption
+		average_precision = precision_at_k.item() if len(ground_truth) > 0 else 0.0
 
-		mAP_values.append(average_precision.item())
+		mAP_values.append(average_precision)
 
 	return mAP_values
-
 
 	# for i in range(caption_embeddings.shape[0]):
 	# 	caption_embedding = caption_embeddings[i]
