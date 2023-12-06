@@ -136,7 +136,6 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		mAP = retrieval_average_precision(
 			image_scores, 
 			relevant_labels, 
-			torch.zeros(len(image_scores), dtype=torch.long),
 			top_k=top_k
 		)
 
