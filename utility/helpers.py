@@ -118,18 +118,20 @@ import torch
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
 	mAP_values = []
 
+	image_embeddings = torch.stack([emb.unsqueeze(0) for emb in image_embeddings]
+
 	for i, caption_embedding in enumerate(caption_embeddings):
 		# Move caption_embedding to the same device as image_embeddings
 		caption_embedding = caption_embedding.cuda()
 
 		# Calculate cosine similarities for the current caption
-		similarities = torch.nn.functional.cosine_similarity(caption_embedding.unsqueeze(0), torch.stack([emb.unsqueeze(0) for emb in image_embeddings], dim=0))
+		similarities = torch.nn.functional.cosine_similarity(caption_embedding.unsqueeze(0), image_embeddings, dim=0))
 
 		# Get top-k indices for the current caption
 		_, top_k_indices = torch.topk(similarities, k=top_k, largest=True)
 
 		# Get ground truth labels for the current caption
-		ground_truth = torch.tensor(ground_truth_labels[i], device=caption_embedding.device)
+		ground_truth = ground_truth_labels[i].clone().detach().to(device=caption_embedding.device)
 
 		# Create a binary tensor indicating whether each prediction is relevant or not
 		binary_labels = ground_truth[:top_k]
