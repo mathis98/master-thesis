@@ -114,6 +114,8 @@ def relevant_list(labels_caption, labels_images):
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
 	mAP_values = []
 
+	image_embeddings_cpu = [torch.tensor(emb).cpu() for emb in image_embeddings]
+
 	for i, caption_embedding in enumerate(caption_embeddings):
 
 		caption_embedding = caption_embedding.cpu()
