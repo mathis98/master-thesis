@@ -130,7 +130,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		binary_labels = ground_truth.repeat(1, top_k)
 
 		# Calculate true positives for each position
-		true_positives = torch.sum(binary_labels * (top_k_indices[i] == torch.arange(top_k, device=caption_embeddings.device).unsqueeze(0)))
+		true_positives = torch.sum(binary_labels * (top_k_indices[i] == torch.arange(top_k, device=caption_embeddings.device).unsqueeze(1)))
 
 		# Calculate precision at each position
 		precision_at_k = true_positives.float() / top_k
@@ -139,7 +139,6 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		mAP_values.append(average_precision)
 
 	return mAP_values
-
 
 
 	# for i in range(caption_embeddings.shape[0]):
