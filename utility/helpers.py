@@ -119,8 +119,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	for i, caption_embedding in enumerate(caption_embeddings):
 
 		caption_embedding_cpu = caption_embedding.cpu()
-		image_embeddings_cpu = [emb.cpu() for emb in image_embedd
-		ings]
+		image_embeddings_cpu = [emb.cpu() for emb in image_embeddings]
 
 		similarities = cosine_similarity(caption_embedding_cpu.unsqueeze(0), torch.stack(image_embeddings_cpu))
 		similarities = similarities[0]
