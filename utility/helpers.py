@@ -121,7 +121,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	similarities = torch.nn.functional.cosine_similarity(caption_embeddings.unsqueeze(1), image_embeddings.unsqueeze(0), dim=2)
 
 	# Get top-k indices for each caption
-	_, top_k_indices = torch.topk(similarities, k=top_k, dim=2, largest=True)
+	_, top_k_indices = torch.topk(similarities, k=top_k, dim=1, largest=True)
 
 	for i, ground_truth in enumerate(ground_truth_labels):
 		ground_truth = torch.tensor(ground_truth, device=caption_embeddings.device).unsqueeze(0).expand_as(top_k_indices[i])
