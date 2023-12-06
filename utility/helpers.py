@@ -115,12 +115,11 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	mAP_values = []
 
 	# Move all caption_embeddings and image_embeddings to the same device
-	# caption_embeddings = torch.stack(caption_embeddings).cuda()
-	image_embeddings = torch.stack([emb.unsqueeze(0) for emb in image_embeddings]).cuda()
+	caption_embeddings = torch.stack(caption_embeddings).cuda()
+	image_embeddings = torch.stack(image_embeddings).cuda()
 
 	# Calculate cosine similarities for all caption embeddings
-	similarities = torch.nn.functional.cosine_similarity(caption_embeddings.unsqueeze(1), image_embeddings.transpose(0, 1), dim=2)
-
+	similarities = torch.nn.functional.cosine_similarity(caption_embeddings.unsqueeze(1), image_embeddings.unsqueeze(0), dim=2)
 
 	# Get top-k indices for each caption
 	_, top_k_indices = torch.topk(similarities, k=top_k, dim=2, largest=True)
@@ -132,7 +131,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		binary_labels = ground_truth
 
 		# Calculate true positives for each position
-		true_positives = torch.sum(binary_labels * torch.arange(len(image_embeddings)).unsqueeze(0).expand_as(top_k_indices[i]) == top_k_indices[i])
+		true_positives = torch.sum(binary_labels * (top_k_indices[i] == torch.arange(len(image_embeddings), device=caption_embeddings.device).unsqueeze(0).expand_as(top_k_indices[i])))
 
 		# Calculate precision at each position
 		precision_at_k = true_positives.float() / top_k
@@ -141,12 +140,6 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		mAP_values.append(average_precision)
 
 	return mAP_values
-
-# Example usage:
-# mAP_values = calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=5)
-
-
-
 
 	# for i in range(caption_embeddings.shape[0]):
 	# 	caption_embedding = caption_embeddings[i]
