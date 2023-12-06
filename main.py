@@ -113,5 +113,5 @@ trainer.fit(
 	image_text_pair_data_module.val_dataloader(),
 )
 
-trainer.test(full_pipeline, dataloaders=image_text_pair_data_module.test_dataloader())
+trainer.test(ckpt_path='best', dataloaders=image_text_pair_data_module.test_dataloader())
 

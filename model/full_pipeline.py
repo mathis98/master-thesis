@@ -274,7 +274,7 @@ class FullPipeline(pl.LightningModule):
 
 		image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
-		mAP = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=self.top_k)
+		mAP = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=self.top_k) # multiple top k
 
 		return mAP
 
