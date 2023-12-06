@@ -115,7 +115,6 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	mAP_values = []
 
 	# Move all caption_embeddings and image_embeddings to the same device
-	caption_embeddings = torch.stack(caption_embeddings).cuda()
 	image_embeddings = torch.stack(image_embeddings).cuda()
 
 	# Calculate cosine similarities for all caption embeddings
