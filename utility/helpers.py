@@ -139,7 +139,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 			top_k=top_k
 		)
 
-		mAP_values.append(mAP)
+		mAP_values.append(mAP.cpu().numpy())
 
 	return mAP_values
 
