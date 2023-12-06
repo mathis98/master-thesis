@@ -7,8 +7,6 @@ torchvision.disable_beta_transforms_warning()
 from torchvision.transforms import v2
 from torchmetrics.retrieval import RetrievalMAP
 from transformers.tokenization_utils_base import BatchEncoding
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.metrics import precision_score
 
 
 def closest_indices(embeddings):
@@ -112,58 +110,36 @@ def relevant_list(labels_caption, labels_images):
 
 
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
+	"""
+	Calculate mean Average Precision (mAP) values.
+
+	Args:
+		image_embeddings (torch.Tensor): Image embeddings.
+		caption_embeddings (torch.Tensor): Caption embeddings.
+		ground_truth_labels (torch.Tensor): list of lists of relevant labels.
+		top_k (int): Top-k retrieval (map@k).
+
+	Returns:
+		list: List of mAP values for each input caption.
+	"""
+
 	mAP_values = []
 
-	# Move all caption_embeddings and image_embeddings to the same device
-	# image_embeddings = torch.stack(image_embeddings).cuda()
+	for i in range(caption_embeddings.shape[0]):
 
-	# Calculate cosine similarities for all caption embeddings
-	similarities = torch.nn.functional.cosine_similarity(caption_embeddings.unsqueeze(1), image_embeddings.unsqueeze(0), dim=2)
+		caption_embedding = caption_embeddings[i]
+		
+		image_scores = torch.matmul(image_embeddings, caption_embedding)
 
-	# Get top-k indices for each caption
-	_, top_k_indices = torch.topk(similarities, k=top_k, dim=1, largest=True)
+		relevant_labels = ground_truth_labels[i]
 
-	for i, ground_truth in enumerate(ground_truth_labels):
-		ground_truth = torch.tensor(ground_truth, dtype=torch.float32, device=caption_embeddings.device).unsqueeze(0)
+		rmap = RetrievalMAP(top_k=top_k)
 
-		# Create a binary tensor indicating whether each prediction is relevant or not
-		binary_labels = ground_truth.repeat(1, top_k)
+		mAP = rmap.update(image_scores, relevant_labels, torch.zeros(len(image_scores), dtype=torch.long))
 
-		# Calculate true positives for each position within the actual number of top_k_indices
-		num_actual_top_k = min(top_k, top_k_indices.size(2))
-		true_positives = torch.sum(binary_labels * (top_k_indices[i, :, :num_actual_top_k] < num_actual_top_k).float())
-
-		# Calculate precision at each position
-		precision_at_k = true_positives.float() / num_actual_top_k
-		average_precision = precision_at_k.item() if len(ground_truth) > 0 else 0.0
-
-		mAP_values.append(average_precision)
+		mAP_values.append(rmap.compute().item())
 
 	return mAP_values
-
-
-	# for i in range(caption_embeddings.shape[0]):
-	# 	caption_embedding = caption_embeddings[i]
-		
-	# 	image_scores = torch.matmul(image_embeddings, caption_embedding).cpu().numpy()
-
-	# 	relevant_labels = ground_truth_labels[i].cpu().numpy()
-
-	# 	ranked_indices = np.argsort(image_scores)[::-1]
-
-	# 	num_relevant_images = np.sum(relevant_labels)
-
-	# 	if num_relevant_images == 0:
-	# 		AP = .0
-	# 	else:
-	# 		ranked = ranked_indices[:top_k]
-	# 		precision = np.cumsum(relevant_labels[ranked]) / (np.arange(1, top_k+1))
-	# 		AP = np.sum(precision * relevant_labels[ranked]) / num_relevant_images
-
-	# 	mAP_values.append(AP)
-
-	# return mAP_values
-
 
 def define_param_groups(model, weight_decay, optimizer_name):
 	"""
