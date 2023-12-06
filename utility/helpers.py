@@ -7,6 +7,8 @@ torchvision.disable_beta_transforms_warning()
 from torchvision.transforms import v2
 from torchmetrics.retrieval import RetrievalMAP
 from transformers.tokenization_utils_base import BatchEncoding
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics import precision_score
 
 
 def closest_indices(embeddings):
@@ -112,27 +114,45 @@ def relevant_list(labels_caption, labels_images):
 def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
 	mAP_values = []
 
-	for i in range(caption_embeddings.shape[0]):
-		caption_embedding = caption_embeddings[i]
-		
-		image_scores = torch.matmul(image_embeddings, caption_embedding).cpu().numpy()
+	for i, caption_embedding in enumerate(caption_embeddings):
+		similarities = cosine_similarity([caption_embedding], image_embeddings)[0]
 
-		relevant_labels = ground_truth_labels[i].cpu().numpy()
+		top_k_indices = np.argsort(similarities)[::-1][:top_k]
 
-		ranked_indices = np.argsort(image_scores)[::-1]
+		ground_truth = ground_truth_labels[i]
 
-		num_relevant_images = np.sum(relevant_labels)
+		binary_labels = ground_truth
 
-		if num_relevant_images == 0:
-			AP = .0
-		else:
-			ranked = ranked_indices[:top_k]
-			precision = np.cumsum(relevant_labels[ranked]) / (np.arange(1, top_k+1))
-			AP = np.sum(precision * relevant_labels[ranked]) / num_relevant_images
+		precision_at_k = precision_score(binary_labels, [1 if j in top_k_indices else 0 for j in range(len(image_embeddings))][:top_k])
 
-		mAP_values.append(AP)
+		average_precision = sum(precision_at_k * binary_labels[:top_k]) / min(len(ground_truth), top_k) if len(ground_truth) > 0 else 0.0
+
+		mAP_values.append(average_precision)
 
 	return mAP_values
+
+
+	# for i in range(caption_embeddings.shape[0]):
+	# 	caption_embedding = caption_embeddings[i]
+		
+	# 	image_scores = torch.matmul(image_embeddings, caption_embedding).cpu().numpy()
+
+	# 	relevant_labels = ground_truth_labels[i].cpu().numpy()
+
+	# 	ranked_indices = np.argsort(image_scores)[::-1]
+
+	# 	num_relevant_images = np.sum(relevant_labels)
+
+	# 	if num_relevant_images == 0:
+	# 		AP = .0
+	# 	else:
+	# 		ranked = ranked_indices[:top_k]
+	# 		precision = np.cumsum(relevant_labels[ranked]) / (np.arange(1, top_k+1))
+	# 		AP = np.sum(precision * relevant_labels[ranked]) / num_relevant_images
+
+	# 	mAP_values.append(AP)
+
+	# return mAP_values
 
 
 def define_param_groups(model, weight_decay, optimizer_name):
