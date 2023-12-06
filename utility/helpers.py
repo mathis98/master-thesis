@@ -115,7 +115,11 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	mAP_values = []
 
 	for i, caption_embedding in enumerate(caption_embeddings):
-		similarities = cosine_similarity([caption_embedding], image_embeddings)[0]
+
+		caption_embedding = caption_embedding.cpu()
+		image_embeddings_cpu = [emb.cpu() for emb in image_embeddings]
+
+		similarities = cosine_similarity([caption_embedding.numpy()], [emb.numpy() for emb in image_embeddings_cpu])[0]
 
 		top_k_indices = np.argsort(similarities)[::-1][:top_k]
 
