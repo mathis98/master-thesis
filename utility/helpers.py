@@ -124,7 +124,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	_, top_k_indices = torch.topk(similarities, k=top_k, dim=1, largest=True)
 
 	for i, ground_truth in enumerate(ground_truth_labels):
-		ground_truth = torch.tensor(ground_truth, device=caption_embeddings.device).expand_as(top_k_indices[i])[:, :top_k]
+		ground_truth = torch.tensor(ground_truth, device=caption_embeddings.device).unsqueeze(0).expand(top_k_indices[i].size(0), -1)
 
 		# Create a binary tensor indicating whether each prediction is relevant or not
 		binary_labels = ground_truth
