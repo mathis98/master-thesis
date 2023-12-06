@@ -119,21 +119,20 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		caption_embedding = caption_embedding.cpu()
 		image_embeddings_cpu = [emb.cpu() for emb in image_embeddings]
 
-		similarities = cosine_similarity([caption_embedding.numpy()], [emb.numpy() for emb in image_embeddings_cpu])[0]
+		similarities = cosine_similarity(caption_embedding_cpu.unsqueeze(0), torch.stack(image_embeddings_cpu))
+		similarities = similarities[0]
 
-		top_k_indices = np.argsort(similarities)[::-1][:top_k]
+		top_k_indices = torch.argsort(similarities, descending=True)[::-1][:top_k]
 
-		ground_truth = ground_truth_labels[i]
+		ground_truth = torch.tensor(ground_truth_labels[i])
 
 		binary_labels = ground_truth
 
-		binary_labels = binary_labels[:top_k].cpu().numpy()
+		precision_at_k = precision_score(binary_labels.numpy(), top_k_indices.numpy(), zero_division=1.0)
 
-		precision_at_k = precision_score(binary_labels, [1 if j in top_k_indices else 0 for j in range(len(image_embeddings))][:top_k], zero_division=1.0)
+		average_precision = torch.sum(precision_at_k * binary_labels) / min(len(ground_truth), top_k) if len(ground_truth) > 0 else 0.0
 
-		average_precision = sum(precision_at_k * binary_labels[:top_k]) / min(len(ground_truth), top_k) if len(ground_truth) > 0 else 0.0
-
-		mAP_values.append(average_precision)
+		mAP_values.append(average_precision.item())
 
 	return mAP_values
 
