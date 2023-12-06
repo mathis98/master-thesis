@@ -123,7 +123,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		caption_embedding = caption_embedding.cuda()
 
 		# Calculate cosine similarities for the current caption
-		similarities = torch.nn.functional.cosine_similarity(caption_embedding.unsqueeze(0), torch.stack(image_embeddings))
+		similarities = torch.nn.functional.cosine_similarity(caption_embedding.unsqueeze(0), torch.stack(image_embeddings, dim=0))
 
 		# Get top-k indices for the current caption
 		_, top_k_indices = torch.topk(similarities, k=top_k, largest=True)
