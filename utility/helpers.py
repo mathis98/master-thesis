@@ -130,7 +130,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		binary_labels = ground_truth[:top_k]
 
-		precision_at_k = precision_score(binary_labels.cpu().numpy(), top_k_indices.cpu().numpy(), zero_division=1.0)
+		precision_at_k = precision_score(binary_labels.cpu().numpy(), top_k_indices.cpu().numpy(), average='binary', zero_division=1.0)
 
 		average_precision = torch.sum(precision_at_k * binary_labels) / min(len(ground_truth), top_k) if len(ground_truth) > 0 else 0.0
 
