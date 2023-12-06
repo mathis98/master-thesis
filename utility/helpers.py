@@ -5,7 +5,7 @@ import torch
 import torchvision
 torchvision.disable_beta_transforms_warning()
 from torchvision.transforms import v2
-from torchmetrics.retrieval import RetrievalMAP
+from torchmetrics.functional.retrieval import retrieval_average_precision
 from transformers.tokenization_utils_base import BatchEncoding
 
 
@@ -133,11 +133,14 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		relevant_labels = ground_truth_labels[i]
 
-		rmap = RetrievalMAP(top_k=top_k)
+		mAP = retrieval_average_precision(
+			image_scores, 
+			relevant_labels, 
+			torch.zeros(len(image_scores), dtype=torch.long),
+			top_k=top_k
+		)
 
-		mAP = rmap.update(image_scores, relevant_labels, torch.zeros(len(image_scores), dtype=torch.long))
-
-		mAP_values.append(rmap.compute().item())
+		mAP_values.append(mAP)
 
 	return mAP_values
 
