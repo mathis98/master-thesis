@@ -126,7 +126,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		top_k_indices = torch.argsort(torch.tensor(similarities), descending=True)[:top_k]
 
-		ground_truth = torch.tensor(ground_truth_labels[i])
+		ground_truth = ground_truth_labels[i].clone().detach()
 
 		binary_labels = ground_truth[:top_k]
 
