@@ -111,44 +111,42 @@ def relevant_list(labels_caption, labels_images):
 	return relevant_list
 
 
-import torch
-
-import torch
-
-def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
+def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10, batch_size=32):
 	mAP_values = []
 
 	image_embeddings = torch.stack([emb.unsqueeze(0) for emb in image_embeddings])
+	image_embeddings = image_embeddings.cuda()
 
-	for i, caption_embedding in enumerate(caption_embeddings):
-		# Move caption_embedding to the same device as image_embeddings
-		caption_embedding = caption_embedding.cuda()
+	for i in range(0, len(caption_embeddings), batch_size):
+		batch_caption_embeddings = torch.stack(caption_embeddings[i:i + batch_size]).cuda()
 
-		# Calculate cosine similarities for the current caption
-		similarities = torch.nn.functional.cosine_similarity(caption_embedding.unsqueeze(0), image_embeddings, dim=0)
+		# Calculate cosine similarities for the batch of captions
+		similarities = torch.nn.functional.cosine_similarity(batch_caption_embeddings, image_embeddings, dim=1)
 
-		# Get top-k indices for the current caption
-		_, top_k_indices = torch.topk(similarities, k=top_k, largest=True)
+		for j in range(min(batch_size, len(caption_embeddings) - i)):
+			# Get top-k indices for the current caption
+			_, top_k_indices = torch.topk(similarities[j], k=top_k, largest=True)
 
-		# Get ground truth labels for the current caption
-		ground_truth = ground_truth_labels[i].clone().detach().to(device=caption_embedding.device)
+			# Get ground truth labels for the current caption
+			ground_truth = ground_truth_labels[i + j].clone().detach().to(device=batch_caption_embeddings.device)
 
-		# Create a binary tensor indicating whether each prediction is relevant or not
-		binary_labels = ground_truth[:top_k]
+			# Create a binary tensor indicating whether each prediction is relevant or not
+			binary_labels = ground_truth[:top_k]
 
-		# Calculate precision at each position
-		true_positives = torch.sum(binary_labels * torch.tensor([1 if j in top_k_indices.cpu().numpy() else 0 for j in range(len(image_embeddings))][:top_k]).to(caption_embedding.device))
+			# Calculate precision at each position
+			true_positives = torch.sum(binary_labels * torch.tensor([1 if idx in top_k_indices.cpu().numpy() else 0 for idx in range(len(image_embeddings))][:top_k]).to(device=batch_caption_embeddings.device))
 
-		# Calculate average precision for the current caption
-		precision_at_k = true_positives.float() / top_k
-		average_precision = precision_at_k.item() if len(ground_truth) > 0 else 0.0
+			# Calculate average precision for the current caption
+			precision_at_k = true_positives.float() / top_k
+			average_precision = precision_at_k.item() if len(ground_truth) > 0 else 0.0
 
-		mAP_values.append(average_precision)
+			mAP_values.append(average_precision)
 
 	return mAP_values
 
 # Example usage:
-# mAP_values = calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=5)
+# mAP_values = calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=5, batch_size=32)
+
 
 	# for i in range(caption_embeddings.shape[0]):
 	# 	caption_embedding = caption_embeddings[i]
