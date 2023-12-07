@@ -336,7 +336,7 @@ class FullPipeline(pl.LightningModule):
 		Called at the end of the validation epoch to calculate and log the average mAP.
 		"""
 		avg_mAP = np.mean(np.concatenate(self.validation_step_outputs))
-		self.log('avg_val_mAP', avg_mAP, batch_size=self.batch_size, prog_bar=True)
+		self.log('avg_val_mAP', avg_mAP, batch_size=self.batch_size, prog_bar=True) # log all k
 
 	def configure_optimizers(self):
 		"""
