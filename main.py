@@ -88,7 +88,7 @@ print(f'training on GPU {devices}')
 trainer = pl.Trainer(
 	logger=logger, 
 	accelerator='cuda', 
-	devices=[devices], 
+	devices=devices, 
 	max_epochs=args.max_epochs,
 	log_every_n_steps=5,
 	gradient_clip_val=0.5,
