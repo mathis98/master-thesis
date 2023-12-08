@@ -59,5 +59,4 @@ print(f'training on GPU {devices}')
 
 trainer = pl.Trainer(accelerator='cuda', devices=[1], max_epochs=100)
 
-with torch.no_grad():
-		trainer.test(full_pipeline, dataloaders=image_text_pair_data_module.test_dataloader())
+trainer.test(full_pipeline, dataloaders=image_text_pair_data_module.test_dataloader())
