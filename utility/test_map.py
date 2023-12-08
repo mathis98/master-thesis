@@ -49,7 +49,7 @@ full_pipeline = FullPipeline(
 	test_dataloader=image_text_pair_data_module.test_dataloader,
 )
 
-full_pipeline = full_pipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/version_69/checkpoints/epoch=99-avg_val_mAP=0.34-validation mAP=0.47.ckpt')
+full_pipeline = FullPipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/version_69/checkpoints/epoch=99-avg_val_mAP=0.34-validation mAP=0.47.ckpt')
 
 
 full_pipeline.eval()
