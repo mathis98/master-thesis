@@ -297,7 +297,7 @@ class FullPipeline(pl.LightningModule):
 			batch_idx: Index of the current batch.
 		"""
 
-		mAP = self.shared_step(batch)
+		mAP = self.shared_step(batch, validation=False)
 		self.log('test_mAP',np.mean(mAP), batch_size=self.batch_size)
 		self.test_step_outputs.append(mAP)
 
