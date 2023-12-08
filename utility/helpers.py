@@ -123,6 +123,9 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		list: List of mAP values for each input caption.
 	"""
 
+	if isinstance(image_embeddings, list):
+		image_embeddings = torch.cat(image_embeddings, dim=0)
+
 	mAP_values = []
 
 	for i in range(caption_embeddings.shape[0]):
