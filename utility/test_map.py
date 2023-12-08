@@ -24,10 +24,6 @@ from utility.helpers import to_cuda_recursive
 batch_size = 32
 
 
-# Create an instance of your FullPipeline model
-model = FullPipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/version_193/checkpoints/epoch=7-avg_val_mAP=0.36-validation mAP=0.38.ckpt')
-
-
 image_data_module = ImageDataModule('../../Datasets/UCM/imgs', (224,224), batch_size, 5)
 image_data_module.prepare_data()
 image_data_module.setup(stage='predict')
@@ -42,10 +38,28 @@ image_text_pair_data_module.setup(stage='predict')
 
 dataloader = image_text_pair_data_module.dataloader()
 
+full_pipeline = FullPipeline(
+	batch_size=batch_size,
+	max_epochs=100,
+	temperature=3.0,
+	learning_rate=1e-4,
+	weight_decay=1e-4,
+	intra=False,
+	top_k=20,
+	val_dataloader=image_text_pair_data_module.val_dataloader,
+	test_dataloader=image_text_pair_data_module.test_dataloader,
+)
+
+# Create an instance of your FullPipeline model
+full_pipeline.load_state_dict(torch.load('../logs/full_pipeline_full_val_test/version_193/checkpoints/epoch=7-avg_val_mAP=0.36-validation mAP=0.38.ckpt')['state_dict'])
+
+
+full_pipeline.eval()
+
 devices = find_usable_cuda_devices(1)
 print(f'training on GPU {devices}')
 
 trainer = pl.Trainer(accelerator='cuda', devices=[1], max_epochs=100)
 
 with torch.no_grad():
-		trainer.test(model, dataloaders=image_text_pair_data_module.test_dataloader())
+		trainer.test(full_pipeline, dataloaders=image_text_pair_data_module.test_dataloader())
