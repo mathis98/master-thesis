@@ -25,7 +25,7 @@ batch_size = 32
 
 
 # Create an instance of your FullPipeline model
-model = FullPipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/version_193/checkpoints/epoch=7-avg_val_mAP=0.36-validation mAP=0.38.ckpt.ckpt')
+model = FullPipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/version_193/checkpoints/epoch=7-avg_val_mAP=0.36-validation mAP=0.38.ckpt')
 
 # Ensure the model is in evaluation mode
 model.eval()
