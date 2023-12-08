@@ -28,7 +28,7 @@ batch_size = 32
 model = FullPipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/version_193/checkpoints/epoch=7-avg_val_mAP=0.36-validation mAP=0.38.ckpt')
 
 # Ensure the model is in evaluation mode
-model.eval()
+model.test()
 
 
 image_data_module = ImageDataModule('../../Datasets/UCM/imgs', (224,224), batch_size, 5)
