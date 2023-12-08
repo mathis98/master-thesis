@@ -36,7 +36,6 @@ text_data_module.setup(stage='predict')
 image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
 image_text_pair_data_module.setup(stage='predict')
 
-dataloader = image_text_pair_data_module.dataloader()
 
 full_pipeline = FullPipeline(
 	batch_size=batch_size,
@@ -50,7 +49,6 @@ full_pipeline = FullPipeline(
 	test_dataloader=image_text_pair_data_module.test_dataloader,
 )
 
-# Create an instance of your FullPipeline model
 full_pipeline.load_state_dict(torch.load('../logs/full_pipeline_full_val_test/version_193/checkpoints/epoch=7-avg_val_mAP=0.36-validation mAP=0.38.ckpt')['state_dict'])
 
 
