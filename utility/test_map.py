@@ -49,7 +49,7 @@ full_pipeline = FullPipeline(
 	test_dataloader=image_text_pair_data_module.test_dataloader,
 )
 
-full_pipeline.load_state_dict(torch.load('../logs/full_pipeline_full_val_test/version_193/checkpoints/epoch=7-avg_val_mAP=0.36-validation mAP=0.38.ckpt')['state_dict'])
+full_pipeline = full_pipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/version_69/checkpoints/epoch=99-avg_val_mAP=0.34-validation mAP=0.47.ckpt')
 
 
 full_pipeline.eval()
