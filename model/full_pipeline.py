@@ -189,7 +189,7 @@ class FullPipeline(pl.LightningModule):
 		self.log('train-loss', loss, prog_bar=True)
 		return loss
 
-	def calculate_embeddings_for_images(self, validation=True):
+	def calculate_embeddings_for_images(self, validation=True, true_label=False):
 		"""
 		Calculate and return embeddings for the entire set of images.
 
@@ -222,7 +222,8 @@ class FullPipeline(pl.LightningModule):
 					caption = caption[0], caption[2], caption[4]
 
 				indeces = caption[2]
-				current_labels = indeces // 500 
+				if not true_label:
+					current_labels = indeces // 500 
 				labels.append(current_labels)
 
 				# Forward pass to get image embeddings

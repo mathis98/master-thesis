@@ -70,7 +70,7 @@ image_text_pair_data_module.device = device
 
 full_pipeline.eval()
 
-image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validation=False)
+image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validation=False, true_label=True)
 
 print(labels)
 print(image_embeddings[:4])
