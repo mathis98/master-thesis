@@ -124,6 +124,10 @@ class FullPipeline(pl.LightningModule):
 
 		image, caption = batch
 
+		image = image.to(self.image_text_pair_data_module.device)
+		caption = caption.to(self.image_text_pair_data_module.device)
+
+
 		if self.intra:
 			copy_img = image
 			image = image[0], image[2]
