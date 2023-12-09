@@ -45,7 +45,7 @@ class BERTSentenceEmbedding(pl.LightningModule):
 			torch.Tensor: Computed sentence embeddings.
 		"""
 
-		print(inputs[0])
+		print(inputs[0], self.embedding)
 
 		if self.embedding != 'sbert':
 			outputs = self.model(inputs[0]['input_ids'], inputs[0]['attention_mask'])
