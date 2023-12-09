@@ -34,6 +34,7 @@ batch_size = 8
 intra = False
 
 augmentation_transform = v2.Compose([
+		v2.Resize((224,224)),
 		v2.RandAugment(), # “RandAugment: Practical automated data augmentation with a reduced search space”.
 		v2.ToImageTensor(),
 		v2.ConvertImageDtype(),
