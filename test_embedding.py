@@ -64,7 +64,8 @@ device = 'cuda:3'
 full_pipeline.resnet_embedding_module.to(device)
 full_pipeline.bert_embedding_module.to(device)
 full_pipeline.projection_head.to(device)
-image_text_pair_data_module = image_text_pair_data_module.to(device)
+
+image_text_pair_data_module.device = device
 
 
 full_pipeline.eval()
