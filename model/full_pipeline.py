@@ -140,7 +140,7 @@ class FullPipeline(pl.LightningModule):
 		caption_embed = self.bert_embedding_module(caption)
 		caption_embed = self.projection_head(caption_embed)
 
-		print(caption_embed[0])
+		# print(caption_embed[0])
 
 
 		if self.intra:
