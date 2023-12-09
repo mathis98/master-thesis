@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 from utility.argument_parser import parse_arguments
 from utility.helpers import to_cuda_recursive
 
-batch_size = 32
+batch_size = 512
 
 intra = True
 
@@ -63,6 +63,8 @@ elif intra == False:
 
 image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
 image_text_pair_data_module.setup(stage='predict')
+
+print(image_text_pair.test_dataset[:4])
 
 
 full_pipeline = FullPipeline(
