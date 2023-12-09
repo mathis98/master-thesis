@@ -80,7 +80,7 @@ while True:
 
 	new_caption = tokenizer(new_caption)
 
-	new_caption_embedding = full_pipeline.bert_embedding_module(torch.tensor(new_caption)
+	new_caption_embedding = full_pipeline.bert_embedding_module(torch.tensor(new_caption))
 	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
 
 	similarity_scores = torch.nn.function.cosine_similarity(new_caption_projection, image_embeddings)
