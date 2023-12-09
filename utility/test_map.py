@@ -43,21 +43,21 @@ tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
 
 
 if intra == True:
-	image_data_module = SimCLRImageDataModule('../Datasets/UCM/imgs', (224,224), batch_size, augmentation_transform)
+	image_data_module = SimCLRImageDataModule('../../Datasets/UCM/imgs', (224,224), batch_size, augmentation_transform)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage="predict")
 
-	text_data_module = SimCLRTextDataModule(batch_size, '../Datasets/UCM/dataset.json', tokenizer)
+	text_data_module = SimCLRTextDataModule(batch_size, '../../Datasets/UCM/dataset.json', tokenizer)
 	text_data_module.prepare_data()
 	text_data_module.setup()
 
 elif intra == False:
-	image_data_module = ImageDataModule('../Datasets/UCM/imgs', (224,224), batch_size, 5)
+	image_data_module = ImageDataModule('../../Datasets/UCM/imgs', (224,224), batch_size, 5)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='predict')
 
 
-	text_data_module = SentenceDataModule('prajjwal1/bert-small', batch_size, '../Datasets/UCM/dataset.json')
+	text_data_module = SentenceDataModule('prajjwal1/bert-small', batch_size, '../../Datasets/UCM/dataset.json')
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
