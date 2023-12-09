@@ -104,7 +104,7 @@ class SentenceDataModule(pl.LightningDataModule):
 			val_indices.extend(group[train_end:val_end])
 			test_indices.extend(group[val_end:])
 
-		self.dataset = CustomSentenceDataset(sentences, self.tokenizer, shuffled_indices)
+		self.dataset = CustomSentenceDataset([sentences[i] for i in shuffled_indices], self.tokenizer, shuffled_indices)
 
 		self.train_dataset = CustomSentenceDataset([sentences[i] for i in train_indices], self.tokenizer, train_indices)
 		self.val_dataset = CustomSentenceDataset([sentences[i] for i in val_indices], self.tokenizer, val_indices)
