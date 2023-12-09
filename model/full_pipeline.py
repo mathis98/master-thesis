@@ -263,8 +263,6 @@ class FullPipeline(pl.LightningModule):
 
 		groundtruth = relevant_list(labels_caption, labels_images)
 
-		print(image[0], caption[0], indeces[0])
-
 		if self.intra:
 			_, _, caption_embed, _ = self(batch)
 

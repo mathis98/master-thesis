@@ -96,7 +96,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 		val_indices = []
 		test_indices = []
 
-		elements_per_group = 100
+		elements_per_group = 100 * self.num_repeats
 
 		# Iterate through each group
 		for group_start in range(0, len(indices), elements_per_group):
@@ -112,7 +112,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 			val_indices.extend(group[train_end:val_end])
 			test_indices.extend(group[val_end:])
 
-		self.dataset = SimCLRDataset([self.image_paths[i] for i in list(shuffled_indices)], self.image_size, self.augmentation_transform)
+		self.dataset = SimCLRDataset(self.image_paths, self.image_size, self.augmentation_transform)
 
 		self.train_dataset = SimCLRDataset([self.image_paths[i] for i in train_indices], self.image_size, self.augmentation_transform)
 		self.val_dataset = SimCLRDataset([self.image_paths[i] for i in val_indices], self.image_size, self.augmentation_transform)
