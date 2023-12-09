@@ -72,9 +72,6 @@ full_pipeline.eval()
 
 image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validation=False, true_label=True)
 
-print(labels)
-print(image_embeddings[:4])
-
 while True:
 
 	query = input('Enter query caption (Ctrl + C to exit): ')
