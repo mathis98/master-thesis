@@ -78,7 +78,7 @@ while True:
 	if not query:
 		break
 
-	caption = tokenizer(query, return_tensors='pt')
+	caption = tokenizer(query, return_tensors='pt').to(device)
 	new_caption = [caption]
 	new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
 	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
