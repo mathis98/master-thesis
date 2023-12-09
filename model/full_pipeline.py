@@ -133,7 +133,7 @@ class FullPipeline(pl.LightningModule):
 			caption = caption[0], caption[2], caption[4]
 			augmented_caption = copy_caption[1], copy_caption[3], copy_caption[4]
 
-		print(caption[0])
+		print(image[0])
 
 		image_embed = self.resnet_embedding_module(image)
 		image_embed = image_embed.view(image_embed.size(0), -1)
