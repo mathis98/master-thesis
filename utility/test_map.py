@@ -14,6 +14,9 @@ from data.image.data_module import ImageDataModule
 from data.text.data_module import SentenceDataModule
 from data.imagetext.image_text_pair import ImageTextPairDataModule
 
+from data.image.simclr_data_module import SimCLRDataModule as SimCLRImageDataModule
+from data.text.simclr_data_module import SimCLRDataModule as SimCLRTextDataModule
+
 from tsnecuda import TSNE
 import matplotlib.pyplot as plt
 
@@ -23,15 +26,27 @@ from utility.helpers import to_cuda_recursive
 
 batch_size = 2
 
-
-image_data_module = ImageDataModule('../../Datasets/UCM/imgs', (224,224), batch_size, 5)
-image_data_module.prepare_data()
-image_data_module.setup(stage='predict')
+intra = True
 
 
-text_data_module = SentenceDataModule('prajjwal1/bert-small', batch_size, '../../Datasets/UCM/dataset.json')
-text_data_module.prepare_data()
-text_data_module.setup(stage='predict')
+if intra == True:
+	image_data_module = SimCLRImageDataModule(args.img_path, args.image_size, args.batch_size, augmentation_transform)
+	image_data_module.prepare_data()
+	image_data_module.setup(stage="predict")
+
+	text_data_module = SimCLRTextDataModule(args.batch_size, args.text_path, tokenizer)
+	text_data_module.prepare_data()
+	text_data_module.setup()
+
+elif intra == False:
+	image_data_module = ImageDataModule(args.img_path, args.image_size, args.batch_size, args.num_repeats)
+	image_data_module.prepare_data()
+	image_data_module.setup(stage='predict')
+
+
+	text_data_module = SentenceDataModule(args.model_name, args.batch_size, args.text_path)
+	text_data_module.prepare_data()
+	text_data_module.setup(stage='predict')
 
 image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
 image_text_pair_data_module.setup(stage='predict')
@@ -43,7 +58,7 @@ full_pipeline = FullPipeline(
 	temperature=3.0, 
 	learning_rate=1e-4, 
 	weight_decay=1e-4, 
-	intra=False,
+	intra=intra,
 	top_k=20,
 	val_dataloader = image_text_pair_data_module.val_dataloader,
 	test_dataloader = image_text_pair_data_module.test_dataloader,
