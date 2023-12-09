@@ -59,6 +59,11 @@ full_pipeline = FullPipeline.load_from_checkpoint(
 	test_dataloader = image_text_pair_data_module.test_dataloader,
 )
 
+device = 'cuda:3'
+
+full_pipeline = FullPipeline.to(device)
+image_text_pair_data_module = image_text_pair_data_module.to(device)
+
 
 full_pipeline.eval()
 
