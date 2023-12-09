@@ -31,7 +31,7 @@ from utility.helpers import to_cuda_recursive
 
 batch_size = 8
 
-intra = False
+intra = True
 
 augmentation_transform = v2.Compose([
 		v2.Resize((224,224)),
