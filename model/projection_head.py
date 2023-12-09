@@ -31,26 +31,11 @@ class MyProjectionhead(nn.Module):
 			torch.Tensor: Input tensor embedded by the projection head.
 		"""
 
-		print(x[0])
-
 		x = self.linear1(x)
-
-		print(x[0])
-
 		x = self.bn1(x)
-
-		print(x[0])
-
 		x = self.relu(x)
-
-		print(x[0])
-
 		x = self.linear2(x)
-
-		print(x[0])
-
 		x = self.bn2(x)
 		# x = self.tanh(x)
-		print(x[0])
 
 		return x
