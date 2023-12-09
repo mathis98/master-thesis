@@ -38,16 +38,15 @@ image_text_pair_data_module.setup(stage='predict')
 
 
 full_pipeline = FullPipeline(
-	# '../logs/full_pipeline_full_val_test/version_69/checkpoints/epoch=99-avg_val_mAP=0.34-validation mAP=0.47.ckpt',
-	batch_size=batch_size,
-	max_epochs=100,
-	temperature=3.0,
-	learning_rate=1e-4,
-	weight_decay=1e-4,
+	batch_size=batch_size, 
+	max_epochs=100, 
+	temperature=3.0, 
+	learning_rate=1e-4, 
+	weight_decay=1e-4, 
 	intra=False,
 	top_k=20,
-	val_dataloader=image_text_pair_data_module.val_dataloader,
-	test_dataloader=image_text_pair_data_module.test_dataloader,
+	val_dataloader = image_text_pair_data_module.val_dataloader,
+	test_dataloader = image_text_pair_data_module.test_dataloader,
 )
 
 
