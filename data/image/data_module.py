@@ -41,7 +41,7 @@ class ImageDataSet(Dataset):
 	def __getitem__(self, idx):
 		image_path = self.image_paths[idx]
 		image = Image.open(image_path).convert('RGB')
-		image = self.transform(image)
+		image = basic_transform(image)
 		return image, image_path
 
 
