@@ -104,7 +104,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 		val_indices = []
 		test_indices = []
 
-		elements_per_group = 100
+		elements_per_group = 100 * 5
 
 		# Iterate through each group
 		for group_start in range(0, len(indices), elements_per_group):
@@ -120,7 +120,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 			val_indices.extend(group[train_end:val_end])
 			test_indices.extend(group[val_end:])
 
-		self.dataset = SimCLRDataset(sentences, self.tokenizer, shuffled_indices)
+		self.dataset = SimCLRDataset(sentences, self.tokenizer, indices)
 
 		self.train_dataset = SimCLRDataset([sentences[i] for i in train_indices], self.tokenizer, train_indices)
 		self.val_dataset = SimCLRDataset([sentences[i] for i in val_indices], self.tokenizer, val_indices)
