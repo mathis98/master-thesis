@@ -10,13 +10,13 @@ class MyProjectionhead(nn.Module):
 		output_dim: Output dimenstion of the projection head. 
 	"""
 
-	def __init__(self, input_dim, hidden_dim=1024*4, output_dim=128):
+	def __init__(self, input_dim, hidden_dim, output_dim):
 		super(MyProjectionhead, self).__init__()
 
 		self.linear1 = nn.Linear(input_dim, hidden_dim)
 		self.bn1 = nn.BatchNorm1d(hidden_dim)
-		self.relu = nn.ReLU(True)
-		self.linear2 = nn.Linear(hidden_dim, output_dim, bias=True)
+		self.relu = nn.ReLU()
+		self.linear2 = nn.Linear(hidden_dim, output_dim)
 		self.bn2 = nn.BatchNorm1d(output_dim)
 		# self.tanh = nn.Tanh()
 
