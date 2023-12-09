@@ -271,10 +271,10 @@ class FullPipeline(pl.LightningModule):
 		else:
 			_, caption_embed = self(batch)
 
+		print(caption_embed)
+
 		# image_embed = F.normalize(image_embed, dim=-1, p=2)
 		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
-
-		print(caption_embed)
 
 		image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
