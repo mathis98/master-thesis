@@ -224,6 +224,8 @@ class FullPipeline(pl.LightningModule):
 				indeces = caption[2]
 				if not true_label:
 					indeces = indeces // 500 
+				elif true_label:
+					indeces = indeces // 5
 				labels.append(indeces)
 
 				# Forward pass to get image embeddings
