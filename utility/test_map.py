@@ -56,6 +56,6 @@ full_pipeline.eval()
 devices = find_usable_cuda_devices(1)
 print(f'training on GPU {devices}')
 
-trainer = pl.Trainer(accelerator='cuda', devices=[3], max_epochs=100)
+trainer = pl.Trainer(accelerator='cuda', gpus=[3], max_epochs=100)
 
 trainer.test(full_pipeline, dataloaders=image_text_pair_data_module.test_dataloader())
