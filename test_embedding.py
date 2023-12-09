@@ -85,9 +85,9 @@ while True:
 
 	similarity_scores = torch.nn.functional.cosine_similarity(new_caption_projection, image_embeddings)
 
-	top_k = 5
+	top_k = 20
 	sorted_indices = torch.argsort(similarity_scores, descending=True)[:top_k]
 
-	print('5 closest images:')
+	print('20 closest images:')
 	for idx in sorted_indices:
 		print(f'Image index: {labels[idx].item()}, Similarity: {similarity_scores[idx].item()}')
