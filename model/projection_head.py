@@ -17,8 +17,8 @@ class MyProjectionhead(nn.Module):
 		self.bn1 = nn.BatchNorm1d(hidden_dim)
 		self.relu = nn.ReLU(True)
 		self.linear2 = nn.Linear(hidden_dim, output_dim, bias=True)
-		# self.bn2 = nn.BatchNorm1d(output_dim)
-		self.tanh = nn.Tanh()
+		self.bn2 = nn.BatchNorm1d(output_dim)
+		# self.tanh = nn.Tanh()
 
 	def forward(self, x):
 		"""
@@ -35,7 +35,7 @@ class MyProjectionhead(nn.Module):
 		x = self.bn1(x)
 		x = self.relu(x)
 		x = self.linear2(x)
-		# x = self.bn2(x)
-		x = self.tanh(x)
+		x = self.bn2(x)
+		# x = self.tanh(x)
 
 		return x
