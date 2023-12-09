@@ -1,4 +1,5 @@
 import torch.nn as nn
+import torch
 
 class MyProjectionhead(nn.Module):
 	"""
@@ -12,6 +13,8 @@ class MyProjectionhead(nn.Module):
 
 	def __init__(self, input_dim, hidden_dim, output_dim):
 		super(MyProjectionhead, self).__init__()
+
+		torch.manual_seed(42)
 
 		self.linear1 = nn.Linear(input_dim, hidden_dim)
 		self.bn1 = nn.BatchNorm1d(hidden_dim)
