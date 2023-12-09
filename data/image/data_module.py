@@ -29,19 +29,13 @@ class ImageDataSet(Dataset):
 		self.image_paths = image_paths
 		self.image_size = image_size
 
-		self.transform = transforms.Compose([
-			transforms.Resize(self.image_size),
-			transforms.ToTensor(),
-        ])
-
-
 	def __len__(self):
 		return len(self.image_paths)
 
 	def __getitem__(self, idx):
 		image_path = self.image_paths[idx]
 		image = Image.open(image_path).convert('RGB')
-		image = self.transform(image)
+		image = basic_transform(image)
 		return image, image_path
 
 
