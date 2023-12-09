@@ -64,8 +64,6 @@ elif intra == False:
 image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
 image_text_pair_data_module.setup(stage='predict')
 
-print(image_data_module.test_dataset[:4])
-
 
 full_pipeline = FullPipeline(
 	batch_size=batch_size, 
