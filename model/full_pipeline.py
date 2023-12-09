@@ -124,6 +124,8 @@ class FullPipeline(pl.LightningModule):
 
 		image, caption = batch
 
+		print(image, caption)
+
 		if self.intra:
 			copy_img = image
 			image = image[0], image[2]
@@ -270,8 +272,6 @@ class FullPipeline(pl.LightningModule):
 
 		else:
 			_, caption_embed = self(batch)
-
-		print(caption_embed)
 
 		# image_embed = F.normalize(image_embed, dim=-1, p=2)
 		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
