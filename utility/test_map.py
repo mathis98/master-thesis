@@ -4,6 +4,11 @@
 import sys
 sys.path.append('..')
 
+import torchvision
+torchvision.disable_beta_transforms_warning()
+from torchvision.transforms import v2
+from transformers import AutoTokenizer
+
 import lightning.pytorch as pl
 import numpy as np
 from lightning.pytorch.accelerators import find_usable_cuda_devices
@@ -28,23 +33,31 @@ batch_size = 2
 
 intra = True
 
+augmentation_transform = v2.Compose([
+		v2.RandAugment(), # “RandAugment: Practical automated data augmentation with a reduced search space”.
+		v2.ToImageTensor(),
+		v2.ConvertImageDtype(),
+])
+
+tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
+
 
 if intra == True:
-	image_data_module = SimCLRImageDataModule(args.img_path, args.image_size, args.batch_size, augmentation_transform)
+	image_data_module = SimCLRImageDataModule('../Datasets/UCM/imgs', (224,224), batch_size, augmentation_transform)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage="predict")
 
-	text_data_module = SimCLRTextDataModule(args.batch_size, args.text_path, tokenizer)
+	text_data_module = SimCLRTextDataModule(batch_size, '../Datasets/UCM/dataset.json', tokenizer)
 	text_data_module.prepare_data()
 	text_data_module.setup()
 
 elif intra == False:
-	image_data_module = ImageDataModule(args.img_path, args.image_size, args.batch_size, args.num_repeats)
+	image_data_module = ImageDataModule('../Datasets/UCM/imgs', (224,224), batch_size, 5)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='predict')
 
 
-	text_data_module = SentenceDataModule(args.model_name, args.batch_size, args.text_path)
+	text_data_module = SentenceDataModule('prajjwal1/bert-small', batch_size, '../Datasets/UCM/dataset.json')
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
