@@ -74,11 +74,12 @@ image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validat
 
 while True:
 
-	new_caption = input('Enter query caption (Ctrl + C to exit): ')
+	query = input('Enter query caption (Ctrl + C to exit): ')
 	if not new_caption:
 		break
 
-	caption = tokenizer(new_caption, return_tensors='pt')
+	caption = tokenizer(query, return_tensors='pt')
+	new_caption = []
 	new_caption[0] = new_caption
 	new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
 	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
