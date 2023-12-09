@@ -8,6 +8,7 @@ from data.image.simclr_data_module import SimCLRDataModule as SimCLRImageDataMod
 from data.text.simclr_data_module import SimCLRDataModule as SimCLRTextDataModule
 from torchvision.transforms import v2
 from transformers import AutoTokenizer
+import random
 
 batch_size = 512
 
@@ -71,6 +72,8 @@ image_text_pair_data_module.device = device
 full_pipeline.eval()
 
 image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validation=False, true_label=True)
+
+print(random.sample(text_data_module.test_dataset, 5))
 
 while True:
 
