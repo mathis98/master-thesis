@@ -79,11 +79,8 @@ while True:
 		break
 
 	new_caption = tokenizer(new_caption)
-	# new_caption['input_ids'] = new_caption['input_ids'].squeeze(0)
-	# new_caption['attention_mask'] = new_caption['attention_mask'].squeeze(0)
-	print(new_caption)
 
-	new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
+	new_caption_embedding = full_pipeline.bert_embedding_module([new_caption])
 	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
 
 	similarity_scores = torch.nn.function.cosine_similarity(new_caption_projection, image_embeddings)
