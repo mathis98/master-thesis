@@ -11,6 +11,7 @@ from torchvision.transforms import v2
 
 
 basic_transform = v2.Compose([
+		v2.Resize((224,224)),
 		v2.ToImageTensor(),
 		v2.ConvertImageDtype(),
 ])
