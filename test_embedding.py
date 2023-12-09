@@ -79,8 +79,7 @@ while True:
 		break
 
 	caption = tokenizer(query, return_tensors='pt')
-	new_caption = []
-	new_caption[0] = new_caption
+	new_caption = [caption]
 	new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
 	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
 
