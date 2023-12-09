@@ -4,30 +4,16 @@
 import sys
 sys.path.append('..')
 
-import torchvision
-torchvision.disable_beta_transforms_warning()
-from torchvision.transforms import v2
-from transformers import AutoTokenizer
-
 import lightning.pytorch as pl
-import numpy as np
-from lightning.pytorch.accelerators import find_usable_cuda_devices
-
 import torch
-from model.full_pipeline import FullPipeline  # Import your model
+from model.full_pipeline import FullPipeline
 from data.image.data_module import ImageDataModule
 from data.text.data_module import SentenceDataModule
 from data.imagetext.image_text_pair import ImageTextPairDataModule
-
 from data.image.simclr_data_module import SimCLRDataModule as SimCLRImageDataModule
 from data.text.simclr_data_module import SimCLRDataModule as SimCLRTextDataModule
-
-from tsnecuda import TSNE
-import matplotlib.pyplot as plt
-
-# Argument parsing
-from utility.argument_parser import parse_arguments
-from utility.helpers import to_cuda_recursive
+from torchvision.transforms import v2
+from transformers import AutoTokenizer
 
 batch_size = 512
 
@@ -66,16 +52,39 @@ image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_da
 image_text_pair_data_module.setup(stage='predict')
 
 
-full_pipeline = full_pipeline.load_from_checkpoint('../logs/full_pipeline_full_val_test/version_69/checkpoints/epoch=99-avg_val_mAP=0.34-validation mAP=0.47.ckpt')
+full_pipeline = full_pipeline.load_from_checkpoint(
+	'../logs/full_pipeline_full_val_test/version_69/checkpoints/epoch=99-avg_val_mAP=0.34-validation mAP=0.47.ckpt',
+	batch_size=batch_size, 
+	max_epochs=1, 
+	temperature=3.0, 
+	learning_rate=1e-4, 
+	weight_decay=1e-4, 
+	intra=intra,
+	top_k=20,
+	val_dataloader = image_text_pair_data_module.val_dataloader,
+	test_dataloader = image_text_pair_data_module.test_dataloader,
+)
 
 
 full_pipeline.eval()
 
-image_embeddings, _ = full_pipeline.calculate_embeddings_for_images(validation=False)
+image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validation=False)
 
-new_caption = 'There is a road next to the mountain'
-new_caption = tokenizer(new_caption)
-new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
-new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
+while True:
 
-print(f'new embedding: {new_caption_projection}')
+	new_caption = input('Enter query caption (Ctrl + C to exit): ')
+	if not new_caption:
+		break
+
+	new_caption = tokenizer(new_caption)
+	new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
+	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
+
+	similarity_scores = torch.nn.function.cosine_similarity(new_caption_projection, image_embeddings)
+
+	top_k = 5
+	sorted_indices = torch.argsort(similarity_scores, descending=True)[:top_k]
+
+	print('5 closest images:')
+	for idx in sorted_indices:
+		print(f'Image index: {labels[idx].item()}, Similarity: {similarity_scores[idx].item()}')
