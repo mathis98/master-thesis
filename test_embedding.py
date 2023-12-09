@@ -46,8 +46,8 @@ image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_da
 image_text_pair_data_module.setup(stage='predict')
 
 
-full_pipeline = FullPipeline(
-	# './logs/full_pipeline_full_val_test/version_210/checkpoints/epoch=197-avg_val_mAP=0.88-validation mAP=0.92.ckpt',
+full_pipeline = FullPipeline.load_from_checkpoint(
+	'./logs/full_pipeline_full_val_test/version_210/checkpoints/epoch=197-avg_val_mAP=0.88-validation mAP=0.92.ckpt',
 	batch_size=batch_size, 
 	max_epochs=1, 
 	temperature=3.0, 
