@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 from utility.argument_parser import parse_arguments
 from utility.helpers import to_cuda_recursive
 
-batch_size = 32
+batch_size = 64
 
 
 image_data_module = ImageDataModule('../../Datasets/UCM/imgs', (224,224), batch_size, 5)
