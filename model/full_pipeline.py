@@ -124,8 +124,6 @@ class FullPipeline(pl.LightningModule):
 
 		image, caption = batch
 
-		print(image, caption)
-
 		if self.intra:
 			copy_img = image
 			image = image[0], image[2]
@@ -134,6 +132,8 @@ class FullPipeline(pl.LightningModule):
 			copy_caption = caption
 			caption = caption[0], caption[2], caption[4]
 			augmented_caption = copy_caption[1], copy_caption[3], copy_caption[4]
+
+		print(caption[0])
 
 		image_embed = self.resnet_embedding_module(image)
 		image_embed = image_embed.view(image_embed.size(0), -1)
@@ -267,13 +267,15 @@ class FullPipeline(pl.LightningModule):
 
 		groundtruth = relevant_list(labels_caption, labels_images)
 
+		# image_embed, augmented_image_embed, caption_embed, augmented_caption_embed
+
 		if self.intra:
 			_, _, caption_embed, _ = self(batch)
 
+		# image_embed, caption_embed
 		else:
 			_, caption_embed = self(batch)
 
-		# image_embed = F.normalize(image_embed, dim=-1, p=2)
 		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
 		image_embeddings = self.validation_embeddings if validation else self.test_embeddings

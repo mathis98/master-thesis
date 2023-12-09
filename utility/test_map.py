@@ -68,7 +68,7 @@ image_text_pair_data_module.setup(stage='predict')
 
 full_pipeline = FullPipeline(
 	batch_size=batch_size, 
-	max_epochs=100, 
+	max_epochs=1, 
 	temperature=3.0, 
 	learning_rate=1e-4, 
 	weight_decay=1e-4, 
@@ -84,6 +84,6 @@ full_pipeline.eval()
 # devices = find_usable_cuda_devices(1)
 # print(f'training on GPU {devices}')
 
-trainer = pl.Trainer(accelerator='cuda', devices=[3], max_epochs=100)
+trainer = pl.Trainer(accelerator='cuda', devices=[3], max_epochs=1)
 
 trainer.test(full_pipeline, dataloaders=image_text_pair_data_module.test_dataloader())
