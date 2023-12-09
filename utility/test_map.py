@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 from utility.argument_parser import parse_arguments
 from utility.helpers import to_cuda_recursive
 
-batch_size = 64
+batch_size = 8
 
 intra = False
 
