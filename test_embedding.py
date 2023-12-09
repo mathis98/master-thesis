@@ -75,7 +75,7 @@ image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validat
 while True:
 
 	query = input('Enter query caption (Ctrl + C to exit): ')
-	if not new_caption:
+	if not query:
 		break
 
 	caption = tokenizer(query, return_tensors='pt')
