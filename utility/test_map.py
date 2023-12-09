@@ -29,9 +29,9 @@ import matplotlib.pyplot as plt
 from utility.argument_parser import parse_arguments
 from utility.helpers import to_cuda_recursive
 
-batch_size = 2
+batch_size = 64
 
-intra = True
+intra = False
 
 augmentation_transform = v2.Compose([
 		v2.RandAugment(), # “RandAugment: Practical automated data augmentation with a reduced search space”.
