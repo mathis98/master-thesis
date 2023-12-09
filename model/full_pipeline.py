@@ -263,8 +263,6 @@ class FullPipeline(pl.LightningModule):
 		labels_caption = indeces // 500 # They need to be same if in same class
 		labels_images = self.validation_labels if validation else self.test_labels
 
-		print(image[0], caption[0], indeces[0])
-
 		groundtruth = relevant_list(labels_caption, labels_images)
 
 		# image_embed, augmented_image_embed, caption_embed, augmented_caption_embed
