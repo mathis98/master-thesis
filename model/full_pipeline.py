@@ -241,8 +241,8 @@ class FullPipeline(pl.LightningModule):
 
 				print(type(image_embed), image_embed.shape)
 
-				temp_embed = torch.tensor()
-				temp_labels = torch.tensor()
+				temp_embed = torch.tensor([])
+				temp_labels = torch.tensor([])
 
 				for idx, embed in zip(true_label_value.tolist(), image_embed):
 					if idx in unique_embeddings:
