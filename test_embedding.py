@@ -13,7 +13,7 @@ import os
 
 batch_size = 512
 
-intra = True
+intra = False
 
 augmentation_transform = v2.Compose([
 		v2.Resize((224,224)),
