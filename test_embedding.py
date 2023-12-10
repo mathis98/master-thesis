@@ -121,4 +121,4 @@ while True:
 
 	print('20 closest images:')
 	for idx in sorted_indices:
-		print(f'Image index: {labels[idx].item()}, Similarity: {similarity_scores[idx].item()}')
+		print(f'Image index: {int(labels[idx].item())}, Similarity: {similarity_scores[idx].item()}')
