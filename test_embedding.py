@@ -51,8 +51,8 @@ version = input('Version number to load: ')
 
 
 name = os.listdir(f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints')[0]
-checkpoint = f'./logs/full_pipeline_full_val_test/version{version}/checkpoints/{name}'
-print(checkpoint)
+checkpoint = f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints/{name}'
+print(f'Loding from {checkpoint}')
 
 full_pipeline = FullPipeline.load_from_checkpoint(
 	checkpoint,
