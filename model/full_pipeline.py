@@ -223,12 +223,12 @@ class FullPipeline(pl.LightningModule):
 					caption = caption[0], caption[2], caption[4]
 
 				indeces = caption[2]
-				true_label_value = indeces // 5 + 1
+				true_label_value = indeces // 5
 				if not true_label:
 					indeces = indeces // 500 
 				elif true_label:
 					indeces = true_label_value
-				labels.append(indeces)
+				
 
 				# Forward pass to get image embeddings
 				if self.intra:
@@ -241,6 +241,10 @@ class FullPipeline(pl.LightningModule):
 
 				# deduplicate
 				for idx, embed in zip(true_label_value.tolist(), image_embed):
+					if true_label:
+						labels.append(idx + 1)
+					else:
+						labels.append(idx // 100)
 					if idx not in unique_embeddings_dict:
 						unique_embeddings_dict[idx] = embed
 
