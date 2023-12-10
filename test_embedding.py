@@ -52,20 +52,37 @@ version = input('Version number to load: ')
 
 name = os.listdir(f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints')[0]
 checkpoint = f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints/{name}'
-print(f'Loading from {checkpoint}')
 
-full_pipeline = FullPipeline.load_from_checkpoint(
-	checkpoint,
-	batch_size=batch_size, 
-	max_epochs=1, 
-	temperature=3.0, 
-	learning_rate=1e-4, 
-	weight_decay=1e-4, 
-	intra=intra,
-	top_k=20,
-	val_dataloader = image_text_pair_data_module.val_dataloader,
-	test_dataloader = image_text_pair_data_module.test_dataloader,
-)
+if name == '':
+	print('Loading untrained model')
+
+	full_pipeline = FullPipeline(
+		batch_size=batch_size, 
+		max_epochs=1, 
+		temperature=3.0, 
+		learning_rate=1e-4, 
+		weight_decay=1e-4, 
+		intra=intra,
+		top_k=20,
+		val_dataloader = image_text_pair_data_module.val_dataloader,
+		test_dataloader = image_text_pair_data_module.test_dataloader,
+	)
+
+else:
+	print(f'Loading from {checkpoint}')
+
+	full_pipeline = FullPipeline.load_from_checkpoint(
+		checkpoint,
+		batch_size=batch_size, 
+		max_epochs=1, 
+		temperature=3.0, 
+		learning_rate=1e-4, 
+		weight_decay=1e-4, 
+		intra=intra,
+		top_k=20,
+		val_dataloader = image_text_pair_data_module.val_dataloader,
+		test_dataloader = image_text_pair_data_module.test_dataloader,
+	)
 
 device = 'cuda:3'
 

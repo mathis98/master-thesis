@@ -219,8 +219,6 @@ class FullPipeline(pl.LightningModule):
 
 				image, caption = batch
 
-				print(batch[0])
-
 				if self.intra:
 					image = image[0], image[2]
 					caption = caption[0], caption[2], caption[4]
