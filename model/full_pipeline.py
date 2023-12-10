@@ -219,6 +219,8 @@ class FullPipeline(pl.LightningModule):
 
 				image, caption = batch
 
+				image, caption = to_cuda_recursive(image, ':3'), to_cuda_recursive(caption, ':3')
+
 				if self.intra:
 					image = image[0], image[2]
 					caption = caption[0], caption[2], caption[4]
