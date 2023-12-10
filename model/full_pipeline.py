@@ -207,6 +207,8 @@ class FullPipeline(pl.LightningModule):
 		image_embeddings = []
 		labels = []
 
+		unique_embeddings = {}
+
 		# Set to evaluation mode
 		self.eval()
 
@@ -222,10 +224,11 @@ class FullPipeline(pl.LightningModule):
 					caption = caption[0], caption[2], caption[4]
 
 				indeces = caption[2]
+				true_label_value = indeces // 5
 				if not true_label:
 					indeces = indeces // 500 
 				elif true_label:
-					indeces = indeces // 5 + 1
+					indeces = true_label_value + 1
 				labels.append(indeces)
 
 				# Forward pass to get image embeddings
@@ -236,7 +239,19 @@ class FullPipeline(pl.LightningModule):
 					image_embed, _ = self(batch)
 
 				image_embed = F.normalize(image_embed, dim=-1, p=2)
-				image_embeddings.append(image_embed)
+
+				for idx, embed in zip(true_label_value.tolist(), image_embed):
+					if idx in unique_embeddings:
+						continue
+					else:
+						unique_embeddings.add(idx)
+						image_embeddings.append(embed)
+
+						if not true_label:
+							idx = idx // 100
+						labels.append(idx)
+
+				# image_embeddings.append(image_embed)
 
 		# Concatenate embeddings
 		image_embeddings = torch.cat(image_embeddings, dim=0)
