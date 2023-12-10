@@ -124,7 +124,7 @@ class FullPipeline(pl.LightningModule):
 
 		image, caption = batch
 
-		image, caption = to_cuda_recursive(image), to_cuda_recursive(caption)
+		image, caption = to_cuda_recursive(image, ':3'), to_cuda_recursive(caption, ':3')
 
 		if self.intra:
 			copy_img = image
