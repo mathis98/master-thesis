@@ -206,7 +206,7 @@ class FullPipeline(pl.LightningModule):
 		# List to store embeddings
 		labels = []
 
-		unique_embeddings_dic = {}
+		unique_embeddings_dict = {}
 
 		# Set to evaluation mode
 		self.eval()
