@@ -239,8 +239,6 @@ class FullPipeline(pl.LightningModule):
 
 				image_embed = F.normalize(image_embed, dim=-1, p=2)
 
-				print(type(image_embed), image_embed.shape)
-
 				temp_embed = torch.tensor([]).to(image_embed.device)
 				temp_labels = torch.tensor([]).to(image_embed.device)
 
@@ -262,9 +260,6 @@ class FullPipeline(pl.LightningModule):
 		image_embeddings = torch.cat(image_embeddings, dim=0)
 
 		labels = torch.cat(labels, dim=0)
-
-		print(image_embeddings.shape)
-		print(image_embeddings[:5])
 
 		return image_embeddings, labels
 
