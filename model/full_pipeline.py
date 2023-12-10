@@ -215,11 +215,9 @@ class FullPipeline(pl.LightningModule):
 		# Offers speedup, don't calculate gradients
 		with torch.no_grad():		
 			for batch in dataloader:
-				batch = to_cuda_recursive(batch, ':3')
+				batch = to_cuda_recursive(batch)
 
 				image, caption = batch
-
-				image, caption = to_cuda_recursive(image, ':3'), to_cuda_recursive(caption, ':3')
 
 				if self.intra:
 					image = image[0], image[2]

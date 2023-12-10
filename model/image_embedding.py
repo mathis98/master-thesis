@@ -19,6 +19,7 @@ class ImageEmbeddingModule(pl.LightningModule):
 		self.model = torch.nn.Sequential(*(list(self.model.children())[:-1])) # Remove classification layer
 
 	def forward(self, batch):
+		print(batch[0].device)
 		"""
 		Forward pass through the image embedding module.
 
