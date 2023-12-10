@@ -53,7 +53,7 @@ version = input('Version number to load: ')
 name = os.listdir(f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints')[0]
 checkpoint = f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints/{name}'
 
-if name == '':
+if version == '':
 	print('Loading untrained model')
 
 	full_pipeline = FullPipeline(
