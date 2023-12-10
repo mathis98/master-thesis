@@ -50,9 +50,6 @@ image_text_pair_data_module.setup(stage='predict')
 version = input('Version number to load: ')
 
 
-name = os.listdir(f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints')[0]
-checkpoint = f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints/{name}'
-
 if version == '':
 	print('Loading untrained model')
 
@@ -69,6 +66,9 @@ if version == '':
 	)
 
 else:
+	name = os.listdir(f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints')[0]
+	checkpoint = f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints/{name}'
+	
 	print(f'Loading from {checkpoint}')
 
 	full_pipeline = FullPipeline.load_from_checkpoint(
