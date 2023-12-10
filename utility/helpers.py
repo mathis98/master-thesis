@@ -170,10 +170,10 @@ def define_param_groups(model, weight_decay, optimizer_name):
 	]
 
 
-def to_cuda_recursive(obj):
+def to_cuda_recursive(obj, device=''):
 	if isinstance(obj, torch.Tensor):
 		# Move the tensor to the CUDA device
-		return obj.to('cuda')
+		return obj.to(f'cuda{device}')
 	elif isinstance(obj, list):
 		# Recursively move each element of the list to the CUDA device
 		return [to_cuda_recursive(item) for item in obj]
@@ -189,7 +189,7 @@ def to_cuda_recursive(obj):
 		return obj
 	elif isinstance(obj, np.ndarray):
 		# Handle numpy arrays
-		return torch.from_numpy(obj).to('cuda')
+		return torch.from_numpy(obj).to(f'cuda{device}')
 	else:
 		return obj  # Return unchanged if not a tensor, list, tuple, or dict
 

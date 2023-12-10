@@ -124,6 +124,8 @@ class FullPipeline(pl.LightningModule):
 
 		image, caption = batch
 
+		image, caption = to_cuda_recursive(image), to_cuda_recursive(caption)
+
 		if self.intra:
 			copy_img = image
 			image = image[0], image[2]
@@ -132,9 +134,6 @@ class FullPipeline(pl.LightningModule):
 			copy_caption = caption
 			caption = caption[0], caption[2], caption[4]
 			augmented_caption = copy_caption[1], copy_caption[3], copy_caption[4]
-
-		image = image.to('cuda:3')
-		caption = caption.to('cuda:3')
 
 		image_embed = self.resnet_embedding_module(image)
 		image_embed = image_embed.view(image_embed.size(0), -1)
