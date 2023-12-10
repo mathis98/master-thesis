@@ -9,6 +9,7 @@ from data.text.simclr_data_module import SimCLRDataModule as SimCLRTextDataModul
 from torchvision.transforms import v2
 from transformers import AutoTokenizer
 import random
+import os
 
 batch_size = 512
 
@@ -46,9 +47,14 @@ elif intra == False:
 image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
 image_text_pair_data_module.setup(stage='predict')
 
+version = input('Version number to load: ')
+
+
+checkpoint = os.listdir(f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints')[0]
+print(checkpoint)
 
 full_pipeline = FullPipeline.load_from_checkpoint(
-	'./logs/full_pipeline_full_val_test/version_210/checkpoints/epoch=197-avg_val_mAP=0.88-validation mAP=0.92.ckpt',
+	checkpoint,
 	batch_size=batch_size, 
 	max_epochs=1, 
 	temperature=3.0, 
