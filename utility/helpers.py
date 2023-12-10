@@ -191,6 +191,7 @@ def to_cuda_recursive(obj, device=''):
 		# Handle numpy arrays
 		return torch.from_numpy(obj).to(f'cuda{device}')
 	else:
+		print(type(obj))
 		return obj  # Return unchanged if not a tensor, list, tuple, or dict
 
 
