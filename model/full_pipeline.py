@@ -251,7 +251,7 @@ class FullPipeline(pl.LightningModule):
 
 						if not true_label:
 							idx = idx // 100
-						temp_labels = torch.cat([temp_labels, torch.tensor(idx).to(image_embed.device).unsqueeze(0)], dim=0)
+						temp_labels = torch.cat([temp_labels, torch.tensor(idx, dtype=torch.long).to(image_embed.device).unsqueeze(0)], dim=0)
 
 				image_embeddings.append(temp_embed)
 				labels.append(temp_labels)
