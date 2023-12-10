@@ -68,7 +68,7 @@ if version == '':
 else:
 	name = os.listdir(f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints')[0]
 	checkpoint = f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints/{name}'
-	
+
 	print(f'Loading from {checkpoint}')
 
 	full_pipeline = FullPipeline.load_from_checkpoint(
@@ -97,7 +97,10 @@ full_pipeline.eval()
 
 image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validation=False, true_label=True)
 
-print(random.sample(list(text_data_module.test_dataset), 5))
+random_sample = random.sample(list(text_data_module.test_dataset), 5)
+
+for element in random_sample:
+	print(element[2], element[3] // 100 + 1)
 
 while True:
 
