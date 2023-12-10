@@ -50,7 +50,8 @@ image_text_pair_data_module.setup(stage='predict')
 version = input('Version number to load: ')
 
 
-checkpoint = os.listdir(f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints')[0]
+name = os.listdir(f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints')[0]
+checkpoint = f'./logs/full_pipeline_full_val_test/version{version}/checkpoints/{name}'
 print(checkpoint)
 
 full_pipeline = FullPipeline.load_from_checkpoint(
