@@ -240,6 +240,8 @@ class FullPipeline(pl.LightningModule):
 
 				image_embed = F.normalize(image_embed, dim=-1, p=2)
 
+				print(type(image_embed), image_embed.shape)
+
 				for idx, embed in zip(true_label_value.tolist(), image_embed):
 					if idx in unique_embeddings:
 						continue
