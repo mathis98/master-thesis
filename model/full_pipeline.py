@@ -207,7 +207,7 @@ class FullPipeline(pl.LightningModule):
 		image_embeddings = []
 		labels = []
 
-		unique_embeddings = {}
+		unique_embeddings = set()
 
 		# Set to evaluation mode
 		self.eval()
