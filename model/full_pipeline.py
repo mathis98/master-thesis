@@ -247,7 +247,7 @@ class FullPipeline(pl.LightningModule):
 						continue
 					else:
 						unique_embeddings.add(idx)
-						temp_embed = torch.cat([temp_embed, embed.unsqueeze(0)], dim=0)
+						temp_embed = torch.cat([temp_embed, embed.unsqueeze(0).to(image_embed.device)], dim=0)
 
 						if not true_label:
 							idx = idx // 100
