@@ -52,7 +52,7 @@ version = input('Version number to load: ')
 
 name = os.listdir(f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints')[0]
 checkpoint = f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints/{name}'
-print(f'Loding from {checkpoint}')
+print(f'Loading from {checkpoint}')
 
 full_pipeline = FullPipeline.load_from_checkpoint(
 	checkpoint,
@@ -67,7 +67,7 @@ full_pipeline = FullPipeline.load_from_checkpoint(
 	test_dataloader = image_text_pair_data_module.test_dataloader,
 )
 
-device = 'cuda:3'
+device = 'cuda:0'
 
 full_pipeline.resnet_embedding_module.to(device)
 full_pipeline.bert_embedding_module.to(device)
