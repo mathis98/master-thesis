@@ -242,9 +242,9 @@ class FullPipeline(pl.LightningModule):
 				# deduplicate
 				for idx, embed in zip(true_label_value.tolist(), image_embed):
 					if true_label:
-						labels.append(idx + 1)
+						labels.append(torch.tensor(idx + 1))
 					else:
-						labels.append(idx // 100)
+						labels.append(torch.tensor(idx // 100))
 					if idx not in unique_embeddings_dict:
 						unique_embeddings_dict[idx] = embed
 
