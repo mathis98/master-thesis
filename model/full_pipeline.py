@@ -219,7 +219,7 @@ class FullPipeline(pl.LightningModule):
 
 				image, caption = batch
 
-				batch[0].device
+				print(batch[0])
 
 				if self.intra:
 					image = image[0], image[2]
