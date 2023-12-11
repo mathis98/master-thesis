@@ -81,7 +81,7 @@ else:
 		intra=intra,
 		top_k=20,
 		val_dataloader = image_text_pair_data_module.val_dataloader,
-		test_dataloader = image_text_pair_data_module.dataloaderr,
+		test_dataloader = image_text_pair_data_module.test_dataloader,
 	)
 
 device = 'cuda:3'
@@ -115,7 +115,7 @@ while True:
 	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
 
 	similarity_scores = torch.matmul(image_embeddings, new_caption_projection)
-	
+
 	top_k = 20
 	sorted_indices = torch.argsort(similarity_scores, descending=True)[:top_k]
 
