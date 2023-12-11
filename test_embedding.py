@@ -114,7 +114,7 @@ while True:
 	new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
 	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
 
-	similarity_scores = torch.nn.functional.cosina_similarity(image_embeddings, new_caption_projection)
+	similarity_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
 
 	top_k = 20
 	sorted_indices = torch.argsort(similarity_scores, descending=True)[:top_k]
