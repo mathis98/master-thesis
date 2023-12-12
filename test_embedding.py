@@ -81,7 +81,7 @@ else:
 		intra=intra,
 		top_k=20,
 		val_dataloader = image_text_pair_data_module.val_dataloader,
-		test_dataloader = image_text_pair_data_module.dataloader,
+		test_dataloader = image_text_pair_data_module.test_dataloader,
 	)
 
 device = 'cuda:3'
