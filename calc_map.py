@@ -10,6 +10,7 @@ from torchvision.transforms import v2
 from transformers import AutoTokenizer
 import random
 import os
+import inquirer
 
 batch_size = 512
 
@@ -103,4 +104,48 @@ trainer = pl.Trainer(
 	log_every_n_steps=5,
 )
 
-trainer.test(full_pipeline, dataloaders=image_text_pair_data_module.test_dataloader())
+questions = [
+	inquirer.List(
+		'task',
+		message: 'Select a task:',
+		choices=[
+			'Calculate test mAP score',
+			'Test embeddings',
+			'Visualize via t-SNE',
+		],
+	),
+]
+
+answers = inquirer.prompt(questions)
+
+if answers['task'] == 'Calculate test mAP score':
+	trainer.test(full_pipeline, dataloaders=image_text_pair_data_module.test_dataloader())
+elif answers['task'] == 'Test embeddings':
+	random_sample = random.sample(list(text_data_module.test_dataset), 5)
+
+	print('5 Random samples:')
+	for element in random_sample:
+		print(f'Sentence: {element[1]} (Index: {element[2] // 5 + 1})')
+
+	while True:
+
+		query = input('Enter query caption (Ctrl + C to exit): ')
+		if not query:
+			break
+
+		caption = tokenizer(query, return_tensors='pt').to(device)
+		new_caption = [caption]
+		new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
+		new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
+
+		similarity_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
+
+		top_k = 20
+		sorted_indices = torch.argsort(similarity_scores, descending=True)[:top_k]
+
+		print('20 closest images:')
+		for idx in sorted_indices:
+			print(f'Image index: {int(labels[idx].item())}, Similarity: {similarity_scores[idx].item()}')
+elif answers['task'] == 'Visualize via t-SNE':
+	print('t-SNE not yet implemented')
+
