@@ -101,20 +101,6 @@ trainer = pl.Trainer(
 	devices=[2], 
 	max_epochs=1000,
 	log_every_n_steps=5,
-	gradient_clip_val=0.5,
-	precision='16-mixed',
-	callbacks=[
-		ModelCheckpoint(
-			save_weights_only=True, 
-			mode='max', 
-			monitor='avg_val_mAP', 
-			filename='{epoch}-{avg_val_mAP:.2f}-{validation mAP:.2f}'
-		),
-		LearningRateMonitor('epoch'),
-		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=10, verbose=False, mode='max'),
-		# StochasticWeightAveraging(swa_lrs=1e-2),
-	],
-	accumulate_grad_batches=1,
 )
 
 trainer.test(ckpt_path='best', dataloaders=image_text_pair_data_module.test_dataloader())
