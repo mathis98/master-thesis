@@ -329,9 +329,6 @@ class FullPipeline(pl.LightningModule):
 		"""
 
 		mAP_1,mAP_5,mAP_10,mAP_20 = self.shared_step(batch, validation=False)
-		self.log('test_mAP_1',np.mean(mAP_1), batch_size=self.batch_size)
-		self.log('test_mAP_5',np.mean(mAP_5), batch_size=self.batch_size)
-		self.log('test_mAP_10',np.mean(mAP_10), batch_size=self.batch_size)
 		self.log('test_mAP_20',np.mean(mAP_20), batch_size=self.batch_size)
 		self.test_step_outputs_1.append(mAP_1)
 		self.test_step_outputs_5.append(mAP_5)
