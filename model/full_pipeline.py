@@ -307,7 +307,7 @@ class FullPipeline(pl.LightningModule):
 		map_1, map_5, map_10, map_20 = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=1),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=5),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=10),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=20)
 
 
-		return mAP
+		return map_1, map_5, map_10, map_20
 
 
 	def on_test_epoch_start(self):
