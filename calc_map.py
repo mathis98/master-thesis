@@ -103,4 +103,4 @@ trainer = pl.Trainer(
 	log_every_n_steps=5,
 )
 
-trainer.test(ckpt_path='best', dataloaders=image_text_pair_data_module.test_dataloader())
+trainer.test(full_pipeline, dataloaders=image_text_pair_data_module.test_dataloader())
