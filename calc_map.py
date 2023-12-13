@@ -93,6 +93,10 @@ full_pipeline.projection_head.to(device)
 image_text_pair_data_module.device = device
 
 
+logger = pl.loggers.CSVLogger('logs', name='full_pipeline_full_val_test')
+
+logger.log_hyperparams(args)
+
 trainer = pl.Trainer(
 	logger=logger, 
 	accelerator='cuda', 
