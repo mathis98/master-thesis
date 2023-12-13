@@ -107,7 +107,7 @@ trainer = pl.Trainer(
 questions = [
 	inquirer.List(
 		'task',
-		message: 'Select a task:',
+		message= 'Select a task:',
 		choices=[
 			'Calculate test mAP score',
 			'Test embeddings',
