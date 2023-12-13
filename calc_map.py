@@ -95,13 +95,11 @@ image_text_pair_data_module.device = device
 
 logger = pl.loggers.CSVLogger('logs', name='full_pipeline_full_val_test')
 
-logger.log_hyperparams(args)
-
 trainer = pl.Trainer(
 	logger=logger, 
 	accelerator='cuda', 
 	devices=[2], 
-	max_epochs=args.max_epochs,
+	max_epochs=1000,
 	log_every_n_steps=5,
 	gradient_clip_val=0.5,
 	precision='16-mixed',
@@ -116,7 +114,7 @@ trainer = pl.Trainer(
 		EarlyStopping(monitor='avg_val_mAP', min_delta=.0, patience=10, verbose=False, mode='max'),
 		# StochasticWeightAveraging(swa_lrs=1e-2),
 	],
-	accumulate_grad_batches=args.accumulate,
+	accumulate_grad_batches=1,
 )
 
 trainer.test(ckpt_path='best', dataloaders=image_text_pair_data_module.test_dataloader())
