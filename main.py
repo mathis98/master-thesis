@@ -85,14 +85,14 @@ logger.log_hyperparams(args)
 # devices = find_usable_cuda_devices(1)
 # print(f'training on GPU {devices}')
 
-devices = [2]
+devices = [3]
 
 print(f'training on GPU {devices}')
 
 trainer = pl.Trainer(
 	logger=logger, 
 	accelerator='cuda', 
-	devices=[2], 
+	devices=[3], 
 	max_epochs=args.max_epochs,
 	log_every_n_steps=5,
 	gradient_clip_val=0.5,
