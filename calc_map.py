@@ -98,7 +98,7 @@ logger = pl.loggers.CSVLogger('logs', name='full_pipeline_full_val_test')
 trainer = pl.Trainer(
 	logger=logger, 
 	accelerator='cuda', 
-	devices=[2], 
+	devices=[3], 
 	max_epochs=1000,
 	log_every_n_steps=5,
 )
