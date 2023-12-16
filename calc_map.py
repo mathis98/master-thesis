@@ -11,7 +11,7 @@ from transformers import AutoTokenizer
 import random
 import os
 
-batch_size = 512
+batch_size = 200
 
 intra = False
 
