@@ -58,12 +58,14 @@ class SentenceDataModule(pl.LightningDataModule):
 		json_file_path (str): path to the json file containing the captions
 		seed (int): seed for shuffling
 	"""
-	def __init__(self, model_name, batch_size, json_file_path, seed=42):
+	def __init__(self, model_name, batch_size, json_file_path, seed=42, num_repeats=5, technique='Concat'):
 		super(SentenceDataModule, self).__init__()
 		self.model_name = model_name
 		self.batch_size = batch_size
 		self.json_file_path = json_file_path 
 		self.seed = seed
+		self.num_repeats = num_repeats
+		self.technique = technique
 
 	def setup(self, stage=None):
 		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
@@ -73,6 +75,11 @@ class SentenceDataModule(pl.LightningDataModule):
 
 		sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
 		sentences = list(itertools.chain.from_iterable(sentences))
+
+		if technique == 'Concat':
+			sentences = [' '.join([item['sentences'][i]['raw'] for i in range(5)]) for item in data['images']]
+
+		print(sentences[:3])
 
 		total_size = len(sentences)
 		train_size = int(.8 * total_size)
@@ -88,7 +95,7 @@ class SentenceDataModule(pl.LightningDataModule):
 		val_indices = []
 		test_indices = []
 
-		elements_per_group = 100 * 5
+		elements_per_group = 100 * self.num_repeats
 
 		# Iterate through each group
 		for group_start in range(0, len(indices), elements_per_group):
