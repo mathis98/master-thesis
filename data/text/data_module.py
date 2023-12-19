@@ -81,7 +81,7 @@ class SentenceDataModule(pl.LightningDataModule):
 			sentences = [' '.join([item['sentences'][i]['raw'] for i in range(5)]) for item in data['images']]
 
 		elif self.technique == 'Random':
-			sentences = [random.choice([item['sentences'][i]['raw'] for i in range(5)]) for item in data['images']]
+			sentences = [random.sample([item['sentences'][i]['raw'] for i in range(5)], 1)[0] for item in data['images']]
 
 		elif self.technique == 'Repeat':
 			sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
