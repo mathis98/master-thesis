@@ -76,7 +76,7 @@ class SentenceDataModule(pl.LightningDataModule):
 		sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
 		sentences = list(itertools.chain.from_iterable(sentences))
 
-		if technique == 'Concat':
+		if self.technique == 'Concat':
 			sentences = [' '.join([item['sentences'][i]['raw'] for i in range(5)]) for item in data['images']]
 
 		print(sentences[:3])
