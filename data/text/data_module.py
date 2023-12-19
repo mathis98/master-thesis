@@ -67,12 +67,12 @@ class SentenceDataModule(pl.LightningDataModule):
 		self.seed = seed
 		self.num_repeats = num_repeats
 		self.technique = technique
+		self.rand = 4
 
 	def setup(self, stage=None):
 		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
 
 		random.seed(self.seed)
-		np.random.seed(self.seed)
 
 		with open(self.json_file_path, 'r') as json_file:
 			data = json.load(json_file)
@@ -81,7 +81,7 @@ class SentenceDataModule(pl.LightningDataModule):
 			sentences = [' '.join([item['sentences'][i]['raw'] for i in range(5)]) for item in data['images']]
 
 		elif self.technique == 'Random':
-			sentences = [random.sample([item['sentences'][i]['raw'] for i in range(5)], 1)[0] for item in data['images']]
+			sentences = [[item['sentences'][i]['raw'] for i in range(5)][self.rand] for item in data['images']]
 
 		elif self.technique == 'Repeat':
 			sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
