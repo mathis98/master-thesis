@@ -84,7 +84,7 @@ class SentenceDataModule(pl.LightningDataModule):
 			sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
 			sentences = list(itertools.chain.from_iterable(sentences))
 
-		print(sentences[:-3])
+		print(sentences[-3:])
 
 		total_size = len(sentences)
 		train_size = int(.8 * total_size)
