@@ -79,8 +79,6 @@ class SentenceDataModule(pl.LightningDataModule):
 		if self.technique == 'Concat':
 			sentences = [' '.join([item['sentences'][i]['raw'] for i in range(5)]) for item in data['images']]
 
-		print(sentences[:-4])
-
 		total_size = len(sentences)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
