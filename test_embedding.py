@@ -99,11 +99,11 @@ image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validat
 
 
 print('text:')
-print(text_data_module.test_dataset[:5])
+print(list(text_data_module.test_dataset)[:5])
 print('image:')
-print(image_data_module.test_dataset[:5])
+print(list(image_data_module.test_dataset)[:5])
 print('imagetext:')
-print(image_text_pair_data_module.test_dataset[:5])
+print(list(image_text_pair_data_module.test_dataset)[:5])
 
 random_sample = random.sample(list(text_data_module.test_dataset), 5)
 
