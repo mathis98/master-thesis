@@ -70,7 +70,7 @@ class FullPipeline(pl.LightningModule):
 		validation_labels (Tensor): list of labels of validation images.
 		test_labels (Tensor): list of labels of test images.
 	"""
-	def __init__(self, val_dataloader=None, test_dataloader=None, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128, top_k=10):
+	def __init__(self, val_dataloader=None, test_dataloader=None, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128, top_k=10, num_repeats=1):
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
 		self.intra = intra
@@ -113,6 +113,7 @@ class FullPipeline(pl.LightningModule):
 		self.test_labels = torch.Tensor()
 
 		self.top_k = top_k
+		self.num_repeats = num_repeats
 
 	def forward(self, batch):
 		"""
@@ -227,9 +228,9 @@ class FullPipeline(pl.LightningModule):
 					caption = caption[0], caption[2], caption[4]
 
 				indeces = caption[2]
-				true_label_value = indeces // 5
+				true_label_value = indeces // self.num_repeats
 				if not true_label:
-					indeces = indeces // 500 
+					indeces = indeces // (self.num_repeats * 100) 
 				elif true_label:
 					indeces = true_label_value + 1
 
@@ -285,7 +286,7 @@ class FullPipeline(pl.LightningModule):
 			caption = caption[0], caption[2], caption[4]
 
 		indeces = caption[2]
-		labels_caption = indeces // 500 # They need to be same if in same class
+		labels_caption = indeces // (self.num_repeats * 100) # They need to be same if in same class
 		labels_images = self.validation_labels if validation else self.test_labels
 
 		groundtruth = relevant_list(labels_caption, labels_images)
