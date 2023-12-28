@@ -77,7 +77,7 @@ class SentenceDataModule(pl.LightningDataModule):
 		if self.technique == 'Concat':
 
 			if 'NWPU' in self.json_file_path:
-				print([category for category in data][:5])
+				print([item for item in [category for category in data][:5]])
 				sentences = [[' '.join([item[f'raw_{i}'] for i in range(1,6)]) for item in category] for category in data]
 				print(sentences[:5])
 			else:
