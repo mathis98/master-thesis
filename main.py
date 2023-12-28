@@ -43,7 +43,7 @@ if args.intra == True:
 	image_data_module.prepare_data()
 	image_data_module.setup(stage="fit")
 
-	text_data_module = SimCLRTextDataModule(args.batch_size, args.text_path, tokenizer)
+	text_data_module = SimCLRTextDataModule(args.batch_size, args.text_path, tokenizer, technique=args.technique)
 	text_data_module.prepare_data()
 	text_data_module.setup()
 

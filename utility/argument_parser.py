@@ -27,6 +27,7 @@ def parse_arguments():
 		'embedding': 'pooler',
 		'accumulate': 1,
 		'top_k': 10,
+		'technique': 'Concatenate',
 	}
 
 	p.add('--config', required=False, default=defaults['config'], is_config_file=True, help=f'config file path (default: {defaults["config"]})')
@@ -45,6 +46,7 @@ def parse_arguments():
 	p.add('--embedding', type=str, default=defaults['embedding'], help=f'Embedding strategy for BERT (default: {defaults["embedding"]})')
 	p.add('--accumulate', type=int, default=defaults['accumulate'], help=f'Accumulate gradient batches (default: {defaults["accumulate"]})')
 	p.add('--top_k', type=int, default=defaults['top_k'], help=f'Value for map@k (default: {defaults["top_k"]})')
+	p.add('--technique', type=str, default=defaults['technique'], help=f'Technique for multiple queries (default: {defaults["technique"]})')
 
 	options =  p.parse_args()
 	print(p.format_values())
