@@ -69,8 +69,16 @@ class ImageDataModule(pl.LightningDataModule):
 		Prepares image paths by repeating and shuffling.
 		"""
 
-		image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
-		image_paths = sorted(image_paths, key=lambda x: int(''.join(filter(str.isdigit, x))))
+		if 'NWPU' in self.data_dir:
+			categories = os.listdir(self.data_dir)
+			print(categories)
+			image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
+			image_paths = sorted(image_paths, key=lambda x: int(''.join(filter(str.isdigit, x))))
+
+		else:
+			image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
+			image_paths = sorted(image_paths, key=lambda x: int(''.join(filter(str.isdigit, x))))
+		
 		self.image_paths = np.repeat(image_paths, self.num_repeats)
 
 	def setup(self, stage=None):
