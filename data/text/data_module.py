@@ -78,7 +78,7 @@ class SentenceDataModule(pl.LightningDataModule):
 
 			if 'NWPU' in self.json_file_path:
 				sentences = []
-				categories = [category for category in data]
+				categories = sorted([category for category in data])
 
 				for category in categories:
 					sentences.extend([' '.join([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)]) for item in data[category]])
