@@ -66,7 +66,8 @@ class ImageDataModule(pl.LightningDataModule):
 		self.seed = seed
 
 	def alphanumeric_key(s):
-		return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', s)]
+		filename = os.path.basename(s)
+		return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', filename)]
 
 	def prepare_data(self):
 		"""
