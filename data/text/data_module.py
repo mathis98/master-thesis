@@ -82,7 +82,6 @@ class SentenceDataModule(pl.LightningDataModule):
 
 				for category in categories:
 					sentences.extend([' '.join([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)]) for item in data[category]])
-				print(sentences[:5])
 			else:
 				sentences = [' '.join([item['sentences'][i]['raw'] for i in range(5)]) for item in data['images']]
 
@@ -95,7 +94,6 @@ class SentenceDataModule(pl.LightningDataModule):
 				for category in categories:
 					key = 'raw' if self.rand == 0 else f'raw_{self.rand}'
 					sentences.extend([item[key] for item in data[category]])
-				print(sentences[:5])
 			else:
 				sentences = [[item['sentences'][i]['raw'] for i in range(5)][self.rand] for item in data['images']]
 
@@ -107,7 +105,6 @@ class SentenceDataModule(pl.LightningDataModule):
 				for category in categories:
 					sentences.extend([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)] for item in data[category])
 				sentences = list(itertools.chain.from_iterable(sentences))
-				print(sentences[:5])
 			else:
 				sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
 				sentences = list(itertools.chain.from_iterable(sentences))
