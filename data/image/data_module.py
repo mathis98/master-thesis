@@ -8,7 +8,6 @@ from PIL import Image
 import imageio
 import numpy as np
 from torchvision.transforms import v2
-import re
 
 
 basic_transform = v2.Compose([
@@ -65,10 +64,6 @@ class ImageDataModule(pl.LightningDataModule):
 		self.num_repeats = num_repeats
 		self.seed = seed
 
-	def alphanumeric_key(s):
-		filename = os.path.basename(s)
-		return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', filename)]
-
 	def prepare_data(self):
 		"""
 		Prepares image paths by repeating and shuffling.
@@ -87,7 +82,7 @@ class ImageDataModule(pl.LightningDataModule):
 				if os.path.isdir(category_path):
 					image_paths.extend([os.path.join(category_path, filename) for filename in os.listdir(category_path) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))])
 
-			image_paths = sorted(image_paths, key=self.alphanumeric_key)
+			image_paths = sorted(image_paths)
 			print(image_paths)
 
 		else:
