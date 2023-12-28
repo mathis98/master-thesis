@@ -74,7 +74,6 @@ class ImageDataModule(pl.LightningDataModule):
 			image_paths = []
 
 			categories = os.listdir(self.data_dir)
-			print(categories)
 
 			for category in categories:
 				category_path = os.path.join(self.data_dir, category)
@@ -83,7 +82,7 @@ class ImageDataModule(pl.LightningDataModule):
 					image_paths.extend([os.path.join(category_path, filename) for filename in os.listdir(category_path) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))])
 
 			image_paths = sorted(image_paths)
-			print(image_paths)
+			print(image_paths[:10])
 
 		else:
 			image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
