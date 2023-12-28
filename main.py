@@ -27,6 +27,15 @@ args = parse_arguments()
 
 args.image_size = tuple(args.image_size)
 
+if args.dataset == 'ucm':
+	args.img_path = '../Datasets/UCM/imgs'
+	args.text_path = '../Datasets/UCM/dataset.json'
+
+elif args.dataset == 'nwpu':
+	args.img_path = '../Datasets/NWPU-Captions-main/NWPU-RESISC45'
+	args.text_path = '../Datasets/NWPU-Captions-main/dataset_nwpu.json'
+	
+
 seed_everything(42, workers=True)
 
 tokenizer = AutoTokenizer.from_pretrained(args.model_name)

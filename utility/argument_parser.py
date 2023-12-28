@@ -18,8 +18,9 @@ def parse_arguments():
 		'learning_rate': 5e-4,
 		'weight_decay': 1e-4,
 		'hidden_dim': 128,
-		'text_path': '../Datasets/UCM/dataset.json',
-		'img_path': '../Datasets/UCM/imgs',
+		# 'text_path': '../Datasets/UCM/dataset.json',
+		# 'img_path': '../Datasets/UCM/imgs',
+		'dataset': 'ucm',
 		'model_name': 'prajjwal1/bert-small',
 		'image_size': [224,224],
 		'num_repeats': 5,
@@ -37,8 +38,9 @@ def parse_arguments():
 	p.add('--learning_rate', type=float, default=defaults['learning_rate'], help=f'Learning rate for optimizer (default: {defaults["learning_rate"]})')
 	p.add('--weight_decay', type=float, default=defaults['weight_decay'], help=f'Weight decay for optimizer (default: {defaults["weight_decay"]})')
 	p.add('--hidden_dim', type=int, default=defaults['hidden_dim'], help=f'Hidden dimension for the projection head (default: {defaults["hidden_dim"]})')
-	p.add('--text_path', type=str, default=defaults['text_path'], help=f'Path to the text dataset (default: {defaults["text_path"]})')
-	p.add('--img_path', type=str, default=defaults['img_path'], help=f'Path to the image dataset (default: {defaults["img_path"]})')
+	# p.add('--text_path', type=str, default=defaults['text_path'], help=f'Path to the text dataset (default: {defaults["text_path"]})')
+	# p.add('--img_path', type=str, default=defaults['img_path'], help=f'Path to the image dataset (default: {defaults["img_path"]})')
+	p.add('--dataset', type=str, default=defaults['dataset'], help=f'Dataset to use (default: {defaults["dataset"]})')
 	p.add('--model_name', type=str, default=defaults['model_name'], help=f'Pretrained model name (default: {defaults["model_name"]})')
 	p.add('--image_size', nargs=2, type=int, default=defaults['image_size'], help=f'Image size (height and width) (default: {defaults["image_size"]})')
 	p.add('--num_repeats', type=int, default=defaults['num_repeats'], help=f'Number of repeats for non-SimCLR data module (default: {defaults["num_repeats"]})')
