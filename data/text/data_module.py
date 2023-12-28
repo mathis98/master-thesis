@@ -112,8 +112,6 @@ class SentenceDataModule(pl.LightningDataModule):
 				sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
 				sentences = list(itertools.chain.from_iterable(sentences))
 
-		print(f'Using {self.technique}')
-
 		total_size = len(sentences)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
