@@ -27,7 +27,7 @@ def parse_arguments():
 		'embedding': 'pooler',
 		'accumulate': 1,
 		'top_k': 10,
-		'technique': 'Concatenate',
+		'technique': 'Concat',
 	}
 
 	p.add('--config', required=False, default=defaults['config'], is_config_file=True, help=f'config file path (default: {defaults["config"]})')
