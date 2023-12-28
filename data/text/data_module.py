@@ -58,7 +58,7 @@ class SentenceDataModule(pl.LightningDataModule):
 		json_file_path (str): path to the json file containing the captions
 		seed (int): seed for shuffling
 	"""
-	def __init__(self, model_name, batch_size, json_file_path, seed=42, num_repeats=5, technique='Random', rand=3):
+	def __init__(self, model_name, batch_size, json_file_path, seed=42, num_repeats=5, technique='Concat', rand=3):
 		super(SentenceDataModule, self).__init__()
 		self.model_name = model_name
 		self.batch_size = batch_size
@@ -75,14 +75,26 @@ class SentenceDataModule(pl.LightningDataModule):
 			data = json.load(json_file)
 
 		if self.technique == 'Concat':
-			sentences = [' '.join([item['sentences'][i]['raw'] for i in range(5)]) for item in data['images']]
+
+			if 'NWPU' in self.json_file_path:
+				sentences = [[' '.join([item[f'raw_{i}'] for i in range(1,6)]) for item in category] for category in data]
+				print(sentences[:5])
+			else:
+				sentences = [' '.join([item['sentences'][i]['raw'] for i in range(5)]) for item in data['images']]
 
 		elif self.technique == 'Random':
-			sentences = [[item['sentences'][i]['raw'] for i in range(5)][self.rand] for item in data['images']]
+
+			if 'NWPU' in self.json_file_path:
+				pass
+			else:
+				sentences = [[item['sentences'][i]['raw'] for i in range(5)][self.rand] for item in data['images']]
 
 		elif self.technique == 'Repeat':
-			sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
-			sentences = list(itertools.chain.from_iterable(sentences))
+			if 'NWPU' in self.json_file_path:
+				pass
+			else:
+				sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
+				sentences = list(itertools.chain.from_iterable(sentences))
 
 		print(f'Using {self.technique}')
 
