@@ -106,6 +106,7 @@ class SentenceDataModule(pl.LightningDataModule):
 
 				for category in categories:
 					sentences.extend([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)] for item in data[category])
+				sentences = list(itertools.chain.from_iterable(sentences))
 				print(sentences[:5])
 			else:
 				sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
