@@ -58,7 +58,7 @@ class SentenceDataModule(pl.LightningDataModule):
 		json_file_path (str): path to the json file containing the captions
 		seed (int): seed for shuffling
 	"""
-	def __init__(self, model_name, batch_size, json_file_path, seed=42, num_repeats=5, technique='Random', rand=3):
+	def __init__(self, model_name, batch_size, json_file_path, seed=42, num_repeats=5, technique='Repeat', rand=3):
 		super(SentenceDataModule, self).__init__()
 		self.model_name = model_name
 		self.batch_size = batch_size
@@ -101,7 +101,11 @@ class SentenceDataModule(pl.LightningDataModule):
 
 		elif self.technique == 'Repeat':
 			if 'NWPU' in self.json_file_path:
-				pass
+				sentences = []
+				categories = sorted([category for category in data])
+
+				for category in categories:
+					sentences.extend([item['raw'], item[f'raw_{i}'] for i in range(1,5)] for item in data['images'])
 			else:
 				sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
 				sentences = list(itertools.chain.from_iterable(sentences))
