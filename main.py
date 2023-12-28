@@ -53,7 +53,7 @@ elif args.intra == False:
 	image_data_module.setup(stage='fit')
 
 
-	text_data_module = SentenceDataModule(args.model_name, args.batch_size, args.text_path, num_repeats=args.num_repeats)
+	text_data_module = SentenceDataModule(args.model_name, args.batch_size, args.text_path, num_repeats=args.num_repeats, technique=args.technique)
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='fit')
 
