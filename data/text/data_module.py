@@ -94,7 +94,7 @@ class SentenceDataModule(pl.LightningDataModule):
 
 				for category in categories:
 					key = 'raw' if self.rand == 0 else f'raw_{self.rand}'
-					sentences.extend([item[key]] for item in data[category])
+					sentences.extend([item[key] for item in data[category]])
 				print(sentences[:5])
 			else:
 				sentences = [[item['sentences'][i]['raw'] for i in range(5)][self.rand] for item in data['images']]
