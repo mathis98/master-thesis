@@ -57,7 +57,7 @@ if args.intra == True:
 	text_data_module.setup()
 
 elif args.intra == False:
-	image_data_module = ImageDataModule(args.img_path, args.image_size, args.batch_size, args.num_repeats)
+	image_data_module = ImageDataModule(args.img_path, args.image_size, args.batch_size, args.num_repeats, technique=args.technique)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='fit')
 
