@@ -90,6 +90,8 @@ class ImageDataModule(pl.LightningDataModule):
 		
 		self.image_paths = image_paths
 
+		print(self.technique)
+
 		if self.technique == 'Repeat':
 			self.image_paths = np.repeat(image_paths, self.num_repeats)
 

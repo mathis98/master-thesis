@@ -57,7 +57,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 		seed: Seed for reproducibility.
 	"""
 
-	def __init__(self, data_dir, image_size, batch_size, augmentation_transform, num_repeats=5, seed=42):
+	def __init__(self, data_dir, image_size, batch_size, augmentation_transform, num_repeats=5, seed=42, technique='Repeat'):
 		super().__init__()
 		self.data_dir = data_dir
 		self.image_size = image_size
@@ -65,6 +65,7 @@ class SimCLRDataModule(pl.LightningDataModule):
 		self.augmentation_transform = augmentation_transform
 		self.num_repeats = num_repeats
 		self.seed = seed
+		self.technique = technique
 
 	def prepare_data(self):
 		"""
@@ -90,7 +91,10 @@ class SimCLRDataModule(pl.LightningDataModule):
 			image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
 			image_paths = sorted(image_paths, key=lambda x: int(''.join(filter(str.isdigit, x))))
 		
-		self.image_paths = np.repeat(image_paths, self.num_repeats)
+		self.image_paths = image_paths
+
+		if self.technique == 'Repeat':
+			self.image_paths = np.repeat(image_paths, self.num_repeats)
 
 	def setup(self, stage=None):
 		"""
