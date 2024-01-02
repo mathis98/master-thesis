@@ -62,7 +62,7 @@ class ImageTextPairDataModule(pl.LightningDataModule):
 		self.val_dataset = ImageTextPairDataset(self.image_data_module.val_dataset, self.text_data_module.val_dataset)
 		self.test_dataset = ImageTextPairDataset(self.image_data_module.test_dataset, self.text_data_module.test_dataset)
 
-		print(self.image_data_module.train_dataset[:5])
+		print(self.image_data_module.train_dataset.image_paths[:5])
 		print(self.text_data_module.train_dataset[:5])
 
 	def dataloader(self):
