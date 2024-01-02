@@ -48,7 +48,7 @@ augmentation_transform = v2.Compose([
 ])
 
 if args.intra == True:
-	image_data_module = SimCLRImageDataModule(args.img_path, args.image_size, args.batch_size, augmentation_transform)
+	image_data_module = SimCLRImageDataModule(args.img_path, args.image_size, args.batch_size, augmentation_transform, technique=args.technique)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage="fit")
 
