@@ -70,7 +70,7 @@ class FullPipeline(pl.LightningModule):
 		validation_labels (Tensor): list of labels of validation images.
 		test_labels (Tensor): list of labels of test images.
 	"""
-	def __init__(self, val_dataloader=None, test_dataloader=None, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128, top_k=10, num_repeats=1):
+	def __init__(self, val_dataloader=None, test_dataloader=None, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128, top_k=10, num_repeats=1, dataset='ucm'):
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
 		self.intra = intra
@@ -114,6 +114,8 @@ class FullPipeline(pl.LightningModule):
 
 		self.top_k = top_k
 		self.num_repeats = num_repeats
+
+		self.dataset = dataset
 
 	def forward(self, batch):
 		"""
@@ -230,7 +232,13 @@ class FullPipeline(pl.LightningModule):
 				indeces = caption[2]
 				true_label_value = indeces // self.num_repeats
 				if not true_label:
-					indeces = indeces // (self.num_repeats * 100) 
+					
+					if self.dataset == 'ucm':
+						indeces = indeces // (self.num_repeats * 100) 
+
+					elif self.dataset == 'nwpu':
+						indeces = indeces // (self.num_repeats * 700)
+
 				elif true_label:
 					indeces = true_label_value + 1
 
@@ -254,7 +262,10 @@ class FullPipeline(pl.LightningModule):
 						temp_embed = torch.cat([temp_embed, embed.unsqueeze(0).to(image_embed.device)], dim=0)
 
 						if not true_label:
-							idx = idx // 100
+							if self.dataset == 'ucm':
+								idx = idx // 100
+							elif self.dataset == 'nwpu':
+								idx = idx // 700
 						temp_labels = torch.cat([temp_labels, torch.tensor(idx).to(image_embed.device).unsqueeze(0)], dim=0)
 
 				image_embeddings.append(temp_embed)

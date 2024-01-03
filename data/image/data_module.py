@@ -117,6 +117,9 @@ class ImageDataModule(pl.LightningDataModule):
 
 		elements_per_group = 100 * self.num_repeats
 
+		if 'NWPU' in self.data_dir:
+			elements_per_group = 700 * self.num_repeats
+
 		# Iterate through each group
 		for group_start in range(0, len(indices), elements_per_group):
 			group_end = group_start + elements_per_group
