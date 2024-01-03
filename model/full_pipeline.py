@@ -297,7 +297,10 @@ class FullPipeline(pl.LightningModule):
 			caption = caption[0], caption[2], caption[4]
 
 		indeces = caption[2]
-		labels_caption = indeces // (self.num_repeats * 100) # They need to be same if in same class
+		if self.dataset == 'ucm':
+			labels_caption = indeces // (self.num_repeats * 100) # They need to be same if in same class
+		elif self.dataset == 'nwpu':
+			labels_caption = indeces // (self.num_repeats * 700)
 		labels_images = self.validation_labels if validation else self.test_labels
 
 		groundtruth = relevant_list(labels_caption, labels_images)
