@@ -125,7 +125,7 @@ class SentenceDataModule(pl.LightningDataModule):
 
 		elements_per_group = 100 * self.num_repeats
 
-		if 'NWPU' in self.data_dir:
+		if 'NWPU' in self.json_file_path:
 			elements_per_group = 700 * self.num_repeats
 
 		# Iterate through each group
