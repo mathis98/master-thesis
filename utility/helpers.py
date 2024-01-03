@@ -5,7 +5,7 @@ import torch
 import torchvision
 torchvision.disable_beta_transforms_warning()
 from torchvision.transforms import v2
-from torchmetrics.functional.retrieval import retrieval_average_precision, retrieval_recall
+from torchmetrics.functional.retrieval import retrieval_average_precision
 from transformers.tokenization_utils_base import BatchEncoding
 
 
@@ -124,7 +124,6 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	"""
 
 	mAP_values = []
-	recall_values = []
 
 	for i in range(caption_embeddings.shape[0]):
 
@@ -140,16 +139,9 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 			top_k=top_k
 		)
 
-		recall = retrieval_recall(
-			image_scores,
-			relevant_labels,
-			top_k=top_k
-		)
-
 		mAP_values.append(mAP.cpu().numpy())
-		recall_values.append(recall.cpu().numpy())
 
-	return (mAP_values, recall_values)
+	return mAP_values
 
 def define_param_groups(model, weight_decay, optimizer_name):
 	"""
