@@ -6,7 +6,7 @@ questions = [
 		'task',
 		message= 'Select a task:',
 		choices=[
-			'Calculate test mAP score',
+			'Calculate test mAP and Recall scores',
 			'Test embeddings',
 			'Visualize via t-SNE',
 		],
