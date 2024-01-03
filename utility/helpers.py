@@ -149,7 +149,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		mAP_values.append(mAP.cpu().numpy())
 		recall_values.append(recall.cpu().numpy())
 
-	return mAP_values, recall_values
+	return (mAP_values, recall_values)
 
 def define_param_groups(model, weight_decay, optimizer_name):
 	"""
