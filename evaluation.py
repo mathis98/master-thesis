@@ -15,7 +15,7 @@ questions = [
 
 answers = inquirer.prompt(questions)
 
-if answers['task'] == 'Calculate test mAP score':
+if answers['task'] == 'Calculate test mAP and Recall scores':
 	call(['python', 'calc_map.py'])
 elif answers['task'] == 'Test embeddings':
 	call(['python', 'test_embedding.py'])

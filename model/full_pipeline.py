@@ -334,7 +334,7 @@ class FullPipeline(pl.LightningModule):
 			batch_idx: Index of the current batch.
 		"""
 
-		(map_1, recall_1), (map_5, recall_5), (map_10, recall_10), (map_20, recall_20) = self.shared_step(batch, validation=False)
+		(mAP_1, recall_1), (mAP_5, recall_5), (mAP_10, recall_10), (mAP_20, recall_20) = self.shared_step(batch, validation=False)
 		self.log('test_mAP_20',np.mean(mAP_20), batch_size=self.batch_size)
 		self.test_step_outputs_1.append(mAP_1)
 		self.test_step_outputs_5.append(mAP_5)
