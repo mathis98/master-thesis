@@ -106,6 +106,11 @@ class FullPipeline(pl.LightningModule):
 		self.test_step_outputs_10 = []
 		self.test_step_outputs_20 = []
 
+		self.test_recall_1 = []
+		self.test_recall_5 = []
+		self.test_recall_10 = []
+		self.test_recall_20 = []
+
 		self.val_dataloader = val_dataloader
 		self.test_dataloader = test_dataloader
 
@@ -305,10 +310,10 @@ class FullPipeline(pl.LightningModule):
 		image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
 		# mAP = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=self.top_k) # multiple top k
-		map_1, map_5, map_10, map_20 = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=1),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=5),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=10),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=20)
+		(map_1, recall_1), (map_5, recall_5), (map_10, recall_10), (map_20, recall_20) = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=1),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=5),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=10),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=20)
 
 
-		return map_1, map_5, map_10, map_20
+		return (map_1, recall_1), (map_5, recall_5), (map_10, recall_10), (map_20, recall_20)
 
 
 	def on_test_epoch_start(self):
@@ -329,12 +334,17 @@ class FullPipeline(pl.LightningModule):
 			batch_idx: Index of the current batch.
 		"""
 
-		mAP_1,mAP_5,mAP_10,mAP_20 = self.shared_step(batch, validation=False)
+		(map_1, recall_1), (map_5, recall_5), (map_10, recall_10), (map_20, recall_20) = self.shared_step(batch, validation=False)
 		self.log('test_mAP_20',np.mean(mAP_20), batch_size=self.batch_size)
 		self.test_step_outputs_1.append(mAP_1)
 		self.test_step_outputs_5.append(mAP_5)
 		self.test_step_outputs_10.append(mAP_10)
 		self.test_step_outputs_20.append(mAP_20)
+
+		self.test_recall_1.append(recall_1)
+		self.test_recall_5.append(recall_5)
+		self.test_recall_10.append(recall_10)
+		self.test_recall_20.append(recall_20)
 
 	def on_test_epoch_end(self):
 		"""
@@ -344,10 +354,21 @@ class FullPipeline(pl.LightningModule):
 		avg_mAP_5 = np.mean(np.concatenate(self.test_step_outputs_5))
 		avg_mAP_10 = np.mean(np.concatenate(self.test_step_outputs_10))
 		avg_mAP_20 = np.mean(np.concatenate(self.test_step_outputs_20))
+
+		avg_recall_1 = np.mean(np.concatenate(self.test_recall_1))
+		avg_recall_5 = np.mean(np.concatenate(self.test_recall_5))
+		avg_recall_10 = np.mean(np.concatenate(self.test_recall_10))
+		avg_recall_20 = np.mean(np.concatenate(self.test_recall_20))
+
 		self.log('avg_test_mAP_1', avg_mAP_1, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 		self.log('avg_test_mAP_5', avg_mAP_5, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 		self.log('avg_test_mAP_10', avg_mAP_10, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 		self.log('avg_test_mAP_20', avg_mAP_20, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
+
+		self.log('Recall@1', avg_recall_1, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
+		self.log('Recall@5', avg_recall_1, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
+		self.log('Recall@10', avg_recall_1, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
+		self.log('Recall@20', avg_recall_1, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 
 
 	def on_validation_epoch_start(self):
@@ -368,7 +389,7 @@ class FullPipeline(pl.LightningModule):
 			batch_idx: Index of the current batch. 
 		"""
 
-		mAP, _, _, _ = self.shared_step(batch)
+		_, _, _, (mAP,_) = self.shared_step(batch)
 		self.log('validation mAP',np.mean(mAP), batch_size=self.batch_size)
 		self.validation_step_outputs.append(mAP)
 
