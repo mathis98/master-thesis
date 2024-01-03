@@ -73,7 +73,7 @@ else:
 	print(f'Loading from {checkpoint}')
 
 	with open(f'./logs/full_pipeline_full_val_test/version_{version}/hparams.yaml') as file:
-		hparams = yaml.save_load(file)
+		hparams = yaml.safe_load(file)
 
 	print(hparams)
 
