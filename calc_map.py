@@ -10,6 +10,7 @@ from torchvision.transforms import v2
 from transformers import AutoTokenizer
 import random
 import os
+import yaml
 
 batch_size = 200
 
@@ -70,6 +71,11 @@ else:
 	checkpoint = f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints/{name}'
 
 	print(f'Loading from {checkpoint}')
+
+	with open(f'./logs/full_pipeline_full_val_test/version_{version}/hparams.yaml') as file:
+		hparams = yaml.save_load(file)
+
+	print(hparams)
 
 	full_pipeline = FullPipeline.load_from_checkpoint(
 		checkpoint,
