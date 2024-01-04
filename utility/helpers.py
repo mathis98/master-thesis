@@ -5,7 +5,7 @@ import torch
 import torchvision
 torchvision.disable_beta_transforms_warning()
 from torchvision.transforms import v2
-from torchmetrics.functional.retrieval import retrieval_average_precision
+from torchmetrics.functional.retrieval import retrieval_average_precision, retrieval_recall
 from transformers.tokenization_utils_base import BatchEncoding
 
 
@@ -125,6 +125,8 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 	mAP_values = []
 
+	recall_values = []
+
 	for i in range(caption_embeddings.shape[0]):
 
 		caption_embedding = caption_embeddings[i]
@@ -139,9 +141,16 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 			top_k=top_k
 		)
 
-		mAP_values.append(mAP.cpu().numpy())
+		recall = retrieval_recall(
+			image_scores,
+			relevant_labels,
+			top_k=top_k,
+		)
 
-	return mAP_values
+		mAP_values.append(mAP.cpu().numpy())
+		recall_values.append(recall.cpu().numpy())
+
+	return mAP_values, recall_values
 
 def define_param_groups(model, weight_decay, optimizer_name):
 	"""
@@ -173,7 +182,7 @@ def define_param_groups(model, weight_decay, optimizer_name):
 def to_cuda_recursive(obj, device=''):
 	if isinstance(obj, torch.Tensor):
 		# Move the tensor to the CUDA device
-		return obj.to('cuda:3')
+		return obj.to('cuda:2')
 	elif isinstance(obj, list):
 		# Recursively move each element of the list to the CUDA device
 		return [to_cuda_recursive(item) for item in obj]
@@ -189,7 +198,7 @@ def to_cuda_recursive(obj, device=''):
 		return obj
 	elif isinstance(obj, np.ndarray):
 		# Handle numpy arrays
-		return torch.from_numpy(obj).to('cuda:3')
+		return torch.from_numpy(obj).to('cuda:2')
 	else:
 		return obj  # Return unchanged if not a tensor, list, tuple, or dict
 
