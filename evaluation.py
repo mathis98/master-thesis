@@ -6,7 +6,7 @@ questions = [
 		'task',
 		message= 'Select a task:',
 		choices=[
-			'Calculate test mAP score',
+			'Calculate test mAP and Recall scores',
 			'Test embeddings',
 			'Visualize via t-SNE',
 		],
@@ -15,7 +15,7 @@ questions = [
 
 answers = inquirer.prompt(questions)
 
-if answers['task'] == 'Calculate test mAP score':
+if answers['task'] == 'Calculate test mAP and Recall scores':
 	call(['python', 'calc_map.py'])
 elif answers['task'] == 'Test embeddings':
 	call(['python', 'test_embedding.py'])
