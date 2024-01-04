@@ -96,7 +96,7 @@ else:
 		test_dataloader = image_text_pair_data_module.test_dataloader,
 	)
 
-device = 'cuda:3'
+device = 'cuda:2'
 
 full_pipeline.resnet_embedding_module.to(device)
 full_pipeline.bert_embedding_module.to(device)
@@ -110,7 +110,7 @@ logger = pl.loggers.CSVLogger('logs', name='full_pipeline_full_val_test')
 trainer = pl.Trainer(
 	logger=logger, 
 	accelerator='cuda', 
-	devices=[3], 
+	devices=[2], 
 	max_epochs=1000,
 	log_every_n_steps=5,
 )
