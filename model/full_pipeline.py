@@ -312,6 +312,8 @@ class FullPipeline(pl.LightningModule):
 
 		# image_embed, augmented_image_embed, caption_embed, augmented_caption_embed
 
+		# TODO: caption batch now contains 5 captions each in a list pass through model to get list of embeddings each
+
 		if self.intra:
 			_, _, caption_embed, _ = self(batch)
 

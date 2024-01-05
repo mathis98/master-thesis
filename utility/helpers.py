@@ -123,6 +123,10 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		list: List of mAP values for each input caption.
 	"""
 
+	# TODO: if technique is Mean --> for each caption embedding we have a list of 5 embeddings each
+	#       calculate image scores for each and mean them
+	#       THEN calculate mAP and recall!
+
 	mAP_values = []
 
 	recall_values = []
