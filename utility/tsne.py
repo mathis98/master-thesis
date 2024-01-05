@@ -6,7 +6,7 @@ import numpy as np
 from lightning.pytorch.accelerators import find_usable_cuda_devices
 
 import torch
-from model.full_pipeline import FullPipeline  # Import your model
+from model.full_pipeline import FullPipeline
 from data.image.data_module import ImageDataModule
 from data.text.data_module import SentenceDataModule
 from data.imagetext.image_text_pair import ImageTextPairDataModule
