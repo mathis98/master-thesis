@@ -10,6 +10,7 @@ from torchvision.transforms import v2
 from transformers import AutoTokenizer
 import random
 import os
+import yaml
 
 batch_size = 512
 num_repeats = 1
@@ -71,6 +72,17 @@ else:
 	checkpoint = f'./logs/full_pipeline_full_val_test/version_{version}/checkpoints/{name}'
 
 	print(f'Loading from {checkpoint}')
+
+	with open(f'./logs/full_pipeline_full_val_test/version_{version}/hparams.yaml') as file:
+		hparams = yaml.safe_load(file)
+
+	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'])
+	image_data_module.prepare_data()
+	image_data_module.setup(stage='predict')
+
+	text_data_module = SentenceDataModule(hparams['model_name'], hparams['batch_size'], hparams['text_path'])
+	text_data_module.prepare_data()
+	text_data_module.setup(stage='predict')
 
 	full_pipeline = FullPipeline.load_from_checkpoint(
 		checkpoint,
