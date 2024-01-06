@@ -96,7 +96,7 @@ logger.log_hyperparams(args)
 # devices = find_usable_cuda_devices(1)
 # print(f'training on GPU {devices}')
 
-devices = [2]
+devices = [3]
 
 print(f'training on GPU {devices}')
 
