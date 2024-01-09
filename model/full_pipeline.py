@@ -312,7 +312,32 @@ class FullPipeline(pl.LightningModule):
 
 		# image_embed, augmented_image_embed, caption_embed, augmented_caption_embed
 
-		# TODO: caption batch now contains 5 captions each in a list pass through model to get list of embeddings each
+		# TODO: For mean feature and Rank aggregation 
+		# caption batch now contains 5 captions each in a list pass through model to get list of embeddings each
+		# need hyperparam if we're using multicaption
+		# self.technique (Mean, RankAgg, Info, Leanred_FC, Learned_Att)
+		# if self.multicaption:
+		# 	pass through model 5 times and save caption_embed as list
+
+		# 1: MEAN FEATURE:
+		# Pass through list of captions (5) get embeddings each and then mean --> store as caption embed
+
+
+		# 1.5: INFORMATIVENESS:
+		# Pass through list of captions (5) calculate informativeness, get embeddings, mean them --> store as caption embed
+
+
+		# 1.6: LEARNED WEIGHTS:
+		# Pass through list of captions (5) get embeddings each, weighted by 
+		# 	a) fc-layer
+		# 	b) Attention mechanism
+		# 	
+		# 	mean with weights (softmax!) --> store as caption embed
+
+
+		# 2: Rank Aggregation
+		# Pass through list of captions (5) get embeddings each, store as list --> pass to calculate_mAP
+		# 	--> calculates rank aggregated mAP
 
 		if self.intra:
 			_, _, caption_embed, _ = self(batch)

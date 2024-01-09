@@ -110,7 +110,7 @@ class SentenceDataModule(pl.LightningDataModule):
 				sentences = list(itertools.chain.from_iterable(sentences))
 
 		elif self.technique == 'Mean':
-			# Mean Feature technique
+			# Mean Feature technique, also for Rank Aggregation
 			# ==> List [[caption1_1, caption2_1, caption_3_1, caption4_1, caption5_1],[caption1_2, caption2_2,...],...]
 			pass
 
