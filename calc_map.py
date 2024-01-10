@@ -93,7 +93,7 @@ else:
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
-	image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
+	image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, hparams['batch_size'])
 	image_text_pair_data_module.setup(stage='predict')
 
 	if 'ucm' in hparams['img_path']:
@@ -104,13 +104,13 @@ else:
 
 	full_pipeline = FullPipeline.load_from_checkpoint(
 		checkpoint,
-		batch_size=batch_size, 
-		max_epochs=1, 
-		temperature=3.0, 
-		learning_rate=1e-4, 
-		weight_decay=1e-4, 
-		intra=intra,
-		top_k=20,
+		batch_size=hparams['batch_size'], 
+		max_epochs=hparams['max_epochs'], 
+		temperature=hparams['temperature'], 
+		learning_rate=hparams['learning_rate'], 
+		weight_decay=hparams['weight_decay'], 
+		intra=hparams['intra'],
+		top_k=hparams['top_k'],
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
 		dataset=hparams['dataset'],
