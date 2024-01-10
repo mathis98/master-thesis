@@ -77,11 +77,11 @@ else:
 
 	print(hparams)
 
-	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'], 5, technique='Concat')
+	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'], technique='Concat')
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='predict')
 
-	text_data_module = SentenceDataModule(hparams['model_name'], hparams['batch_size'], hparams['text_path'], 5, technique='Concat')
+	text_data_module = SentenceDataModule(hparams['model_name'], hparams['batch_size'], hparams['text_path'], technique='Concat')
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
@@ -94,11 +94,11 @@ else:
 	full_pipeline = FullPipeline.load_from_checkpoint(
 		checkpoint,
 		batch_size=batch_size, 
-		max_epochs=1, 
-		temperature=3.0, 
-		learning_rate=1e-4, 
-		weight_decay=1e-4, 
-		intra=intra,
+		max_epochs=1000, 
+		temperature=0.5, 
+		learning_rate=1e-5, 
+		weight_decay=1e-6, 
+		intra=False,
 		top_k=20,
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
