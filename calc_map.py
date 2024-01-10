@@ -96,12 +96,6 @@ else:
 	image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, hparams['batch_size'])
 	image_text_pair_data_module.setup(stage='predict')
 
-	if 'ucm' in hparams['img_path']:
-		dataset = 'ucm'
-
-	else:
-		dataset = 'nwpu'
-
 	full_pipeline = FullPipeline.load_from_checkpoint(
 		checkpoint,
 		batch_size=hparams['batch_size'], 
