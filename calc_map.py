@@ -85,6 +85,12 @@ else:
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
+	if 'ucm' in hparams['img_path']:
+		dataset = 'ucm'
+
+	else:
+		dataset = 'nwpu'
+
 	full_pipeline = FullPipeline.load_from_checkpoint(
 		checkpoint,
 		batch_size=batch_size, 
@@ -96,6 +102,7 @@ else:
 		top_k=20,
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
+		dataset=dataset,
 	)
 
 device = 'cuda:2'
