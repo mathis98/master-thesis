@@ -68,6 +68,8 @@ class SentenceDataModule(pl.LightningDataModule):
 		self.technique = technique
 		self.rand = rand
 
+		print(self.json_file_path)
+
 	def setup(self, stage=None):
 		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
 
