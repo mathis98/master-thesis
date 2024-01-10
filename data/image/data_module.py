@@ -72,6 +72,8 @@ class ImageDataModule(pl.LightningDataModule):
 
 		if 'NWPU' in self.data_dir:
 
+			print('nwpu!')
+
 			image_paths = []
 
 			categories = os.listdir(self.data_dir)
