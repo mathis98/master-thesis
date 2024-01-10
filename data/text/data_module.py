@@ -99,6 +99,7 @@ class SentenceDataModule(pl.LightningDataModule):
 
 		elif self.technique == 'Repeat':
 			if 'NWPU' in self.json_file_path:
+				print('nwpu')
 				sentences = []
 				categories = sorted([category for category in data])
 
