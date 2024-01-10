@@ -42,7 +42,7 @@ elif intra == False:
 	image_data_module.setup(stage='predict')
 
 
-	text_data_module = SentenceDataModule('prajjwal1/bert-small', batch_size, '../Datasets/UCM/dataset.json')
+	text_data_module = SentenceDataModule('prajjwal1/bert-small', batch_size, '../Datasets/UCM/dataset.json', 5)
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
