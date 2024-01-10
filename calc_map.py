@@ -103,6 +103,7 @@ else:
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
 		dataset='ucm',
+		num_repeats=5,
 	)
 
 device = 'cuda:2'
