@@ -46,14 +46,14 @@ elif intra == False:
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
-image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
-image_text_pair_data_module.setup(stage='predict')
-
 version = input('Version number to load: ')
 
 
 if version == '':
 	print('Loading untrained model')
+
+	image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
+	image_text_pair_data_module.setup(stage='predict')
 
 	full_pipeline = FullPipeline(
 		batch_size=batch_size, 
@@ -65,6 +65,8 @@ if version == '':
 		top_k=20,
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
+		dataset='ucm',
+		num_repeats=5,
 	)
 
 else:
@@ -101,6 +103,7 @@ else:
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
 		dataset='ucm',
+		num_repeats=5,
 	)
 
 device = 'cuda:2'
