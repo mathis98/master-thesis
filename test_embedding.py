@@ -100,7 +100,7 @@ else:
 		top_k=20,
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
-		dataset='nwpu',
+		dataset='ucm',
 	)
 
 device = 'cuda:2'
