@@ -141,20 +141,17 @@ random_sample = random.sample(list(text_data_module.test_dataset), 5)
 
 print('5 Random samples:')
 for element in random_sample:
-	print(f'Sentence: {element[1]} (Index: {element[2] // hparams["num_repeats"] + 1})')
+
+	name = ''
 
 	if hparams['dataset'] == 'nwpu':
 		index = element[2] // hparams["num_repeats"] + 1
 		category_index = index // 700
 		elem_index = index % 700 - 1
 
-		print(index)
-		print(category_index)
-		print(elem_index)
+		name = f' {categories[category_index]}_{elem_index}'
 
-		print(categories)
-
-		print(f'Name: {categories[category_index]}_{elem_index}')
+	print(f'Sentence: {element[1]} (Index: {element[2] // hparams["num_repeats"] + 1}{name})')
 
 while True:
 
