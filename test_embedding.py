@@ -114,8 +114,8 @@ full_pipeline.eval()
 image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validation=False, true_label=True)
 
 
-# print('text:')
-# print(list(text_data_module.test_dataset))
+print('text:')
+print(list(text_data_module.test_dataset))
 # print('image:')
 # print(list(image_data_module.test_dataset))
 # print('imagetext:')
