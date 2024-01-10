@@ -68,9 +68,6 @@ class SentenceDataModule(pl.LightningDataModule):
 		self.technique = technique
 		self.rand = rand
 
-		print(self.json_file_path)
-		print(self.technique)
-
 	def setup(self, stage=None):
 		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
 
@@ -101,9 +98,7 @@ class SentenceDataModule(pl.LightningDataModule):
 				sentences = [[item['sentences'][i]['raw'] for i in range(5)][self.rand] for item in data['images']]
 
 		elif self.technique == 'Repeat':
-			print('REPEAT!')
 			if 'NWPU' in self.json_file_path:
-				print('nwpu!')
 				sentences = []
 				categories = sorted([category for category in data])
 
@@ -111,11 +106,8 @@ class SentenceDataModule(pl.LightningDataModule):
 					sentences.extend([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)] for item in data[category])
 				sentences = list(itertools.chain.from_iterable(sentences))
 			else:
-				print('ucm!')
 				sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
 				sentences = list(itertools.chain.from_iterable(sentences))
-
-				print(sentences[:5])
 
 		elif self.technique == 'Mean':
 			# Mean Feature technique, also for Rank Aggregation
