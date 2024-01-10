@@ -12,7 +12,7 @@ import random
 import os
 import yaml
 
-batch_size = 200
+batch_size = 512
 
 intra = False
 
@@ -36,23 +36,23 @@ if intra == True:
 	text_data_module.setup()
 
 elif intra == False:
-	image_data_module = ImageDataModule('../Datasets/UCM/imgs', (224,224), batch_size)
+	image_data_module = ImageDataModule('../Datasets/UCM/imgs', (224,224), batch_size, 5)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='predict')
 
 
-	text_data_module = SentenceDataModule('prajjwal1/bert-small', batch_size, '../Datasets/UCM/dataset.json')
+	text_data_module = SentenceDataModule('prajjwal1/bert-small', batch_size, '../Datasets/UCM/dataset.json', 5)
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
-
-image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
-image_text_pair_data_module.setup(stage='predict')
 
 version = input('Version number to load: ')
 
 
 if version == '':
 	print('Loading untrained model')
+
+	image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
+	image_text_pair_data_module.setup(stage='predict')
 
 	full_pipeline = FullPipeline(
 		batch_size=batch_size, 
@@ -64,6 +64,8 @@ if version == '':
 		top_k=20,
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
+		dataset='ucm',
+		num_repeats=5,
 	)
 
 else:
@@ -85,6 +87,9 @@ else:
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
+	image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
+	image_text_pair_data_module.setup(stage='predict')
+
 	if 'ucm' in hparams['img_path']:
 		dataset = 'ucm'
 
@@ -102,7 +107,8 @@ else:
 		top_k=20,
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
-		dataset=dataset,
+		dataset='ucm',
+		num_repeats=5,
 	)
 
 device = 'cuda:2'
