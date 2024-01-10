@@ -137,10 +137,12 @@ image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validat
 
 random_sample = random.sample(list(text_data_module.test_dataset), 5)
 
+all_images = list(image_data_module.dataset)
+
 print('5 Random samples:')
 for element in random_sample:
 	print(f'Sentence: {element[1]} (Index: {element[2] // hparams["num_repeats"] + 1})')
-	print(list(image_data_module.dataset)[element[2]])
+	print(all_images[element[2]])
 
 while True:
 
