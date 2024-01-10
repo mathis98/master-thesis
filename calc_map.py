@@ -79,11 +79,11 @@ else:
 
 	print(hparams)
 
-	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'])
+	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'], num_repeats=1, technique='Concat')
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='predict')
 
-	text_data_module = SentenceDataModule(hparams['model_name'], hparams['batch_size'], hparams['text_path'])
+	text_data_module = SentenceDataModule(hparams['model_name'], hparams['batch_size'], hparams['text_path'], num_repeats=1, technique='Concat')
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
@@ -108,7 +108,7 @@ else:
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
 		dataset='ucm',
-		num_repeats=5,
+		num_repeats=1,
 	)
 
 device = 'cuda:2'

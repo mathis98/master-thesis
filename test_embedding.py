@@ -149,6 +149,7 @@ while True:
 	top_k = 20
 	sorted_indices = torch.argsort(similarity_scores, descending=True)[:top_k]
 
+	# TODO: Actually also print image name!
 	print('20 closest images:')
 	for idx in sorted_indices:
 		print(f'Image index: {int(labels[idx].item())}, Similarity: {similarity_scores[idx].item()}')
