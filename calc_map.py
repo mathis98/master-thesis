@@ -79,11 +79,11 @@ else:
 
 	print(hparams)
 
-	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'], num_repeats=1, technique='Concat')
+	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'], num_repeats=1, technique='Random')
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='predict')
 
-	text_data_module = SentenceDataModule(hparams['model_name'], hparams['batch_size'], hparams['text_path'], num_repeats=1, technique='Concat')
+	text_data_module = SentenceDataModule(hparams['model_name'], hparams['batch_size'], hparams['text_path'], num_repeats=1, technique='Random')
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
