@@ -37,7 +37,7 @@ if intra == True:
 	text_data_module.setup()
 
 elif intra == False:
-	image_data_module = ImageDataModule('../Datasets/UCM/imgs', (224,224), batch_size, 5, num_repeats=1)
+	image_data_module = ImageDataModule('../Datasets/UCM/imgs', (224,224), batch_size, 5)
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='predict')
 
