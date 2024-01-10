@@ -107,7 +107,7 @@ else:
 		batch_size=hparams['batch_size'], 
 		max_epochs=1, 
 		temperature=hparams['temperature'], 
-		learning_rate=hparams['leraning_rate'], 
+		learning_rate=hparams['learning_rate'], 
 		weight_decay=hparams['weight_decay'], 
 		intra=hparams['intra'],
 		top_k=hparams['top_k'],
