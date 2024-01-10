@@ -134,11 +134,17 @@ image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validat
 # print('imagetext:')
 # print(list(image_text_pair_data_module.test_dataset)[:5])
 
+if hparams['dataset'] == 'nwpu':
+	categories = sorted(os.listdir(hparams['img_path']))
+
 random_sample = random.sample(list(text_data_module.test_dataset), 5)
 
 print('5 Random samples:')
 for element in random_sample:
 	print(f'Sentence: {element[1]} (Index: {element[2] // hparams["num_repeats"] + 1})')
+
+	if hparams['dataset'] == 'nwpu':
+		print(f'Name: {categories[element[2] // 700]}_{categories[(element[2] % 700) - 1]}')
 
 while True:
 

@@ -76,8 +76,6 @@ class ImageDataModule(pl.LightningDataModule):
 
 			categories = os.listdir(self.data_dir)
 
-			print(categories)
-
 			for category in categories:
 				category_path = os.path.join(self.data_dir, category)
 
