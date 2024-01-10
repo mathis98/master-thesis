@@ -172,4 +172,14 @@ while True:
 	# TODO: Actually also print image name!
 	print('20 closest images:')
 	for idx in sorted_indices:
-		print(f'Image index: {int(labels[idx].item())}, Similarity: {similarity_scores[idx].item()}')
+
+		name = ''
+
+		if hparams['dataset'] == 'nwpu':
+			index = int(labels[idx].item())
+			category_index = index // 700
+			elem_index = index % 700 - 1
+
+			name = f' {categories[category_index]}_{elem_index}'
+
+		print(f'Image index: {int(labels[idx].item())}{name}, Similarity: {similarity_scores[idx].item()}')
