@@ -85,7 +85,7 @@ else:
 	if not 'dataset' in hparams:
 		hparams['dataset'] = 'ucm'
 
-	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'], hparams['num_repeats'], technique=hparams['technque'])
+	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'], hparams['num_repeats'], technique=hparams['technique'])
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='predict')
 
