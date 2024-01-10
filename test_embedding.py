@@ -13,7 +13,7 @@ import os
 import yaml
 
 batch_size = 512
-num_repeats = 1
+num_repeats = 5
 
 intra = False
 
