@@ -145,7 +145,7 @@ for element in random_sample:
 
 	if hparams['dataset'] == 'nwpu':
 		index = element[2] // hparams["num_repeats"] + 1
-		category_index = element[2] // 700
+		category_index = index // 700
 		elem_index = index % 700 - 1
 
 		print(index)
