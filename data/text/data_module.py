@@ -161,6 +161,8 @@ class SentenceDataModule(pl.LightningDataModule):
 		self.val_dataset = CustomSentenceDataset([sentences[i] for i in val_indices], self.tokenizer, val_indices)
 		self.test_dataset = CustomSentenceDataset([sentences[i] for i in test_indices], self.tokenizer, test_indices)
 
+		print(self.test_dataset[:5])
+
 	def train_dataloader(self):	
 		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=30)
 
