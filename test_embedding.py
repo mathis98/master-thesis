@@ -137,7 +137,7 @@ random_sample = random.sample(list(text_data_module.test_dataset), 5)
 
 print('5 Random samples:')
 for element in random_sample:
-	print(f'Sentence: {element[1]} (Index: {element[2] // num_repeats + 1})')
+	print(f'Sentence: {element[1]} (Index: {element[2] // hparams['num_repeats'] + 1})')
 
 while True:
 
