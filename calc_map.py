@@ -77,13 +77,13 @@ else:
 	with open(f'./logs/full_pipeline_full_val_test/version_{version}/hparams.yaml') as file:
 		hparams = yaml.safe_load(file)
 
-	print(hparams)
-
 	if not 'technique' in hparams:
 		hparams['technique'] = 'Repeat'
 
 	if not 'dataset' in hparams:
 		hparams['dataset'] = 'ucm'
+
+	print(hparams)
 
 	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'], hparams['num_repeats'], technique=hparams['technique'])
 	image_data_module.prepare_data()
