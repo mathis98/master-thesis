@@ -78,32 +78,38 @@ else:
 	with open(f'./logs/full_pipeline_full_val_test/version_{version}/hparams.yaml') as file:
 		hparams = yaml.safe_load(file)
 
+	if not 'technique' in hparams:
+		hparams['technique'] = 'Repeat'
+
+	if not 'dataset' in hparams:
+		hparams['dataset'] = 'ucm'
+
 	print(hparams)
 
-	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'])
+	image_data_module = ImageDataModule(hparams['img_path'], tuple(hparams['image_size']), hparams['batch_size'], num_repeats=hparams['num_repeats'], technique=hparams['technique'])
 	image_data_module.prepare_data()
 	image_data_module.setup(stage='predict')
 
-	text_data_module = SentenceDataModule(hparams['model_name'], hparams['batch_size'], hparams['text_path'])
+	text_data_module = SentenceDataModule(hparams['model_name'], hparams['batch_size'], hparams['text_path'], num_repeats=hparams['num_repeats'], technique=hparams['technique'])
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
-	image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
+	image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, hparams['batch_size'])
 	image_text_pair_data_module.setup(stage='predict')
 
 	full_pipeline = FullPipeline.load_from_checkpoint(
 		checkpoint,
-		batch_size=batch_size, 
-		max_epochs=1, 
-		temperature=3.0, 
-		learning_rate=1e-4, 
-		weight_decay=1e-4, 
-		intra=intra,
-		top_k=20,
+		batch_size=hparams['batch_size'], 
+		max_epochs=hparams['max_epochs'], 
+		temperature=hparams['temperature'], 
+		learning_rate=hparams['learning_rate'], 
+		weight_decay=hparams['weight_decay'], 
+		intra=hparams['intra'],
+		top_k=hparams['top_k'],
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
-		dataset='ucm',
-		num_repeats=5,
+		dataset=hparams['dataset'],
+		num_repeats=hparams['num_repeats'],
 	)
 
 device = 'cuda:2'
