@@ -97,7 +97,7 @@ else:
 		test_dataloader = image_text_pair_data_module.test_dataloader,
 	)
 
-device = 'cuda:3'
+device = 'cuda:2'
 
 full_pipeline.resnet_embedding_module.to(device)
 full_pipeline.bert_embedding_module.to(device)
