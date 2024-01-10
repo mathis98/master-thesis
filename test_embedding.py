@@ -148,6 +148,12 @@ for element in random_sample:
 		category_index = element[2] // 700
 		elem_index = index % 700 - 1
 
+		print(index)
+		print(category_index)
+		print(elem_index)
+
+		print(categories)
+
 		print(f'Name: {categories[category_index]}_{elem_index}')
 
 while True:
