@@ -86,6 +86,9 @@ else:
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
+	image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
+	image_text_pair_data_module.setup(stage='predict')
+
 	full_pipeline = FullPipeline.load_from_checkpoint(
 		checkpoint,
 		batch_size=batch_size, 
