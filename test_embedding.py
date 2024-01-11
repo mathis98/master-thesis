@@ -177,7 +177,7 @@ while True:
 		name = ''
 
 		index = int(labels[idx].item())
-		idxs.append(index.numpy())
+		idxs.append(index)
 
 		if hparams['dataset'] == 'nwpu':
 			category_index = index // 700
