@@ -145,13 +145,13 @@ for element in random_sample:
 	name = ''
 
 	if hparams['dataset'] == 'nwpu':
-		index = element[2] // hparams["num_repeats"] + 1
+		index = element[2] + 1
 		category_index = index // 700
-		elem_index = index % 700 - 1
+		elem_index = index % 700
 
 		name = f' {categories[category_index]}_{elem_index}'
 
-	print(f'Sentence: {element[1]} (Index: {element[2] // hparams["num_repeats"] + 1}{name})')
+	print(f'Sentence: {element[1]} (Index: {element[2] // hparams["num_repeats"]}{name})')
 
 while True:
 
