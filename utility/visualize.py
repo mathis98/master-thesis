@@ -17,6 +17,7 @@ if number%5 != 0:
 
 fig, axes = plt.subplots(rows, 5, figsize=(10-(rows),(rows)+2))
 
+# TODO add linebreaks adjust figure height
 fig.suptitle(f'Query: {returned["query"]} ({ground_truth})')
 
 num_items = 100 if returned['dataset'] == 'ucm' else 700
@@ -33,9 +34,9 @@ for row in range(rows):
 		idx_val += 1
 
 		if returned['dataset'] == 'nwpu':
-			index = idx + 1
+			index = idx
 			category_index = index // 700
-			elem_index = index % 700 - 1
+			elem_index = index % 700
 
 			categories = sorted(os.listdir(f'../{img_path}'))
 
