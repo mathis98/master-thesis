@@ -188,7 +188,7 @@ while True:
 		print(f'Image index: {index}{name}, Similarity: {similarity_scores[idx].item()}')
 
 	output = {
-		'dataset': hparams[dataset],
+		'dataset': hparams['dataset'],
 		'query': query,
 		'idxs': idxs
 	}
