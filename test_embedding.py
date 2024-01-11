@@ -145,9 +145,9 @@ for element in random_sample:
 	name = ''
 
 	if hparams['dataset'] == 'nwpu':
-		index = element[2] + 1
+		index = element[2]
 		category_index = index // 700
-		elem_index = index % 700
+		elem_index = index % 700 + 1
 
 		name = f' {categories[category_index]}_{elem_index}'
 
