@@ -38,11 +38,14 @@ for row in range(rows):
 			category_index = index // 700
 			elem_index = index % 700
 
+			if elem_index == 0:
+				elem_index = 700
+
 			categories = sorted(os.listdir(f'../{img_path}'))
 
 			name = f' {categories[category_index]}_{elem_index}'
 
-		path = f'../../Datasets/UCM/imgs/{idx+1}.tif' if returned['dataset'] == 'ucm' else f'../{img_path}/{categories[category_index]}/{categories[category_index]}_{elem_index}.jpg'
+		path = f'../../Datasets/UCM/imgs/{idx}.tif' if returned['dataset'] == 'ucm' else f'../{img_path}/{categories[category_index]}/{categories[category_index]}_{elem_index}.jpg'
 
 		modifier.axis('off')
 
