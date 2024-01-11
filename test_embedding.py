@@ -176,7 +176,7 @@ while True:
 
 		name = ''
 
-		index = int(labels[idx].item())
+		index = int(labels[idx].item()) + 1
 		idxs.append(index)
 
 		if hparams['dataset'] == 'nwpu':
