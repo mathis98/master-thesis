@@ -169,18 +169,22 @@ while True:
 	top_k = 20
 	sorted_indices = torch.argsort(similarity_scores, descending=True)[:top_k]
 
-	# TODO: Actually also print image name!
-	print(labels[sorted_indices].item())
+	idxs = []
+
 	print('20 closest images:')
 	for idx in sorted_indices:
 
 		name = ''
 
+		index = int(labels[idx].item())
+		idxs.append(index.numpy())
+
 		if hparams['dataset'] == 'nwpu':
-			index = int(labels[idx].item())
 			category_index = index // 700
 			elem_index = index % 700 - 1
 
 			name = f' {categories[category_index]}_{elem_index}'
 
-		print(f'Image index: {int(labels[idx].item())}{name}, Similarity: {similarity_scores[idx].item()}')
+		print(f'Image index: {index}{name}, Similarity: {similarity_scores[idx].item()}')
+
+	print(idxs)
