@@ -166,7 +166,7 @@ while True:
 
 	similarity_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
 
-	top_k = 20
+	top_k = 100
 	sorted_indices = torch.argsort(similarity_scores, descending=True)[:top_k]
 
 	idxs = []
@@ -181,7 +181,7 @@ while True:
 
 		if hparams['dataset'] == 'nwpu':
 			category_index = index // 700
-			elem_index = index % 700 - 1
+			elem_index = index % 700
 
 			name = f' {categories[category_index]}_{elem_index}'
 
