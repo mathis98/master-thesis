@@ -183,6 +183,9 @@ while True:
 			category_index = index // 700
 			elem_index = index % 700
 
+			if elem_index == 0;
+				elem_index = 700
+
 			name = f' {categories[category_index]}_{elem_index}'
 
 		print(f'Image index: {index}{name}, Similarity: {similarity_scores[idx].item()}')
