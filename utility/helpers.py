@@ -232,14 +232,14 @@ def get_ground_truth_captions(indeces,dataset='nwpu',num_repeats=1):
 
 			item = data[category][index]
 
-			sentences.extend(([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)]))
+			sentences.append(([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)]))
 
 		# UCM dataset
 		else:
 			# concatentate 'raw' for 'sentences'[1-4]
 
 			item = data['images'][idx]
-			sentences.extend([item['sentences'][i]['raw'] for i in range(5)])
+			sentences.append([item['sentences'][i]['raw'] for i in range(5)])
 
 	return sentences
 
