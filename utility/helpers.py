@@ -223,9 +223,10 @@ def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
 		# Go through each item and concatenate raw, raw_1, raw_2, raw_3, and raw_4
 		categories = sorted([category for category in data])
 
-		category = idx // (700 * num_repeats)
+		category = categories[idx // (700 * num_repeats)]
+		index = index // (700 * num_repeats)
 
-		sentences = ([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)] for item in data[category])
+		sentences = ([data[category][index]['raw']] + [item[f'raw_{i}'] for i in range(1, 5)])
 
 	# UCM dataset
 	else:
