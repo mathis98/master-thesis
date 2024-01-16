@@ -6,6 +6,7 @@ import torchvision
 torchvision.disable_beta_transforms_warning()
 from torchvision.transforms import v2
 from torchmetrics.functional.retrieval import retrieval_average_precision, retrieval_normalized_dcg
+from torchmetrics.functional.text import bleu_score
 from transformers.tokenization_utils_base import BatchEncoding
 import json
 
@@ -158,6 +159,25 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 	return mAP_values, ndcg_values
 
+def calculate_bleu(image_embeddings, caption_embeddings, image_labels, captions):
+	bleu_values = []
+
+	for i in range(caption_embeddings.shape[0]):
+
+		caption_embedding = caption_embeddings[i]
+		caption = captions[i][1]
+
+		image_scores = torch.matmul(image_embeddings, caption_embedding)
+
+		image_label = image_labels[torch.argsort(similarity_scores, descending=True)[:1]]
+
+		bleu = bleu_score(caption, get_ground_truth_captions(image_label))
+
+		bleu_values.append(bleu)
+
+	return bleu_values
+
+
 def define_param_groups(model, weight_decay, optimizer_name):
 	"""
 	Define paramter groups for optimization. Remove weight_decay from batch normalization layers.
@@ -219,27 +239,23 @@ def get_ground_truth_captions(indeces,dataset='nwpu',num_repeats=1):
 	with open(text_path, 'r') as json_file:
 			data = json.load(json_file)
 
-	sentences = []
+	if dataset == 'nwpu':
+		# concatenate raw, raw_1, raw_2, raw_3, and raw_4
+		categories = sorted([category for category in data])
 
-	for idx in indeces:
+		category = categories[idx // (700 * num_repeats)]
+		index = idx % 700
 
-		if dataset == 'nwpu':
-			# concatenate raw, raw_1, raw_2, raw_3, and raw_4
-			categories = sorted([category for category in data])
+		item = data[category][index]
 
-			category = categories[idx // (700 * num_repeats)]
-			index = idx % 700
+		sentences = ([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)])
 
-			item = data[category][index]
+	# UCM dataset
+	else:
+		# concatentate 'raw' for 'sentences'[1-4]
 
-			sentences.append(([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)]))
-
-		# UCM dataset
-		else:
-			# concatentate 'raw' for 'sentences'[1-4]
-
-			item = data['images'][idx]
-			sentences.append([item['sentences'][i]['raw'] for i in range(5)])
+		item = data['images'][idx]
+		sentences = [item['sentences'][i]['raw'] for i in range(5)]
 
 	return sentences
 
