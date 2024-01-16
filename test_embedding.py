@@ -148,7 +148,7 @@ for element in random_sample:
 		name = f' {categories[category_index]}_{elem_index}'
 
 	else:
-		name = f'{index+1}'
+		name = f'{index//100}'
 
 	print(f'Sentence: {element[1]} (Index: {index}{name})')
 
@@ -189,7 +189,7 @@ while True:
 			name = f' {categories[category_index]}_{elem_index}'
 
 		else:
-			name = f'{index+1}'
+			name = f'{index//100}'
 
 		print(f'Image index: {index}{name}, Similarity: {similarity_scores[idx].item()}')
 
