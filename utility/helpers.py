@@ -224,7 +224,7 @@ def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
 		categories = sorted([category for category in data])
 
 		category = categories[idx // (700 * num_repeats)]
-		index = idx // (700 * num_repeats)
+		index = idx % 700
 
 		item = data[category][index]
 
@@ -233,10 +233,8 @@ def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
 	# UCM dataset
 	else:
 		# concatentate 'raw' for 'sentences'[1-4]
-		index = idx // (100 * num_repeats)
 
-		item = data['images'][index]
-		print(item)
+		item = data['images'][idx]
 		sentences = [item['sentences'][i]['raw'] for i in range(5)]
 
 	return sentences
