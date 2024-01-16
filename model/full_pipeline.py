@@ -106,10 +106,10 @@ class FullPipeline(pl.LightningModule):
 		self.test_step_outputs_10 = []
 		self.test_step_outputs_20 = []
 
-		self.test_step_r_1 = []
-		self.test_step_r_5 = []
-		self.test_step_r_10 = []
-		self.test_step_r_20 = []
+		self.test_step_ndcg_1 = []
+		self.test_step_ndcg_5 = []
+		self.test_step_ndcg_10 = []
+		self.test_step_ndcg_20 = []
 
 		self.val_dataloader = val_dataloader
 		self.test_dataloader = test_dataloader
@@ -363,10 +363,10 @@ class FullPipeline(pl.LightningModule):
 
 		# mAP = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=self.top_k) # multiple top k
 		# Calculate mAP and Recall based on the groundtruth list constructed above
-		(map_1,r1), (map_5,r5), (map_10,r10), (map_20,r20) = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=1),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=5),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=10),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=20)
+		(map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20) = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=1),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=5),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=10),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=20)
 
 
-		return (map_1,r1), (map_5,r5), (map_10,r10), (map_20,r20)
+		return (map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20)
 
 
 	def on_test_epoch_start(self):
@@ -387,7 +387,7 @@ class FullPipeline(pl.LightningModule):
 			batch_idx: Index of the current batch.
 		"""
 
-		(mAP_1,r1),(mAP_5,r5),(mAP_10,r10),(mAP_20,r20) = self.shared_step(batch, validation=False)
+		(mAP_1,ndcg_1),(mAP_5,ndcg_5),(mAP_10,ndcg_10),(mAP_20,ndcg_20) = self.shared_step(batch, validation=False)
 
 		self.log('test_mAP_20',np.mean(mAP_20), batch_size=self.batch_size)
 
@@ -396,10 +396,10 @@ class FullPipeline(pl.LightningModule):
 		self.test_step_outputs_10.append(mAP_10)
 		self.test_step_outputs_20.append(mAP_20)
 
-		self.test_step_r_1.append(r1)
-		self.test_step_r_5.append(r5)
-		self.test_step_r_10.append(r10)
-		self.test_step_r_20.append(r20)
+		self.test_step_ndcg_1.append(ndcg_1)
+		self.test_step_ndcg_5.append(ndcg_5)
+		self.test_step_ndcg_10.append(ndcg_10)
+		self.test_step_ndcg_20.append(ndcg_20)
 
 	def on_test_epoch_end(self):
 		"""
@@ -410,20 +410,20 @@ class FullPipeline(pl.LightningModule):
 		avg_mAP_10 = np.mean(np.concatenate(self.test_step_outputs_10))
 		avg_mAP_20 = np.mean(np.concatenate(self.test_step_outputs_20))
 
-		avg_r_1 = np.mean(np.concatenate(self.test_step_r_1))
-		avg_r_5 = np.mean(np.concatenate(self.test_step_r_5))
-		avg_r_10 = np.mean(np.concatenate(self.test_step_r_10))
-		avg_r_20 = np.mean(np.concatenate(self.test_step_r_20))
+		avg_ndcg_1 = np.mean(np.concatenate(self.test_step_ndcg_1))
+		avg_ndcg_5 = np.mean(np.concatenate(self.test_step_ndcg_5))
+		avg_ndcg_10 = np.mean(np.concatenate(self.test_step_ndcg_10))
+		avg_ndcg_20 = np.mean(np.concatenate(self.test_step_ndcg_20))
 
 		self.log('avg_test_mAP_1', avg_mAP_1, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 		self.log('avg_test_mAP_5', avg_mAP_5, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 		self.log('avg_test_mAP_10', avg_mAP_10, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 		self.log('avg_test_mAP_20', avg_mAP_20, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 
-		self.log('avg_test_r_1', avg_r_1, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
-		self.log('avg_test_r_5', avg_r_5, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
-		self.log('avg_test_r_10', avg_r_10, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
-		self.log('avg_test_r_20', avg_r_20, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
+		self.log('avg_test_ndcg_1', avg_ndcg_1, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
+		self.log('avg_test_ndcg_5', avg_ndcg_5, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
+		self.log('avg_test_ndcg_10', avg_ndcg_10, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
+		self.log('avg_test_ndcg_20', avg_ndcg_20, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 
 
 	def on_validation_epoch_start(self):

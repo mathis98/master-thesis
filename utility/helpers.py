@@ -5,7 +5,7 @@ import torch
 import torchvision
 torchvision.disable_beta_transforms_warning()
 from torchvision.transforms import v2
-from torchmetrics.functional.retrieval import retrieval_average_precision, retrieval_recall
+from torchmetrics.functional.retrieval import retrieval_average_precision, retrieval_normalized_dcg
 from transformers.tokenization_utils_base import BatchEncoding
 
 
@@ -126,11 +126,11 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	# TODO: if technique is Rank Aggregation (multicaption=true) 
 	# 		--> for each caption embedding we have a list of 5 embeddings each
 	#       calculate image scores for each and mean them
-	#       THEN calculate mAP and recall!
+	#       THEN calculate mAP and NDCG!
 
 	mAP_values = []
 
-	recall_values = []
+	ndcg_values = []
 
 	for i in range(caption_embeddings.shape[0]):
 
@@ -146,16 +146,16 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 			top_k=top_k
 		)
 
-		recall = retrieval_recall(
+		recall = retrieval_normalized_dcg(
 			image_scores,
 			relevant_labels,
 			top_k=top_k,
 		)
 
 		mAP_values.append(mAP.cpu().numpy())
-		recall_values.append(recall.cpu().numpy())
+		ndcg_values.append(recall.cpu().numpy())
 
-	return mAP_values, recall_values
+	return mAP_values, ndcg_values
 
 def define_param_groups(model, weight_decay, optimizer_name):
 	"""
