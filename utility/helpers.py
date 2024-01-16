@@ -226,7 +226,9 @@ def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
 		category = categories[idx // (700 * num_repeats)]
 		index = idx // (700 * num_repeats)
 
-		sentences = ([data[category][index]['raw']] + [item[f'raw_{i}'] for i in range(1, 5)])
+		item = data[category][index]
+
+		sentences = ([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)])
 
 	# UCM dataset
 	else:
