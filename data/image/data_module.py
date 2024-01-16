@@ -39,6 +39,7 @@ class ImageDataSet(Dataset):
 		return len(self.image_paths)
 
 	def __getitem__(self, idx):
+		# Return the image and the image path (which includes the name)
 		image_path = self.image_paths[idx]
 		image = Image.open(image_path).convert('RGB')
 		image = basic_transform(image)
@@ -70,26 +71,39 @@ class ImageDataModule(pl.LightningDataModule):
 		Prepares image paths by repeating and shuffling.
 		"""
 
+		# If the dataset is NWPU
 		if 'NWPU' in self.data_dir:
 
+			# Construct image path list
 			image_paths = []
 
+			# Classes are represented by folders which contain the images
+			# Get all class names (folders)
 			categories = os.listdir(self.data_dir)
 
+			# For every class
 			for category in categories:
+				# Get the corresponding path
 				category_path = os.path.join(self.data_dir, category)
 
+				# Sanity check (is this a directory?)
 				if os.path.isdir(category_path):
+					# Add to image_paths
 					image_paths.extend([os.path.join(category_path, filename) for filename in os.listdir(category_path) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))])
 
+			# Sort this list so we have 'airplane' first for alignment with captions
 			image_paths = sorted(image_paths)
 
+		# If dataset is UCM
 		else:
+			# All images are in the same folder extract them
 			image_paths = [os.path.join(self.data_dir, filename) for filename in os.listdir(self.data_dir) if filename.endswith(('.jpg', '.jpeg', '.png', '.tiff', '.tif'))]
+			# Sort for alignment with captions
 			image_paths = sorted(image_paths, key=lambda x: int(''.join(filter(str.isdigit, x))))
 		
 		self.image_paths = image_paths
 
+		# If 'Repeat' technique is chosen repeat images num_repeats times
 		if self.technique == 'Repeat':
 			self.image_paths = np.repeat(image_paths, self.num_repeats)
 
@@ -101,26 +115,29 @@ class ImageDataModule(pl.LightningDataModule):
 			stage: Stage for training (None for overall setup).
 		"""
 
+		# Calculate total number of items and corresponding train, val, test split (0.8, 0.1, 0.1)
 		total_size = len(self.image_paths)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
 		test_size = total_size - train_size - val_size
 
+		# Create indices from 0 to total_size-1
 		indices = list(range(total_size))
 
 		np.random.seed(self.seed)
-		shuffled_indices = np.random.permutation(indices)
 
 		train_indices = []
 		val_indices = []
 		test_indices = []
 
+		# Elements per class for ucm
 		elements_per_group = 100 * self.num_repeats
 
+		# Elements per class for NWPU
 		if 'NWPU' in self.data_dir:
 			elements_per_group = 700 * self.num_repeats
 
-		# Iterate through each group
+		# Iterate through each group and add 80%, 10%, 10% to train, val, test respectively
 		for group_start in range(0, len(indices), elements_per_group):
 			group_end = group_start + elements_per_group
 			group = indices[group_start:group_end]
@@ -134,12 +151,15 @@ class ImageDataModule(pl.LightningDataModule):
 			val_indices.extend(group[train_end:val_end])
 			test_indices.extend(group[val_end:])
 
+		# Construct whole dataset with all images
 		self.dataset = ImageDataSet(self.image_paths, self.image_size)
 
+		# And partial datasets for training (80%), validation (10%), and testing (10%)
 		self.train_dataset = ImageDataSet([self.image_paths[i] for i in train_indices], self.image_size)
 		self.val_dataset = ImageDataSet([self.image_paths[i] for i in val_indices], self.image_size)
 		self.test_dataset = ImageDataSet([self.image_paths[i] for i in test_indices], self.image_size)
 
+	# Construct dataloaders for full dataset, training, validation, and testing
 	def dataloader(self):
 		"""
 		Returns DataLoader for entire data.

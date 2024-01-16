@@ -166,7 +166,7 @@ while True:
 
 	similarity_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
 
-	top_k = 100
+	top_k = 20
 	sorted_indices = torch.argsort(similarity_scores, descending=True)[:top_k]
 
 	idxs = []

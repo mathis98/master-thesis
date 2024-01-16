@@ -19,6 +19,7 @@ class ImageTextPairDataset(Dataset):
 		return len(self.image_dataset)
 
 	def __getitem__(self, idx):
+		# Simply return the item at idx from the image data loader and text data loader
 		return self.image_dataset[idx], self.text_dataset[idx]
 
 
@@ -56,15 +57,18 @@ class ImageTextPairDataModule(pl.LightningDataModule):
 		self.image_data_module.setup(stage)
 		self.text_data_module.setup(stage)
 
+		# Construct datasets from image and text datasets
 		self.dataset = ImageTextPairDataset(self.image_data_module.dataset, self.text_data_module.dataset)
 
 		self.train_dataset = ImageTextPairDataset(self.image_data_module.train_dataset, self.text_data_module.train_dataset)
 		self.val_dataset = ImageTextPairDataset(self.image_data_module.val_dataset, self.text_data_module.val_dataset)
 		self.test_dataset = ImageTextPairDataset(self.image_data_module.test_dataset, self.text_data_module.test_dataset)
 
+	# Construct data loaders
 	def dataloader(self):
 		return DataLoader(self.dataset, self.batch_size, num_workers=30, pin_memory=True)
 
+	# Drop last for smooth loss curves (so last batch is same size)
 	def train_dataloader(self):
 		return DataLoader(self.train_dataset, self.batch_size, num_workers=30, shuffle=True, drop_last=True, pin_memory=True)
 

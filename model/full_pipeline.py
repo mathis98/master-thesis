@@ -218,6 +218,7 @@ class FullPipeline(pl.LightningModule):
 		image_embeddings = []
 		labels = []
 
+		# Exists so we deduplicate the repeated images
 		unique_embeddings = set()
 
 		# Set to evaluation mode
@@ -225,9 +226,11 @@ class FullPipeline(pl.LightningModule):
 
 		# Offers speedup, don't calculate gradients
 		with torch.no_grad():		
+			# Get data batchwise
 			for batch in dataloader:
 				batch = to_cuda_recursive(batch, device=':3')
 
+				# Retrieve image and caption
 				image, caption = batch
 
 				if self.intra:
@@ -235,17 +238,9 @@ class FullPipeline(pl.LightningModule):
 					caption = caption[0], caption[2], caption[4]
 
 				indeces = caption[2]
+
+				# Get actual indices by dividing with repeats
 				true_label_value = indeces // self.num_repeats
-				if not true_label:
-					
-					if self.dataset == 'ucm':
-						indeces = indeces // (self.num_repeats * 100) 
-
-					elif self.dataset == 'nwpu':
-						indeces = indeces // (self.num_repeats * 700)
-
-				elif true_label:
-					indeces = true_label_value + 1
 
 				# Forward pass to get image embeddings
 				if self.intra:
@@ -259,28 +254,38 @@ class FullPipeline(pl.LightningModule):
 				temp_embed = torch.tensor([]).to(image_embed.device)
 				temp_labels = torch.tensor([]).to(image_embed.device)
 
+				# Pass over all embeddings and labels
 				for idx, embed in zip(true_label_value.tolist(), image_embed):
+					# If this image was already seen skip it
 					if idx in unique_embeddings:
 						continue
 					else:
+						# Otherwise add the index to the dict
 						unique_embeddings.add(idx)
+						# Add embedding to list
 						temp_embed = torch.cat([temp_embed, embed.unsqueeze(0).to(image_embed.device)], dim=0)
 
+						# If we are not interested in the actual indeces (for testing)
+						# Get class representations instead
+						# UCM has 100 elements per class, NWPU has 700
 						if not true_label:
 							if self.dataset == 'ucm':
 								idx = idx // 100
 							elif self.dataset == 'nwpu':
 								idx = idx // 700
+						# Add the index (either true or class) to the list
 						temp_labels = torch.cat([temp_labels, torch.tensor(idx).to(image_embed.device).unsqueeze(0)], dim=0)
 
+				# Add all image embeddings and labels to return lists
 				image_embeddings.append(temp_embed)
 				labels.append(temp_labels)
 
-		# Concatenate embeddings
+		# Concatenate embeddings and labels
 		image_embeddings = torch.cat(image_embeddings, dim=0)
 
 		labels = torch.cat(labels, dim=0)
 
+		#  Return embeddings and indeces (either true or class based)
 		return image_embeddings, labels
 
 
@@ -295,6 +300,7 @@ class FullPipeline(pl.LightningModule):
 			np.array: mAP (mean Average Precision) values for input batch, based on embeddings.
 		"""
 
+		# Get image and caption
 		image, caption = batch
 
 		if self.intra:
@@ -302,12 +308,15 @@ class FullPipeline(pl.LightningModule):
 			caption = caption[0], caption[2], caption[4]
 
 		indeces = caption[2]
+
+		# From indeces to classes (either for ucm or nwpu)
 		if self.dataset == 'ucm':
 			labels_caption = indeces // (self.num_repeats * 100) # They need to be same if in same class
 		elif self.dataset == 'nwpu':
 			labels_caption = indeces // (self.num_repeats * 700)
 		labels_images = self.validation_labels if validation else self.test_labels
 
+		# Get indeces of relevant items for each embedding based on classes extracted above
 		groundtruth = relevant_list(labels_caption, labels_images)
 
 		# image_embed, augmented_image_embed, caption_embed, augmented_caption_embed
@@ -339,6 +348,7 @@ class FullPipeline(pl.LightningModule):
 		# Pass through list of captions (5) get embeddings each, store as list --> pass to calculate_mAP
 		# 	--> calculates rank aggregated mAP
 
+		# Pass through model
 		if self.intra:
 			_, _, caption_embed, _ = self(batch)
 
@@ -348,9 +358,11 @@ class FullPipeline(pl.LightningModule):
 
 		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
+		# Get all image embeddings
 		image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
 		# mAP = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=self.top_k) # multiple top k
+		# Calculate mAP and Recall based on the groundtruth list constructed above
 		(map_1,r1), (map_5,r5), (map_10,r10), (map_20,r20) = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=1),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=5),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=10),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=20)
 
 

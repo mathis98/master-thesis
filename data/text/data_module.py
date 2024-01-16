@@ -45,6 +45,7 @@ class CustomSentenceDataset(Dataset):
 		inputs['input_ids'] = inputs['input_ids'].squeeze(0)
 		inputs['attention_mask'] = inputs['attention_mask'].squeeze(0)
 
+		# Return tokenied sentence, raw sentence, and index of sentence in the dataset
 		return inputs, sentence, self.indices[idx]
 
 
@@ -71,41 +72,58 @@ class SentenceDataModule(pl.LightningDataModule):
 	def setup(self, stage=None):
 		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
 
+		# Open the JSON file containing the image caption mapping
 		with open(self.json_file_path, 'r') as json_file:
 			data = json.load(json_file)
 
+		# For the Concatenation Technique
 		if self.technique == 'Concat':
 
+			# NWPU Dataset
 			if 'NWPU' in self.json_file_path:
+				# Go through each item and concatenate raw, raw_1, raw_2, raw_3, and raw_4
 				sentences = []
 				categories = sorted([category for category in data])
 
 				for category in categories:
 					sentences.extend([' '.join([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)]) for item in data[category]])
+			# UCM dataset
 			else:
+				# Go through each item and concatentate 'raw' for 'sentences'[1-4]
 				sentences = [' '.join([item['sentences'][i]['raw'] for i in range(5)]) for item in data['images']]
 
+		# For the Random Technique
 		elif self.technique == 'Random':
 
+			# NWPU Dataset
 			if 'NWPU' in self.json_file_path:
+				# Go through each item and store raw_{rand} where rand is passed in
 				sentences = []
 				categories = sorted([category for category in data])
 
 				for category in categories:
 					key = 'raw' if self.rand == 0 else f'raw_{self.rand}'
 					sentences.extend([item[key] for item in data[category]])
+			# UCM Dataset
 			else:
-				sentences = [[item['sentences'][i]['raw'] for i in range(5)][self.rand] for item in data['images']]
+				# For each item select 'raw' from 'sentences'[{rand}] where rand is passed in
+ 				sentences = [[item['sentences'][i]['raw'] for i in range(5)][self.rand] for item in data['images']]
 
+ 		# For the Repeat Technique
 		elif self.technique == 'Repeat':
+
+			# NWPU Dataset
 			if 'NWPU' in self.json_file_path:
+				# For each item keep all captions (raw, raw_1, raw_2, raw_3, raw-4), flatten the list
 				sentences = []
 				categories = sorted([category for category in data])
 
 				for category in categories:
 					sentences.extend([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)] for item in data[category])
 				sentences = list(itertools.chain.from_iterable(sentences))
+			# UCM dataset
 			else:
+				# For each item go through 'sentences'[0-4] and keep all captions, flatten the list
 				sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
 				sentences = list(itertools.chain.from_iterable(sentences))
 
@@ -114,20 +132,26 @@ class SentenceDataModule(pl.LightningDataModule):
 			# ==> List [[caption1_1, caption2_1, caption_3_1, caption4_1, caption5_1],[caption1_2, caption2_2,...],...]
 			pass
 
+		# Total number of captions we have:
+		# Concat, Random: Same as images
+		# Repeat: num_repeats * images (actually same as images are repeated)
 		total_size = len(sentences)
+
+		# Calculate train, test, val sizes (80%, 10%, 10%)
 		train_size = int(.8 * total_size)
 		val_size = int(.1 * total_size)
 		test_size = total_size - train_size - val_size
 
+		# Construct indices from 0 to total_size-1
 		indices = list(range(total_size))
 
 		np.random.seed(self.seed)
-		shuffled_indices = np.random.permutation(indices)
 
 		train_indices = []
 		val_indices = []
 		test_indices = []
 
+		# 100 elements per class for UCM, 700 for NWPU
 		elements_per_group = 100 * self.num_repeats
 
 		if 'NWPU' in self.json_file_path:
@@ -147,12 +171,15 @@ class SentenceDataModule(pl.LightningDataModule):
 			val_indices.extend(group[train_end:val_end])
 			test_indices.extend(group[val_end:])
 
+		# Construct complete dataset with all captions
 		self.dataset = CustomSentenceDataset(sentences, self.tokenizer, indices)
 
+		# And sub datasets for training, validation, and testing
 		self.train_dataset = CustomSentenceDataset([sentences[i] for i in train_indices], self.tokenizer, train_indices)
 		self.val_dataset = CustomSentenceDataset([sentences[i] for i in val_indices], self.tokenizer, val_indices)
 		self.test_dataset = CustomSentenceDataset([sentences[i] for i in test_indices], self.tokenizer, test_indices)
 
+	# Dataloaders for training, validation, and testing
 	def train_dataloader(self):	
 		return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=30)
 
