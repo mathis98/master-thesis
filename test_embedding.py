@@ -145,7 +145,7 @@ for element in random_sample:
 		category_index = index // 700
 		elem_index = index % 700
 
-		name = f' {categories[category_index]}_{elem_index+1}'
+		name = f' {categories[category_index]}_{elem_index}'
 
 	else:
 		name = f'{index+1}'
@@ -186,7 +186,7 @@ while True:
 			category_index = index // 700
 			elem_index = index % 700
 
-			name = f' {categories[category_index]}_{elem_index+1}'
+			name = f' {categories[category_index]}_{elem_index}'
 
 		else:
 			name = f'{index+1}'
