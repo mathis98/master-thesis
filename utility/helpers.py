@@ -209,7 +209,7 @@ def to_cuda_recursive(obj, device=''):
 		return obj  # Return unchanged if not a tensor, list, tuple, or dict
 
 
-def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
+def get_ground_truth_captions(indeces,dataset='nwpu',num_repeats=1):
 	if dataset == 'ucm':
 		text_path = '../../Datasets/UCM/dataset.json'
 
@@ -219,23 +219,27 @@ def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
 	with open(text_path, 'r') as json_file:
 			data = json.load(json_file)
 
-	if dataset == 'nwpu':
-		# concatenate raw, raw_1, raw_2, raw_3, and raw_4
-		categories = sorted([category for category in data])
+	sentences = []
 
-		category = categories[idx // (700 * num_repeats)]
-		index = idx % 700
+	for idx in indeces:
 
-		item = data[category][index]
+		if dataset == 'nwpu':
+			# concatenate raw, raw_1, raw_2, raw_3, and raw_4
+			categories = sorted([category for category in data])
 
-		sentences = ([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)])
+			category = categories[idx // (700 * num_repeats)]
+			index = idx % 700
 
-	# UCM dataset
-	else:
-		# concatentate 'raw' for 'sentences'[1-4]
+			item = data[category][index]
 
-		item = data['images'][idx]
-		sentences = [item['sentences'][i]['raw'] for i in range(5)]
+			sentences.extend(([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)]))
+
+		# UCM dataset
+		else:
+			# concatentate 'raw' for 'sentences'[1-4]
+
+			item = data['images'][idx]
+			sentences.extend([item['sentences'][i]['raw'] for i in range(5)])
 
 	return sentences
 
