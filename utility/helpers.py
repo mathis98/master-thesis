@@ -208,3 +208,28 @@ def to_cuda_recursive(obj, device=''):
 		return obj  # Return unchanged if not a tensor, list, tuple, or dict
 
 
+def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
+	if dataset == 'ucm':
+		text_path = '../../Datasets/UCM/dataset.json'
+
+	elif dataset == 'nwpu':
+		text_path = '../../Datasets/NWPU-Captions-main/dataset_nwpu.json'
+
+	with open(text_path, 'r') as json_file:
+			data = json.load(json_file)
+
+	if dataset == 'nwpu':
+		# Go through each item and concatenate raw, raw_1, raw_2, raw_3, and raw_4
+		categories = sorted([category for category in data])
+
+		category = categories[idx // (700 * num_repeats)]
+
+		sentences = ([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)] for item in data[category])
+
+	# UCM dataset
+	else:
+		# Go through each item and concatentate 'raw' for 'sentences'[1-4]
+		index = idx // (100 * num_repeats)
+		sentences = [data['images'][index]['sentences'][i]['raw'] for i in range(5)]
+
+
