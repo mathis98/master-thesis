@@ -220,7 +220,7 @@ def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
 			data = json.load(json_file)
 
 	if dataset == 'nwpu':
-		# Go through each item and concatenate raw, raw_1, raw_2, raw_3, and raw_4
+		# concatenate raw, raw_1, raw_2, raw_3, and raw_4
 		categories = sorted([category for category in data])
 
 		category = categories[idx // (700 * num_repeats)]
@@ -232,9 +232,11 @@ def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
 
 	# UCM dataset
 	else:
-		# Go through each item and concatentate 'raw' for 'sentences'[1-4]
+		# concatentate 'raw' for 'sentences'[1-4]
 		index = idx // (100 * num_repeats)
-		sentences = [data['images'][index]['sentences'][i]['raw'] for i in range(5)]
+
+		item = data['images'][index]
+		sentences = [item['sentences'][i]['raw'] for i in range(5)]
 
 	return sentences
 
