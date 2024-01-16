@@ -233,4 +233,6 @@ def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
 		index = idx // (100 * num_repeats)
 		sentences = [data['images'][index]['sentences'][i]['raw'] for i in range(5)]
 
+	return sentences
+
 
