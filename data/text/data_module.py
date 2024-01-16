@@ -114,7 +114,7 @@ class SentenceDataModule(pl.LightningDataModule):
 
 			# NWPU Dataset
 			if 'NWPU' in self.json_file_path:
-				# For each item keep all captions (raw, raw_1, raw_2, raw_3, raw-4), flatten the list
+				# For each item keep all captions (raw, raw_1, raw_2, raw_3, raw_4), flatten the list
 				sentences = []
 				categories = sorted([category for category in data])
 
@@ -130,7 +130,20 @@ class SentenceDataModule(pl.LightningDataModule):
 		elif self.technique == 'Mean':
 			# Mean Feature technique, also for Rank Aggregation
 			# ==> List [[caption1_1, caption2_1, caption_3_1, caption4_1, caption5_1],[caption1_2, caption2_2,...],...]
-			pass
+			
+			# NWPU dataset
+			if 'NWPU' in self.json_file_path:
+				# For each item keep all captions (raw, raw_1, raw_2, raw_3, raw_4), do NOT flatten
+				sentences = []
+				categories = sorted([category for category in data])
+
+				for category in categories:
+					sentences.extend([item['raw']] + [item[f'raw_{i}'] for i in range(1, 5)] for item in data[category])
+			# UCM dataset
+			else:
+				# For each item go through 'sentences'[0-4] and keep all captions, do NOT flatten
+				sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
+
 
 		# Total number of captions we have:
 		# Concat, Random: Same as images
