@@ -46,12 +46,11 @@ if version == '':
 		image_data_module.prepare_data()
 		image_data_module.setup(stage='predict')
 
+		text_data_module = SentenceDataModule('prajjwal1/bert-small', batch_size, '../Datasets/UCM/dataset.json', 5)
+		text_data_module.prepare_data()
+		text_data_module.setup(stage='predict')
 
-	text_data_module = SentenceDataModule('prajjwal1/bert-small', batch_size, '../Datasets/UCM/dataset.json', 5)
-	text_data_module.prepare_data()
-	text_data_module.setup(stage='predict')
-
-	hparams = {num_repeats:5}
+	hparams = {'num_repeats':5}
 
 	image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, batch_size)
 	image_text_pair_data_module.setup(stage='predict')
@@ -127,15 +126,12 @@ full_pipeline.eval()
 image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validation=False, true_label=True)
 
 
-# print('text:')
-# print(list(text_data_module.test_dataset))
-# print('image:')
-# print(list(image_data_module.test_dataset))
-# print('imagetext:')
-# print(list(image_text_pair_data_module.test_dataset)[:5])
-
 if hparams['dataset'] == 'nwpu':
-	categories = sorted(os.listdir(hparams['img_path']))
+	categories = []
+	cats = os.listdir(hparams['img_path'])
+	for category in cats:
+		if os.path.isdir(os.path.join('../Datasets/NWPU-Captions-main/NWPU-RESISC45', category)):
+			categories.append(category)
 
 random_sample = random.sample(list(text_data_module.test_dataset), 5)
 
@@ -143,29 +139,33 @@ print('5 Random samples:')
 for element in random_sample:
 
 	name = ''
+	index = element[2] // hparams["num_repeats"]
 
 	if hparams['dataset'] == 'nwpu':
-		index = element[2] // hparams["num_repeats"] + 1
 		category_index = index // 700
 		elem_index = index % 700
 
 		name = f' {categories[category_index]}_{elem_index}'
 
-	print(f'Sentence: {element[1]} (Index: {element[2] // hparams["num_repeats"] + 1}{name})')
+	print(f'Sentence: {element[1]} (Index: {index}{name})')
 
 while True:
-
 	query = input('Enter query caption (Ctrl + C to exit): ')
+
+	# Break on empty query
 	if not query:
 		break
 
+	# Tokenize input query, and embed using loaded model (bert embdding --> projection head)
 	caption = tokenizer(query, return_tensors='pt').to(device)
 	new_caption = [caption]
 	new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
 	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
 
+	# Calculate pairwise cosine similarity between all image embeddings and the projected query
 	similarity_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
 
+	# Only retrieve the top 20 indices of biggest cosine similarity
 	top_k = 20
 	sorted_indices = torch.argsort(similarity_scores, descending=True)[:top_k]
 
@@ -176,20 +176,18 @@ while True:
 
 		name = ''
 
-		index = int(labels[idx].item()) + 1
+		index = int(labels[idx].item())
 		idxs.append(index)
 
 		if hparams['dataset'] == 'nwpu':
 			category_index = index // 700
 			elem_index = index % 700
 
-			if elem_index == 0:
-				elem_index = 700
-
 			name = f' {categories[category_index]}_{elem_index}'
 
 		print(f'Image index: {index}{name}, Similarity: {similarity_scores[idx].item()}')
 
+	# Format output for direct usage in visualize.py script which visualizes retrieved images
 	output = {
 		'dataset': hparams['dataset'],
 		'query': query,
