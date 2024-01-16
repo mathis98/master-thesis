@@ -7,6 +7,7 @@ torchvision.disable_beta_transforms_warning()
 from torchvision.transforms import v2
 from torchmetrics.functional.retrieval import retrieval_average_precision, retrieval_normalized_dcg
 from transformers.tokenization_utils_base import BatchEncoding
+import json
 
 
 def closest_indices(embeddings):
