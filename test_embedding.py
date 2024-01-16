@@ -145,10 +145,10 @@ for element in random_sample:
 		category_index = index // 700
 		elem_index = index % 700
 
-		name = f' {categories[category_index]}_{elem_index}'
+		name = f' ↔ {categories[category_index]}_{elem_index}'
 
 	else:
-		name = f'{index//100}'
+		name = f' ↔ {index//100}'
 
 	print(f'Sentence: {element[1]} (Index: {index}{name})')
 
@@ -186,10 +186,10 @@ while True:
 			category_index = index // 700
 			elem_index = index % 700
 
-			name = f' {categories[category_index]}_{elem_index}'
+			name = f' ↔ {categories[category_index]}_{elem_index}'
 
 		else:
-			name = f'{index//100}'
+			name = f' ↔ {index//100}'
 
 		print(f'Image index: {index}{name}, Similarity: {similarity_scores[idx].item()}')
 
