@@ -128,7 +128,7 @@ image_embeddings, labels = full_pipeline.calculate_embeddings_for_images(validat
 
 if hparams['dataset'] == 'nwpu':
 	categories = []
-	cats = os.listdir(hparams['img_path'])
+	cats = sorted(os.listdir(hparams['img_path']))
 	for category in cats:
 		if os.path.isdir(os.path.join('../Datasets/NWPU-Captions-main/NWPU-RESISC45', category)):
 			categories.append(category)
