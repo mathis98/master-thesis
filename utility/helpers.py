@@ -171,10 +171,7 @@ def calculate_bleu(image_embeddings, caption_embeddings, image_labels, captions)
 
 		image_label = image_labels[torch.argsort(image_scores, descending=True)[:1]]
 
-		print(caption)
-		print(get_ground_truth_captions(image_label))
-
-		bleu = bleu_score([caption], get_ground_truth_captions(image_label))
+		bleu = bleu_score([caption], [get_ground_truth_captions(image_label)], n_gram=2)
 
 		bleu_values.append(bleu)
 
