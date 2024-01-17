@@ -230,6 +230,9 @@ def to_cuda_recursive(obj, device=''):
 
 
 def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
+
+	print(idx)
+
 	if dataset == 'ucm':
 		text_path = '../Datasets/UCM/dataset.json'
 
