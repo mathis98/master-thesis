@@ -231,10 +231,10 @@ def to_cuda_recursive(obj, device=''):
 
 def get_ground_truth_captions(indeces,dataset='nwpu',num_repeats=1):
 	if dataset == 'ucm':
-		text_path = '../../Datasets/UCM/dataset.json'
+		text_path = '../Datasets/UCM/dataset.json'
 
 	elif dataset == 'nwpu':
-		text_path = '../../Datasets/NWPU-Captions-main/dataset_nwpu.json'
+		text_path = '../Datasets/NWPU-Captions-main/dataset_nwpu.json'
 
 	with open(text_path, 'r') as json_file:
 			data = json.load(json_file)
