@@ -174,7 +174,7 @@ def calculate_bleu(image_embeddings, caption_embeddings, image_labels, captions)
 		print(caption)
 		print(get_ground_truth_captions(image_label))
 
-		bleu = bleu_score(caption, get_ground_truth_captions(image_label))
+		bleu = bleu_score([caption], get_ground_truth_captions(image_label))
 
 		bleu_values.append(bleu)
 
