@@ -165,7 +165,10 @@ def calculate_bleu(image_embeddings, caption_embeddings, image_labels, captions)
 	for i in range(caption_embeddings.shape[0]):
 
 		caption_embedding = caption_embeddings[i]
+		print('Caption Embeddings: ')
 		print(caption_embedding)
+
+		print('Captions:')
 		print(captions)
 		caption = captions[i][1] # Herein lies the problem!
 
