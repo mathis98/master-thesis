@@ -229,7 +229,7 @@ def to_cuda_recursive(obj, device=''):
 		return obj  # Return unchanged if not a tensor, list, tuple, or dict
 
 
-def get_ground_truth_captions(indeces,dataset='nwpu',num_repeats=1):
+def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
 	if dataset == 'ucm':
 		text_path = '../Datasets/UCM/dataset.json'
 
