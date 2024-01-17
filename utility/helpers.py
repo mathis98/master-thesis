@@ -165,7 +165,9 @@ def calculate_bleu(image_embeddings, caption_embeddings, image_labels, captions)
 	for i in range(caption_embeddings.shape[0]):
 
 		caption_embedding = caption_embeddings[i]
-		caption = captions[i][1]
+		print(caption_embedding)
+		print(captions[:5])
+		caption = captions[i][1] # Herein lies the problem!
 
 		image_scores = torch.matmul(image_embeddings, caption_embedding)
 
