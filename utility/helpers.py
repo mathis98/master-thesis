@@ -231,6 +231,9 @@ def to_cuda_recursive(obj, device=''):
 
 def get_ground_truth_captions(idx,dataset='nwpu',num_repeats=1):
 
+
+	idx = int(idx.cpu().numpy())
+
 	print(idx)
 
 	if dataset == 'ucm':
