@@ -165,21 +165,11 @@ def calculate_bleu(image_embeddings, caption_embeddings, image_labels, captions)
 	for i in range(caption_embeddings.shape[0]):
 
 		caption_embedding = caption_embeddings[i]
-		print('Caption Embeddings: ')
-		print(caption_embedding)
-
-		print('Captions:')
-		print(captions[1])
-
-
-		print('Caption: ')
-		print(captions[1][i])
-
 		caption = captions[1][i] # Herein lies the problem!
 
 		image_scores = torch.matmul(image_embeddings, caption_embedding)
 
-		image_label = image_labels[torch.argsort(similarity_scores, descending=True)[:1]]
+		image_label = image_labels[torch.argsort(image_scores, descending=True)[:1]]
 
 		bleu = bleu_score(caption, get_ground_truth_captions(image_label))
 
