@@ -432,7 +432,7 @@ class FullPipeline(pl.LightningModule):
 		self.log('avg_test_ndcg_10', avg_ndcg_10, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 		self.log('avg_test_ndcg_20', avg_ndcg_20, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 
-		self.log('avg_bleu', avg_blue, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
+		self.log('avg_bleu', avg_bleu, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 
 
 	def on_validation_epoch_start(self):
