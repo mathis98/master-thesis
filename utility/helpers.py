@@ -173,7 +173,7 @@ def calculate_bleu(image_embeddings, caption_embeddings, image_labels, captions)
 
 		bleu = bleu_score([caption], [get_ground_truth_captions(image_label)], n_gram=2)
 
-		print(bleu)
+		# print(bleu) # It works but is reallly slow, also how to proceed with multiple captions?
 
 		bleu_values.append(bleu)
 
