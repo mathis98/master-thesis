@@ -45,7 +45,9 @@ elif intra == False:
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
-version = input('Version number to load: ')
+# version = input('Version number to load: ')
+
+version = 445
 
 
 if version == '':
