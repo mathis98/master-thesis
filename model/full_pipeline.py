@@ -213,6 +213,8 @@ class FullPipeline(pl.LightningModule):
 			List: Embeddings for the entire set of images.
 		"""
 
+		# TODO: This will also break for MEAN technique
+
 		# Get the appropriate DataLoader
 		dataloader = self.val_dataloader() if validation else self.test_dataloader()
 
