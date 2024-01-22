@@ -143,6 +143,8 @@ class FullPipeline(pl.LightningModule):
 
 		self.dataset = dataset
 
+		self.technique = technique
+
 	def forward(self, batch):
 		"""
 		Forward pass through the model.
