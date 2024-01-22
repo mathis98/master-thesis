@@ -127,7 +127,8 @@ class SentenceDataModule(pl.LightningDataModule):
 				sentences = [[item['sentences'][i]['raw'] for i in range(5)] for item in data['images']]
 				sentences = list(itertools.chain.from_iterable(sentences))
 
-		elif self.technique == 'Mean':
+		# Mean, RankAgg, Info, Learned_FC, Learned_Att
+		elif self.technique in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
 			# Mean Feature technique, also for Rank Aggregation
 			# ==> List [[caption1_1, caption2_1, caption_3_1, caption4_1, caption5_1],[caption1_2, caption2_2,...],...]
 			

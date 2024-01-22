@@ -91,6 +91,7 @@ full_pipeline = FullPipeline(
 	test_dataloader = image_text_pair_data_module.test_dataloader,
 	num_repeats=args.num_repeats,
 	dataset=args.dataset,
+	technique=args.technique,
 )
 
 logger = pl.loggers.CSVLogger('logs', name='full_pipeline_full_val_test')

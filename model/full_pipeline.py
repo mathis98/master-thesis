@@ -55,6 +55,9 @@ class FullPipeline(pl.LightningModule):
 		val_dataloader (DataLoader): Dataloader for validation set.
 		test_dataloader (DataLoader): Dataloader for test set.
 		top_k (int): map@k
+		num_repeats: number of repeats for images (for Repeat technique)
+		dataset: Dataset used (UCM or NWPU). Default: UCM
+		technique: Technique to use (Repeat, Random, Concat, Mean). Default: Repeat.
 
 	Methods:
 		forward(batch): Forward pass through the model.
@@ -70,7 +73,23 @@ class FullPipeline(pl.LightningModule):
 		validation_labels (Tensor): list of labels of validation images.
 		test_labels (Tensor): list of labels of test images.
 	"""
-	def __init__(self, val_dataloader=None, test_dataloader=None, batch_size=128, intra=False, temperature=.5, learning_rate=1e-4, weight_decay=1e-6, max_epochs=100, hidden_dim=128, top_k=10, num_repeats=1, dataset='ucm'):
+	def __init__(
+		self, 
+		val_dataloader=None, 
+		test_dataloader=None, 
+		batch_size=128, 
+		intra=False, 
+		temperature=.5, 
+		learning_rate=1e-4, 
+		weight_decay=1e-6, 
+		max_epochs=100, 
+		hidden_dim=128, 
+		top_k=10, 
+		num_repeats=1, 
+		dataset='ucm',
+		technique='Repeat'
+	):
+
 		super(FullPipeline, self).__init__()
 		self.batch_size = batch_size
 		self.intra = intra
@@ -328,7 +347,7 @@ class FullPipeline(pl.LightningModule):
 		# TODO: For mean feature and Rank aggregation 
 		# caption batch now contains 5 captions each in a list pass through model to get list of embeddings each
 		# need hyperparam if we're using multicaption
-		# self.technique (Mean, RankAgg, Info, Leanred_FC, Learned_Att)
+		# self.technique (Mean, RankAgg, Info, Learned_FC, Learned_Att)
 		# if self.multicaption:
 		# 	pass through model 5 times and save caption_embed as list
 
@@ -352,6 +371,26 @@ class FullPipeline(pl.LightningModule):
 		# Pass through list of captions (5) get embeddings each, store as list --> pass to calculate_mAP
 		# 	--> calculates rank aggregated mAP
 
+		if self.technique in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
+			print('technique calls for multiple embeddings per image')
+			print('check how to handle')
+
+			if self.technique == 'Mean':
+				print('Mean feature')
+				print('pass through list of captions, get embedding each, mean, store as caption_embed')
+
+			if self.technique == 'Info':
+				print('Informativeness')
+				print('pass through list of captions, get embedding each, calculate informativeness, mean weighted by normalized informativeness')
+
+			if self.technique in ['Learned_FC', 'Learned_Att']:
+				print('Learned weights')
+				print('pass through list of captions, get embedding each, mean weightd by learned weights (softmax). Either FC or Transformer')
+
+			if self.technique == 'RankAgg':
+				print('Rank Aggregation')
+				print('pass through list of captions, get embedding each, store as list, pass to calculate_mAP with technique=RankAgg which means the ranks and then calculates mAP')
+
 		# Pass through model
 		if self.intra:
 			_, _, caption_embed, _ = self(batch)
@@ -368,10 +407,12 @@ class FullPipeline(pl.LightningModule):
 		# mAP = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=self.top_k) # multiple top k
 		# Calculate mAP and Recall based on the groundtruth list constructed above
 		(map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20) = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=1),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=5),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=10),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=20)
-		bleu = calculate_bleu(image_embeddings, caption_embed, labels_images, caption)
 
+		if self.validation == False:
+			bleu = calculate_bleu(image_embeddings, caption_embed, labels_images, caption)
+			return (map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20), bleu
 
-		return (map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20), bleu
+		return (map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20)
 
 
 	def on_test_epoch_start(self):
@@ -455,7 +496,7 @@ class FullPipeline(pl.LightningModule):
 			batch_idx: Index of the current batch. 
 		"""
 
-		_, _, _, (mAP,_), _ = self.shared_step(batch)
+		_, _, _, (mAP,_) = self.shared_step(batch)
 		self.log('validation mAP',np.mean(mAP), batch_size=self.batch_size)
 		self.validation_step_outputs.append(mAP)
 

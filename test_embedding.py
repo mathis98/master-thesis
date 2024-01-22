@@ -156,6 +156,17 @@ while True:
 	if not query:
 		break
 
+	# TODO: if hparams[technique] = RankAgg, Mean, Info, Learned_FC, Learned_Att
+	# enable multiple queries to be provided
+	# For Mean: get embeddings for all captions and mean
+	# For Info: get embeddings for all captions and mean weighted by informativeness
+	# For Learned_FC: get embeddings for all captions and mean weighted by learned FC layer
+	# For Learned_Att: get embeddings for all captions and mean weighted by learned Attention layer
+	# For RankAgg: get embeddings for all captions get similarity_scores for these embeddings, mean them, get indices
+
+	if hparams['technique'] in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
+		print('Multiple query technique!')
+
 	# Tokenize input query, and embed using loaded model (bert embdding --> projection head)
 	caption = tokenizer(query, return_tensors='pt').to(device)
 	new_caption = [caption]
