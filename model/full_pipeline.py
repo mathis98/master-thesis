@@ -456,7 +456,7 @@ class FullPipeline(pl.LightningModule):
 		self.test_step_ndcg_10.append(ndcg_10)
 		self.test_step_ndcg_20.append(ndcg_20)
 
-		self.test_bleu.append(bleu)
+		# self.test_bleu.append(bleu)
 
 	def on_test_epoch_end(self):
 		"""
@@ -472,7 +472,7 @@ class FullPipeline(pl.LightningModule):
 		avg_ndcg_10 = np.mean(np.concatenate(self.test_step_ndcg_10))
 		avg_ndcg_20 = np.mean(np.concatenate(self.test_step_ndcg_20))
 
-		avg_bleu = np.mean(np.concatenate(self.test_bleu))
+		# avg_bleu = np.mean(np.concatenate(self.test_bleu))
 
 		self.log('avg_test_mAP_1', avg_mAP_1, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 		self.log('avg_test_mAP_5', avg_mAP_5, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
@@ -484,7 +484,7 @@ class FullPipeline(pl.LightningModule):
 		self.log('avg_test_ndcg_10', avg_ndcg_10, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 		self.log('avg_test_ndcg_20', avg_ndcg_20, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 
-		self.log('avg_bleu', avg_bleu, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
+		# self.log('avg_bleu', avg_bleu, batch_size=self.batch_size, prog_bar=True, sync_dist=True)
 
 
 	def on_validation_epoch_start(self):
