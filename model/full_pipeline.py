@@ -325,6 +325,9 @@ class FullPipeline(pl.LightningModule):
 			np.array: mAP (mean Average Precision) values for input batch, based on embeddings.
 		"""
 
+		# To calculate bleu or not to calculate bleu
+		ignore_bleu = True
+
 		# Get image and caption
 		image, caption = batch
 
@@ -411,6 +414,10 @@ class FullPipeline(pl.LightningModule):
 		(map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20) = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=1),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=5),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=10),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=20)
 
 		if validation == False:
+
+			if ignore_bleu:
+				return (map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20), -1
+
 			bleu = calculate_bleu(image_embeddings, caption_embed, labels_images, caption)
 			return (map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20), bleu
 
