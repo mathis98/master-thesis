@@ -100,6 +100,9 @@ else:
 
 	hparams['technique'] = inquirer.prompt(questions)['technique']
 
+	if not hparams['technique'] == 'Repeat':
+		hparams['num_repeats'] = 1
+
 	if not 'dataset' in hparams:
 		hparams['dataset'] = 'ucm'
 
@@ -128,7 +131,7 @@ else:
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
 		dataset=hparams['dataset'],
-		num_repeats=1,
+		num_repeats=hparams['num_repeats'],
 	)
 
 device = 'cuda:2'
