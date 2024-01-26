@@ -11,6 +11,7 @@ from transformers import AutoTokenizer
 import random
 import os
 import yaml
+import inquirer
 
 batch_size = 512
 
@@ -45,9 +46,26 @@ elif intra == False:
 	text_data_module.prepare_data()
 	text_data_module.setup(stage='predict')
 
-# version = input('Version number to load: ')
+version = input('Version number to load: ')
 
-version = 465
+questions = [
+	inquirer.List(
+		'technique',
+		message= 'Select a technique to evaluate on:',
+		choices=[
+			'Repeat',
+			'Random',
+			'Concat',
+			'Mean', 
+			'RankAgg', 
+			'Info', 
+			'Learned_FC', 
+			'Learned_Att',
+		],
+	),
+]
+
+hparams['technique'] = inquirer.prompt(questions)['technique']
 
 
 if version == '':
@@ -79,8 +97,8 @@ else:
 	with open(f'./logs/full_pipeline_full_val_test/version_{version}/hparams.yaml') as file:
 		hparams = yaml.safe_load(file)
 
-	if not 'technique' in hparams:
-		hparams['technique'] = 'Repeat'
+	# if not 'technique' in hparams:
+	# 	hparams['technique'] = 'Repeat'
 
 	if not 'dataset' in hparams:
 		hparams['dataset'] = 'ucm'
