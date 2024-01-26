@@ -65,8 +65,6 @@ questions = [
 	),
 ]
 
-hparams['technique'] = inquirer.prompt(questions)['technique']
-
 
 if version == '':
 	print('Loading untrained model')
@@ -99,6 +97,8 @@ else:
 
 	# if not 'technique' in hparams:
 	# 	hparams['technique'] = 'Repeat'
+
+	hparams['technique'] = inquirer.prompt(questions)['technique']
 
 	if not 'dataset' in hparams:
 		hparams['dataset'] = 'ucm'
