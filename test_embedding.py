@@ -112,7 +112,7 @@ else:
 		num_repeats=hparams['num_repeats'],
 	)
 
-device = 'cuda:2'
+device = 'cuda:3'
 
 full_pipeline.resnet_embedding_module.to(device)
 full_pipeline.bert_embedding_module.to(device)
