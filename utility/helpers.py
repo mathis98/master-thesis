@@ -163,7 +163,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 				image_scores_list.append(image_scores)
 
 			# take mean for rank aggregation
-			image_scores = torch.mean(image_scores_list)
+			image_scores = torch.tensor(np.mean(image_scores_list))
 
 			# calculate mAP and recall based on this mean
 			relevant_labels = ground_truth_labels[idx]
