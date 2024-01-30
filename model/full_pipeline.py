@@ -204,6 +204,8 @@ class FullPipeline(pl.LightningModule):
 
 		if self.technique == 'RankAgg':
 
+			print('RankAgg technique')
+
 			image, captions = batch
 
 			caption_emb_list = []
