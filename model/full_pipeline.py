@@ -220,7 +220,7 @@ class FullPipeline(pl.LightningModule):
 
 				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
-				torch.cat(caption_emb_list,caption_embed)
+				torch.cat((caption_emb_list,caption_embed))
 
 			caption_embed = torch.mean(caption_emb_list, axis=0)
 
