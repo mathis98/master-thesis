@@ -269,6 +269,9 @@ class FullPipeline(pl.LightningModule):
 					batch = batch[0], batch[1]
 					image, caption = batch
 
+					print('transformed caption')
+					print(caption)
+
 				indeces = caption[2]
 
 				# Get actual indices by dividing with repeats
