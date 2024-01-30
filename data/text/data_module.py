@@ -30,12 +30,34 @@ class CustomSentenceDataset(Dataset):
 
 
 	def __getitem__(self,idx):
-		sentence = self.sentences[idx]
+		sentences = self.sentences[idx]
 
 		print(sentence)
 
+		# multiple sentences
+		if isinstance(sentence, list):
+			sentence_list = []
+			for sentence in sentences:
+
+				inputs = self.tokenizer.encode_plus(
+					sentence,
+		            return_tensors="pt",
+		            padding="max_length",
+		            truncation=True,
+		            return_attention_mask=True,
+		            return_token_type_ids=False,
+		            max_length=self.max_length
+				)
+
+				inputs['input_ids'] = inputs['input_ids'].squeeze(0)
+				inputs['attention_mask'] = inputs['attention_mask'].squeeze(0)
+
+				sentence_list.append((inputs, sentence, self.indices[idx]))
+			print(sentence_list)
+			return sentence_list
+
 		inputs = self.tokenizer.encode_plus(
-			sentence,
+			sentences,
             return_tensors="pt",
             padding="max_length",
             truncation=True,
@@ -48,7 +70,7 @@ class CustomSentenceDataset(Dataset):
 		inputs['attention_mask'] = inputs['attention_mask'].squeeze(0)
 
 		# Return tokenied sentence, raw sentence, and index of sentence in the dataset
-		return inputs, sentence, self.indices[idx]
+		return inputs, sentences, self.indices[idx]
 
 
 class SentenceDataModule(pl.LightningDataModule):
