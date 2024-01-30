@@ -189,6 +189,7 @@ class FullPipeline(pl.LightningModule):
 		
 		return image_embed, caption_embed
 
+	# only needs to be adjusted for mean feature, info, learned_fc, and learned_att
 	def training_step(self, batch, batch_idx):
 		"""
 		Training step.
@@ -393,42 +394,59 @@ class FullPipeline(pl.LightningModule):
 
 			image, captions = batch
 
+			caption_emb_list = []
+
 			for idx, caption in enumerate(captions):
 				print(f'caption {idx}')
 				print(caption)
 
-			if self.technique == 'Mean':
-				print('Mean feature')
-				print('pass through list of captions, get embedding each, mean, store as caption_embed')
+				if self.intra:
+					_,_, caption_embed, _ = self((image, caption))
 
-			if self.technique == 'Info':
-				print('Informativeness')
-				print('pass through list of captions, get embedding each, calculate informativeness, mean weighted by normalized informativeness')
+				else:
+					_, caption_embed = self((image, caption))
 
-			if self.technique in ['Learned_FC', 'Learned_Att']:
-				print('Learned weights')
-				print('pass through list of captions, get embedding each, mean weightd by learned weights (softmax). Either FC or Transformer')
+				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
-			if self.technique == 'RankAgg':
-				print('Rank Aggregation')
-				print('pass through list of captions, get embedding each, store as list, pass to calculate_mAP with technique=RankAgg which means the ranks and then calculates mAP')
+				caption_emb_list.append(caption_embed)
 
-		# Pass through model
-		if self.intra:
-			_, _, caption_embed, _ = self(batch)
+			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
-		# image_embed, caption_embed
+			(map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20) = calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=1), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=5), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=10), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=20)
+
+		if self.technique == 'Mean':
+			print('Mean feature')
+			print('pass through list of captions, get embedding each, mean, store as caption_embed')
+
+		if self.technique == 'Info':
+			print('Informativeness')
+			print('pass through list of captions, get embedding each, calculate informativeness, mean weighted by normalized informativeness')
+
+		if self.technique in ['Learned_FC', 'Learned_Att']:
+			print('Learned weights')
+			print('pass through list of captions, get embedding each, mean weightd by learned weights (softmax). Either FC or Transformer')
+
+		if self.technique == 'RankAgg':
+			print('Rank Aggregation')
+			print('pass through list of captions, get embedding each, store as list, pass to calculate_mAP with technique=RankAgg which means the ranks and then calculates mAP')
+
 		else:
-			_, caption_embed = self(batch)
+			# Pass through model
+			if self.intra:
+				_, _, caption_embed, _ = self(batch)
 
-		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+			# image_embed, caption_embed
+			else:
+				_, caption_embed = self(batch)
 
-		# Get all image embeddings
-		image_embeddings = self.validation_embeddings if validation else self.test_embeddings
+			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
-		# mAP = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=self.top_k) # multiple top k
-		# Calculate mAP and Recall based on the groundtruth list constructed above
-		(map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20) = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=1),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=5),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=10),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=20)
+			# Get all image embeddings
+			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
+
+			# mAP = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=self.top_k) # multiple top k
+			# Calculate mAP and Recall based on the groundtruth list constructed above
+			(map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20) = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=1),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=5),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=10),  calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=20)
 
 		if validation == False:
 

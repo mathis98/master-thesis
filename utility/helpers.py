@@ -111,7 +111,7 @@ def relevant_list(labels_caption, labels_images):
 	return relevant_list
 
 
-def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10, technique='Repeat'):
+def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top_k=10):
 	"""
 	Calculate mean Average Precision (mAP) values.
 
@@ -130,9 +130,11 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	#       calculate image scores for each and mean them
 	#       THEN calculate mAP and NDCG!
 
-	if(technique == 'RankAgg'):
+	if(isinstance(caption_embeddings, list)):
 		print('Rank Aggregation in calc_mAP')
 		print('go through list of captions, calculate image_scores for each, mean resulting positions, calculate mAP, ndcg.')
+
+		print(caption_embeddings)
 
 	mAP_values = []
 
