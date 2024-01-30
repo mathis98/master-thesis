@@ -226,7 +226,7 @@ class FullPipeline(pl.LightningModule):
 
 			image, captions = batch
 
-			caption_emb_list = torch.tensor([]).to('cuda:3')
+			caption_emb_list = []
 
 			for idx, caption in enumerate(captions):
 
@@ -238,12 +238,12 @@ class FullPipeline(pl.LightningModule):
 
 				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
-				torch.cat((caption_emb_list, caption_embed))
+				caption_emb_list.append(caption_embed)
 
 			print('caption embed list')
 			print(caption_emb_list)
 
-			caption_embed = torch.mean(caption_emb_list, axis=0)
+			caption_embed = torch.mean(torch.tensor(caption_emb_list).to('cuda:3'), axis=1)
 
 			print('caption embed')
 			print(caption_embed)
