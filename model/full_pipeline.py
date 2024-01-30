@@ -372,7 +372,7 @@ class FullPipeline(pl.LightningModule):
 
 			image, captions = batch
 
-			caption_emb_list = []
+			caption_emb_list = torch.tensor([])
 
 			for idx, caption in enumerate(captions):
 
@@ -384,7 +384,7 @@ class FullPipeline(pl.LightningModule):
 
 				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
-				caption_emb_list.append(caption_embed)
+				torch.cat(caption_emb_list, caption_embed)
 
 			caption_emb_list = torch.mean(caption_emb_list, axis=0)
 
