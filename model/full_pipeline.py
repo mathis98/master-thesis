@@ -202,7 +202,7 @@ class FullPipeline(pl.LightningModule):
 
 		# NT-Xent loss between image and caption
 
-		if self.technique == 'RankAgg':
+		if self.technique == 'Mean':
 
 			image, captions = batch
 
@@ -426,7 +426,7 @@ class FullPipeline(pl.LightningModule):
 		# Pass through list of captions (5) get embeddings each, store as list --> pass to calculate_mAP
 		# 	--> calculates rank aggregated mAP
 
-		if self.technique == 'RankAgg':
+		elif self.technique == 'RankAgg':
 
 			image, captions = batch
 
