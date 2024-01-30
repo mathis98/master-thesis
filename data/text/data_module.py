@@ -32,8 +32,6 @@ class CustomSentenceDataset(Dataset):
 	def __getitem__(self,idx):
 		sentences = self.sentences[idx]
 
-		print(sentence)
-
 		# multiple sentences
 		if isinstance(sentence, list):
 			sentence_list = []
