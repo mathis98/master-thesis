@@ -132,6 +132,7 @@ else:
 		test_dataloader = image_text_pair_data_module.test_dataloader,
 		dataset=hparams['dataset'],
 		num_repeats=hparams['num_repeats'],
+		technique=hparams['technique'],
 	)
 
 device = 'cuda:2'
