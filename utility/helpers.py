@@ -135,16 +135,9 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	ndcg_values = []
 
 	if(isinstance(caption_embeddings, list)):
-		print('Rank Aggregation in calc_mAP')
-		print('go through list of captions, calculate image_scores for each, mean resulting positions, calculate mAP, ndcg.')
-
-		print('len')
-		print(len(caption_embeddings))
 
 		# captions1: [1,2,3,4]
 		# captions2: [1,2,3,4]
-
-		# 
 
 		# go through each image (now actually multiple)
 		for idx in range(len(caption_embeddings[0])):
