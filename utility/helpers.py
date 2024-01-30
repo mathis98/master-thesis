@@ -162,6 +162,8 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 				# add to list
 				image_scores_list.append(image_scores.cpu().numpy())
 
+			print('image_scores_list')
+			print(image_scores_list)
 			# take mean for rank aggregation
 			image_scores = torch.tensor(np.mean(image_scores_list))
 
