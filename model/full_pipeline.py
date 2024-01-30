@@ -372,7 +372,7 @@ class FullPipeline(pl.LightningModule):
 
 			image, captions = batch
 
-			caption_emb_list = torch.tensor([])
+			caption_emb_list = torch.tensor([]).to('cuda:3')
 
 			for idx, caption in enumerate(captions):
 
