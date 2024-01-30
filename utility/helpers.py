@@ -162,24 +162,11 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 				# add to list
 				image_scores_list.append(image_scores.cpu().numpy())
 
-			print('image_scores_list')
-			print(image_scores_list)
-
-			print('first elem')
-			print(image_scores_list[0])
-			print('len')
-			print(len(image_scores_list[0]))
 			# take mean for rank aggregation
 			image_scores = torch.tensor(np.mean(image_scores_list, axis=0)).to('cuda:3')
 
 			# calculate mAP and recall based on this mean
 			relevant_labels = ground_truth_labels[idx]
-
-			print('image_scores:')
-			print(image_scores)
-
-			print('relevant_labels')
-			print(relevant_labels)
 
 			mAP = retrieval_average_precision(
 				image_scores, 
@@ -206,9 +193,6 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		caption_embedding = caption_embeddings[i]
 		
 		image_scores = torch.matmul(image_embeddings, caption_embedding)
-
-		print('len')
-		print(len(image_scores))
 
 		relevant_labels = ground_truth_labels[i]
 

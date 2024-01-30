@@ -174,8 +174,6 @@ class FullPipeline(pl.LightningModule):
 		caption_embed = self.bert_embedding_module(caption)
 		caption_embed = self.projection_head(caption_embed)
 
-		# print(caption_embed[0])
-
 
 		if self.intra:
 			augmented_image_embed = self.resnet_embedding_module(augmented_image)
@@ -336,9 +334,6 @@ class FullPipeline(pl.LightningModule):
 		# Get image and caption
 		image, caption = batch
 
-		print('shared step')
-		print(caption)
-
 		if self.intra:
 			image = image[0], image[2]
 			caption = caption[0], caption[2], caption[4]
@@ -389,16 +384,12 @@ class FullPipeline(pl.LightningModule):
 		# 	--> calculates rank aggregated mAP
 
 		if self.technique in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
-			print('technique calls for multiple embeddings per image')
-			print('check how to handle')
 
 			image, captions = batch
 
 			caption_emb_list = []
 
 			for idx, caption in enumerate(captions):
-				print(f'caption {idx}')
-				print(caption)
 
 				if self.intra:
 					_,_, caption_embed, _ = self((image, caption))
@@ -427,8 +418,6 @@ class FullPipeline(pl.LightningModule):
 			print('pass through list of captions, get embedding each, mean weightd by learned weights (softmax). Either FC or Transformer')
 
 		if self.technique == 'RankAgg':
-			print('Rank Aggregation')
-			print('pass through list of captions, get embedding each, store as list, pass to calculate_mAP with technique=RankAgg which means the ranks and then calculates mAP')
 
 		else:
 			# Pass through model
