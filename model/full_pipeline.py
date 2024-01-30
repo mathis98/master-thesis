@@ -258,9 +258,6 @@ class FullPipeline(pl.LightningModule):
 				# Retrieve image and caption
 				image, caption = batch
 
-				print('calc emb for img')
-				print(caption)
-
 				if self.intra:
 					image = image[0], image[2]
 					caption = caption[0], caption[2], caption[4]
@@ -268,9 +265,6 @@ class FullPipeline(pl.LightningModule):
 				if self.technique in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
 					batch = batch[0], batch[1][0]
 					image, caption = batch
-
-					print('transformed caption')
-					print(caption)
 
 				indeces = caption[2]
 
@@ -348,7 +342,11 @@ class FullPipeline(pl.LightningModule):
 			image = image[0], image[2]
 			caption = caption[0], caption[2], caption[4]
 
-		indeces = caption[2]
+		if self.technique in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
+			indeces = caption[0][2]
+
+		else:
+			indeces = caption[2]
 
 		# From indeces to classes (either for ucm or nwpu)
 		if self.dataset == 'ucm':
@@ -392,6 +390,12 @@ class FullPipeline(pl.LightningModule):
 		if self.technique in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
 			print('technique calls for multiple embeddings per image')
 			print('check how to handle')
+
+			image, captions = batch
+
+			for idx, caption in enumerate(captions):
+				print(f'caption {idx}')
+				print(caption)
 
 			if self.technique == 'Mean':
 				print('Mean feature')
