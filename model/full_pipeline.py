@@ -243,7 +243,10 @@ class FullPipeline(pl.LightningModule):
 			print('caption embed list')
 			print(caption_emb_list)
 
-			caption_embed = np.mean(caption_emb_list, axis=0)
+			caption_embed = torch.mean(caption_emb_list, axis=1)
+
+			print('caption embed')
+			print(caption_embed)
 
 		else:
 			if self.intra:
