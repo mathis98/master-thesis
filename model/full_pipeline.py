@@ -417,9 +417,7 @@ class FullPipeline(pl.LightningModule):
 			print('Learned weights')
 			print('pass through list of captions, get embedding each, mean weightd by learned weights (softmax). Either FC or Transformer')
 
-		if self.technique == 'RankAgg':
-
-		else:
+		if self.technique == 'Repeat':
 			# Pass through model
 			if self.intra:
 				_, _, caption_embed, _ = self(batch)
