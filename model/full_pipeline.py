@@ -258,6 +258,9 @@ class FullPipeline(pl.LightningModule):
 				# Retrieve image and caption
 				image, caption = batch
 
+				print('calc emb for img')
+				print(caption)
+
 				if self.intra:
 					image = image[0], image[2]
 					caption = caption[0], caption[2], caption[4]
