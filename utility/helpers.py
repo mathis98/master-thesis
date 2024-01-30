@@ -130,6 +130,10 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	#       calculate image scores for each and mean them
 	#       THEN calculate mAP and NDCG!
 
+	mAP_values = []
+
+	ndcg_values = []
+
 	if(isinstance(caption_embeddings, list)):
 		print('Rank Aggregation in calc_mAP')
 		print('go through list of captions, calculate image_scores for each, mean resulting positions, calculate mAP, ndcg.')
@@ -141,10 +145,6 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		# captions2: [1,2,3,4]
 
 		# 
-
-		mAP_values = []
-
-		ndcg_values = []
 
 		# go through each image (now actually multiple)
 		for idx in range(len(caption_embeddings[0])):
@@ -170,7 +170,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 			print('len')
 			print(len(image_scores_list[0]))
 			# take mean for rank aggregation
-			image_scores = torch.tensor(np.mean(image_scores_list, axis=1))
+			image_scores = torch.tensor(np.mean(image_scores_list, axis=2))
 
 			# calculate mAP and recall based on this mean
 			relevant_labels = ground_truth_labels[idx]
