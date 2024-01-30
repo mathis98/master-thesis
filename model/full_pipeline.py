@@ -366,6 +366,30 @@ class FullPipeline(pl.LightningModule):
 		# 1: MEAN FEATURE:
 		# Pass through list of captions (5) get embeddings each and then mean --> store as caption embed
 
+		if self.technique == 'Mean':
+
+			print('Mean technique')
+
+			image, captions = batch
+
+			caption_emb_list = []
+
+			for idx, caption in enumerate(captions):
+
+				if self.intra:
+					_,_, caption_embed, _ = self((image, caption))
+
+				else:
+					_, caption_embed = self((image, caption))
+
+				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+
+				caption_emb_list.append(caption_embed)
+
+			caption_emb_list = torch.mean(caption_emb_list, axis=0)
+
+			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
+
 
 		# 1.5: INFORMATIVENESS:
 		# Pass through list of captions (5) calculate informativeness, get embeddings, mean them --> store as caption embed
@@ -383,7 +407,7 @@ class FullPipeline(pl.LightningModule):
 		# Pass through list of captions (5) get embeddings each, store as list --> pass to calculate_mAP
 		# 	--> calculates rank aggregated mAP
 
-		if self.technique in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
+		if self.technique == 'RankAgg':
 
 			image, captions = batch
 
@@ -405,19 +429,7 @@ class FullPipeline(pl.LightningModule):
 
 			(map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20) = calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=1), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=5), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=10), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=20)
 
-		if self.technique == 'Mean':
-			print('Mean feature')
-			print('pass through list of captions, get embedding each, mean, store as caption_embed')
-
-		if self.technique == 'Info':
-			print('Informativeness')
-			print('pass through list of captions, get embedding each, calculate informativeness, mean weighted by normalized informativeness')
-
-		if self.technique in ['Learned_FC', 'Learned_Att']:
-			print('Learned weights')
-			print('pass through list of captions, get embedding each, mean weightd by learned weights (softmax). Either FC or Transformer')
-
-		if self.technique == 'Repeat':
+		else:
 			# Pass through model
 			if self.intra:
 				_, _, caption_embed, _ = self(batch)
