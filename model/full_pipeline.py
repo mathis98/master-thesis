@@ -429,7 +429,7 @@ class FullPipeline(pl.LightningModule):
 
 			(map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20) = calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=1), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=5), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=10), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=20)
 
-		else:
+		else if self.techniqe == 'Repeat':
 			# Pass through model
 			if self.intra:
 				_, _, caption_embed, _ = self(batch)
@@ -440,6 +440,7 @@ class FullPipeline(pl.LightningModule):
 
 			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
+		if not self.technique == 'RankAgg':
 			# Get all image embeddings
 			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
