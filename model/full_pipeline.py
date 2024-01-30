@@ -269,8 +269,7 @@ class FullPipeline(pl.LightningModule):
 					batch = batch[0], batch[1]
 					image_caption = batch
 
-				else:
-					indeces = caption[2]
+				indeces = caption[2]
 
 				# Get actual indices by dividing with repeats
 				true_label_value = indeces // self.num_repeats
