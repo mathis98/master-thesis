@@ -164,6 +164,11 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 			print('image_scores_list')
 			print(image_scores_list)
+
+			print('first elem')
+			print(image_scores_list[0])
+			print('len')
+			print(len(image_scores_list[0]))
 			# take mean for rank aggregation
 			image_scores = torch.tensor(np.mean(image_scores_list, axis=1))
 
