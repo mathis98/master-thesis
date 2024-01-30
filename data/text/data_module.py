@@ -32,7 +32,7 @@ class CustomSentenceDataset(Dataset):
 	def __getitem__(self,idx):
 		sentences = self.sentences[idx]
 
-		# multiple sentences
+		# multiple sentences return as list
 		if isinstance(sentences, list):
 			sentence_list = []
 			for sentence in sentences:
@@ -51,9 +51,9 @@ class CustomSentenceDataset(Dataset):
 				inputs['attention_mask'] = inputs['attention_mask'].squeeze(0)
 
 				sentence_list.append((inputs, sentence, self.indices[idx]))
-			print(sentence_list)
 			return sentence_list
 
+		# single sentence
 		inputs = self.tokenizer.encode_plus(
 			sentences,
             return_tensors="pt",
