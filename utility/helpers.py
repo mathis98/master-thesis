@@ -168,6 +168,12 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 			# calculate mAP and recall based on this mean
 			relevant_labels = ground_truth_labels[idx]
 
+			print('image_scores:')
+			print(image_scores)
+
+			print('relevant_labels')
+			print(relevant_labels)
+
 			mAP = retrieval_average_precision(
 				image_scores, 
 				relevant_labels, 
