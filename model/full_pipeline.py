@@ -267,7 +267,7 @@ class FullPipeline(pl.LightningModule):
 
 				if self.technique in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
 					batch = batch[0], batch[1]
-					image_caption = batch
+					image, caption = batch
 
 				indeces = caption[2]
 
