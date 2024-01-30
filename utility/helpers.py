@@ -207,6 +207,9 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		
 		image_scores = torch.matmul(image_embeddings, caption_embedding)
 
+		print('len')
+		print(len(image_scores))
+
 		relevant_labels = ground_truth_labels[i]
 
 		mAP = retrieval_average_precision(
