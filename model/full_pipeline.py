@@ -202,24 +202,6 @@ class FullPipeline(pl.LightningModule):
 
 		# NT-Xent loss between image and caption
 
-		# if self.technique == 'RankAgg':
-
-		# 	image, captions = batch
-
-		# 	caption_emb_list = []
-
-		# 	for idx, caption in enumerate(captions):
-
-		# 		if self.intra:
-		# 			_,_, caption_embed, _ = self((image, caption))
-
-		# 		else:
-		# 			_, caption_embed = self((image, caption))
-
-		# 		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
-
-		# 		caption_emb_list.append(caption_embed)
-
 		if self.technique == 'RankAgg':
 
 			print('RankAgg technique')
@@ -243,7 +225,7 @@ class FullPipeline(pl.LightningModule):
 			print('caption embed list')
 			print(caption_emb_list)
 
-			caption_embed = torch.mean(torch.tensor(caption_emb_list).to('cuda:3'), axis=1)
+			caption_embed = torch.mean(torch.stack(caption_emb_list, dim=1).to('cuda:3'), dim=1)
 
 			print('caption embed')
 			print(caption_embed)
