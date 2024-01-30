@@ -33,7 +33,7 @@ class CustomSentenceDataset(Dataset):
 		sentences = self.sentences[idx]
 
 		# multiple sentences
-		if isinstance(sentence, list):
+		if isinstance(sentences, list):
 			sentence_list = []
 			for sentence in sentences:
 
