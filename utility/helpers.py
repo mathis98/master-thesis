@@ -137,10 +137,46 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 		print('len')
 		print(len(caption_embeddings))
 
-	mAP_values = []
+		# captions1: [1,2,3,4]
+		# captions2: [1,2,3,4]
 
-	ndcg_values = []
+		# 
 
+		mAP_values = []
+
+		ndcg_values = []
+
+		for idx in range(caption_embeddings[0]):
+			image_scores_list = []
+			for idx2 in range(len(caption_embeddings)):
+
+				caption_embedding = caption_embeddings[idx][idx2]
+
+				image_scores = torch.matmul(image_embeddings, caption_embedding)
+
+				image_scores_list.append(image_scores)
+
+			image_scores = torch.mean(image_scores_list)
+
+			relevant_labels = ground_truth_labels[idx]
+
+			mAP = retrieval_average_precision(
+				image_scores, 
+				relevant_labels, 
+				top_k=top_k
+			)
+
+			recall = retrieval_normalized_dcg(
+				image_scores,
+				relevant_labels,
+				top_k=top_k,
+			)
+
+			mAP_values.append(mAP.cpu().numpy())
+			ndcg_values.append(recall.cpu().numpy())
+		return mAP_values, ndcg_values
+
+	# captions: [1,2,3,4]
 	for i in range(caption_embeddings.shape[0]):
 
 		caption_embedding = caption_embeddings[i]
