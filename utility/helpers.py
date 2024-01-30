@@ -146,18 +146,26 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 		ndcg_values = []
 
-		for idx in range(caption_embeddings[0]):
+		# go through each image (now actually multiple)
+		for idx in range(len(caption_embeddings[0])):
 			image_scores_list = []
+
+			# go through each caption for this image (captions1[0], captions2[1],...)
 			for idx2 in range(len(caption_embeddings)):
 
+				# get embedding for this specific caption
 				caption_embedding = caption_embeddings[idx][idx2]
 
+				# calculate cosine similarity with image embeddings
 				image_scores = torch.matmul(image_embeddings, caption_embedding)
 
+				# add to list
 				image_scores_list.append(image_scores)
 
+			# take mean for rank aggregation
 			image_scores = torch.mean(image_scores_list)
 
+			# calculate mAP and recall based on this mean
 			relevant_labels = ground_truth_labels[idx]
 
 			mAP = retrieval_average_precision(
@@ -172,8 +180,11 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 				top_k=top_k,
 			)
 
+			# add mAP and ndcg to list to have this for every caption
 			mAP_values.append(mAP.cpu().numpy())
 			ndcg_values.append(recall.cpu().numpy())
+
+		# return map and ndcg lists
 		return mAP_values, ndcg_values
 
 	# captions: [1,2,3,4]
