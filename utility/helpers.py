@@ -154,7 +154,7 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 			for idx2 in range(len(caption_embeddings)):
 
 				# get embedding for this specific caption
-				caption_embedding = caption_embeddings[idx][idx2]
+				caption_embedding = caption_embeddings[idx2][idx]
 
 				# calculate cosine similarity with image embeddings
 				image_scores = torch.matmul(image_embeddings, caption_embedding)
