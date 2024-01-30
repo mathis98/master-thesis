@@ -204,8 +204,6 @@ class FullPipeline(pl.LightningModule):
 
 		if self.technique == 'RankAgg':
 
-			print('RankAgg technique')
-
 			image, captions = batch
 
 			caption_emb_list = []
@@ -222,13 +220,7 @@ class FullPipeline(pl.LightningModule):
 
 				caption_emb_list.append(caption_embed)
 
-			print('caption embed list')
-			print(caption_emb_list)
-
 			caption_embed = torch.mean(torch.stack(caption_emb_list, dim=1).to('cuda:3'), dim=1)
-
-			print('caption embed')
-			print(caption_embed)
 
 		else:
 			if self.intra:
@@ -396,8 +388,6 @@ class FullPipeline(pl.LightningModule):
 		# Pass through list of captions (5) get embeddings each and then mean --> store as caption embed
 
 		if self.technique == 'Mean':
-
-			print('Mean technique')
 
 			image, captions = batch
 
