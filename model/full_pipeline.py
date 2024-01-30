@@ -265,7 +265,11 @@ class FullPipeline(pl.LightningModule):
 					image = image[0], image[2]
 					caption = caption[0], caption[2], caption[4]
 
-				indeces = caption[2]
+				if self.technique in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
+					indeces = caption[0][2]
+
+				else:
+					indeces = caption[2]
 
 				# Get actual indices by dividing with repeats
 				true_label_value = indeces // self.num_repeats
@@ -334,6 +338,7 @@ class FullPipeline(pl.LightningModule):
 		# Get image and caption
 		image, caption = batch
 
+		print('shared step')
 		print(caption)
 
 		if self.intra:
