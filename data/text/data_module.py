@@ -32,6 +32,8 @@ class CustomSentenceDataset(Dataset):
 	def __getitem__(self,idx):
 		sentence = self.sentences[idx]
 
+		print(sentence)
+
 		inputs = self.tokenizer.encode_plus(
 			sentence,
             return_tensors="pt",
