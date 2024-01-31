@@ -170,6 +170,17 @@ for element in random_sample:
 	print(f'Sentence: {element[1]} (Index: {index}{name})')
 
 while True:
+
+	if retrieval_technique == 'RankAgg':
+		queries = []
+		while True:
+			query = input('Enter next caption: ')
+			if not query:
+				break
+
+			queries.append(query)
+		print(f'All queries you have entered: {queries}')
+
 	query = input('Enter query caption (Ctrl + C to exit): ')
 
 	# Break on empty query
