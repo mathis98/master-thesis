@@ -11,6 +11,7 @@ from transformers import AutoTokenizer
 import random
 import os
 import yaml
+import inquirer
 
 batch_size = 512
 num_repeats = 5
@@ -23,6 +24,23 @@ augmentation_transform = v2.Compose([
 		v2.ToImageTensor(),
 		v2.ConvertImageDtype(),
 ])
+
+questions = [
+	inquirer.List(
+		'technique',
+		message= 'Select a technique to evaluate on:',
+		choices=[
+			'Repeat',
+			'Random',
+			'Concat',
+			'Mean', 
+			'RankAgg', 
+			'Info', 
+			'Learned_FC', 
+			'Learned_Att',
+		],
+	),
+]
 
 tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
 
@@ -77,6 +95,8 @@ else:
 
 	with open(f'./logs/full_pipeline_full_val_test/version_{version}/hparams.yaml') as file:
 		hparams = yaml.safe_load(file)
+
+	retrieval_technique = inquirer.prompt(questions)['technique']
 
 	if not 'technique' in hparams:
 		hparams['technique'] = 'Repeat'
