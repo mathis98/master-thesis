@@ -174,38 +174,51 @@ while True:
 	if retrieval_technique == 'RankAgg':
 		queries = []
 		while True:
-			query = input('Enter next caption: ')
+			query = input('Enter next caption (Enter to evaluate): ')
 			if not query:
 				break
 
 			queries.append(query)
 		print(f'All queries you have entered: {queries}')
 
-	query = input('Enter query caption (Ctrl + C to exit): ')
+		image_scores_list = []
 
-	# Break on empty query
-	if not query:
-		break
+		for query in queries:
+			caption = tokenizer(query, return_tensors='pt').to(device)
+			new_caption = [caption]
+			new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
+			new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
+			image_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
 
-	# TODO: if hparams[technique] = RankAgg, Mean, Info, Learned_FC, Learned_Att
-	# enable multiple queries to be provided
-	# For Mean: get embeddings for all captions and mean
-	# For Info: get embeddings for all captions and mean weighted by informativeness
-	# For Learned_FC: get embeddings for all captions and mean weighted by learned FC layer
-	# For Learned_Att: get embeddings for all captions and mean weighted by learned Attention layer
-	# For RankAgg: get embeddings for all captions get similarity_scores for these embeddings, mean them, get indices
+			image_scores_list.append(image_scores.cpu().numpy())
 
-	if hparams['technique'] in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
-		print('Multiple query technique!')
+		# take mean for rank aggregation
+		similarity_scores = torch.tensor(np.mean(image_scores_list, axis=0)).to('cuda:3')
 
-	# Tokenize input query, and embed using loaded model (bert embdding --> projection head)
-	caption = tokenizer(query, return_tensors='pt').to(device)
-	new_caption = [caption]
-	new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
-	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
+	else:
+		query = input('Enter query caption (Ctrl + C to exit): ')
 
-	# Calculate pairwise cosine similarity between all image embeddings and the projected query
-	similarity_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
+		# Break on empty query
+		if not query:
+			break
+
+		# TODO: if hparams[technique] = RankAgg, Mean, Info, Learned_FC, Learned_Att
+		# enable multiple queries to be provided
+		# For Mean: get embeddings for all captions and mean
+		# For Info: get embeddings for all captions and mean weighted by informativeness
+		# For Learned_FC: get embeddings for all captions and mean weighted by learned FC layer
+		# For Learned_Att: get embeddings for all captions and mean weighted by learned Attention layer
+		# For RankAgg: get embeddings for all captions get similarity_scores for these embeddings, mean them, get indices
+
+
+		# Tokenize input query, and embed using loaded model (bert embdding --> projection head)
+		caption = tokenizer(query, return_tensors='pt').to(device)
+		new_caption = [caption]
+		new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
+		new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
+
+		# Calculate pairwise cosine similarity between all image embeddings and the projected query
+		similarity_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
 
 	# Only retrieve the top 20 indices of biggest cosine similarity
 	top_k = 20
