@@ -11,6 +11,7 @@ from transformers import AutoTokenizer
 import random
 import os
 import yaml
+import numpy as np
 import inquirer
 
 batch_size = 512
