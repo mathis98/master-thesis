@@ -190,7 +190,7 @@ while True:
 			new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
 			image_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
 
-			image_scores_list.append(image_scores.detach().numpy())
+			image_scores_list.append(image_scores.detach().cpu().numpy())
 
 		# take mean for rank aggregation
 		similarity_scores = torch.tensor(np.mean(image_scores_list, axis=0)).to('cuda:3')
