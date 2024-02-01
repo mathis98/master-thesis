@@ -211,6 +211,11 @@ while True:
 	# Allow entering multiple queries otherwise
 	else:
 
+		if retrieval_technique in ['Mean', 'Info', 'Learned_FC', 'Learned_Att']:
+			print('These techniques are not yet implemented!')
+
+			quit()
+
 		queries = []
 		while True:
 			query = input('Enter next caption (Enter to evaluate, stops if no captions entered): ')
@@ -241,7 +246,7 @@ while True:
 		elif retrieval_technique == 'RankAgg':
 			image_scores_list = []
 
-			query = f'{queries[0]}...'
+			query = f'{queries[0]} [...]'
 
 			for caption in queries:
 
@@ -250,11 +255,6 @@ while True:
 
 			# take mean for rank aggregation
 			similarity_scores = torch.tensor(np.mean(image_scores_list, axis=0)).to('cuda:3')
-
-		else:
-			print('These techniques are not yet implemented!')
-
-			break
 
 	# Only retrieve the top 20 indices of biggest cosine similarity
 	top_k = 20
