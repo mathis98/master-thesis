@@ -180,6 +180,10 @@ while True:
 				break
 
 			queries.append(query)
+
+		if len(queries) == 0:
+			break
+			
 		print(f'All queries you have entered: {queries}')
 
 		image_scores_list = []
