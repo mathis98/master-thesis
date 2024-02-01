@@ -188,6 +188,9 @@ def calc_sim_scores_for_single(query):
 	# Calculate pairwise cosine similarity between all image embeddings and the projected query
 	return torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
 
+def shorten_query(queries):
+	return f'{queries[0]} [...]'
+
 while True:
 
 	# Single query only for Repeat technique
@@ -240,13 +243,12 @@ while True:
 			query = ' '.join(queries)
 
 			similarity_scores = calc_sim_scores_for_single(query)
+			query = shorten_query(queries)
 
 
 		# For Rank Aggregation mean the image positions
 		elif retrieval_technique == 'RankAgg':
 			image_scores_list = []
-
-			query = f'{queries[0]} [...]'
 
 			for caption in queries:
 
@@ -255,6 +257,7 @@ while True:
 
 			# take mean for rank aggregation
 			similarity_scores = torch.tensor(np.mean(image_scores_list, axis=0)).to('cuda:3')
+			query = shorten_query(queries)
 
 	# Only retrieve the top 20 indices of biggest cosine similarity
 	top_k = 20
