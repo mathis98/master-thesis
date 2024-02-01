@@ -226,7 +226,9 @@ while True:
 
 		if retrieval_technique == 'Random':
 
-			similarity_scores = calc_sim_scores_for_single(queries[3])
+			query = queries[3]
+
+			similarity_scores = calc_sim_scores_for_single(query)
 
 		elif retrieval_technique == 'Concat':
 			sentences = []
