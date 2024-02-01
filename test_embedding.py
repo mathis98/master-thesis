@@ -129,6 +129,7 @@ else:
 		test_dataloader = image_text_pair_data_module.test_dataloader,
 		dataset=hparams['dataset'],
 		num_repeats=hparams['num_repeats'],
+		technique=hparams['technique']
 	)
 
 device = 'cuda:3'
@@ -183,7 +184,7 @@ def shorten_query(queries):
 retrieval_technique = inquirer.prompt(questions)['technique']
 
 if retrieval_technique in ['Mean', 'Info', 'Learned_FC', 'Learned_Att']:
-	print('These techniques are not yet implemented!')
+	print('This technique are not yet implemented!')
 
 	quit()
 
