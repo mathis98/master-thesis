@@ -241,9 +241,11 @@ while True:
 		elif retrieval_technique == 'RankAgg':
 			image_scores_list = []
 
-			for query in queries:
+			query = f'{queries[0]}...'
 
-				image_scores = calc_sim_scores_for_single(query)
+			for caption in queries:
+
+				image_scores = calc_sim_scores_for_single(caption)
 				image_scores_list.append(image_scores.detach().cpu().numpy())
 
 			# take mean for rank aggregation
