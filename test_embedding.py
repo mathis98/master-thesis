@@ -232,7 +232,7 @@ while True:
 
 		elif retrieval_technique == 'Concat':
 			sentences = []
-			query = [' '.join(queries)]
+			query = ' '.join(queries)
 
 			similarity_scores = calc_sim_scores_for_single(query)
 
