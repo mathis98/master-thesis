@@ -97,8 +97,6 @@ else:
 	with open(f'./logs/full_pipeline_full_val_test/version_{version}/hparams.yaml') as file:
 		hparams = yaml.safe_load(file)
 
-	retrieval_technique = inquirer.prompt(questions)['technique']
-
 	if not 'technique' in hparams:
 		hparams['technique'] = 'Repeat'
 
@@ -170,15 +168,6 @@ for element in random_sample:
 
 	print(f'Sentence: {element[1]} (Index: {index}{name})')
 
-# 'Repeat',
-# 'Random',
-# 'Concat',
-# 'Mean', 
-# 'RankAgg', 
-# 'Info', 
-# 'Learned_FC', 
-# 'Learned_Att',
-
 def calc_sim_scores_for_single(query):
 	caption = tokenizer(query, return_tensors='pt').to(device)
 	new_caption = [caption]
@@ -190,6 +179,13 @@ def calc_sim_scores_for_single(query):
 
 def shorten_query(queries):
 	return f'{queries[0]} [...]'
+
+retrieval_technique = inquirer.prompt(questions)['technique']
+
+if retrieval_technique in ['Mean', 'Info', 'Learned_FC', 'Learned_Att']:
+	print('These techniques are not yet implemented!')
+
+	quit()
 
 while True:
 
@@ -213,11 +209,6 @@ while True:
 
 	# Allow entering multiple queries otherwise
 	else:
-
-		if retrieval_technique in ['Mean', 'Info', 'Learned_FC', 'Learned_Att']:
-			print('These techniques are not yet implemented!')
-
-			quit()
 
 		queries = []
 		while True:
