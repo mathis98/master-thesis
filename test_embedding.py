@@ -170,37 +170,28 @@ for element in random_sample:
 
 	print(f'Sentence: {element[1]} (Index: {index}{name})')
 
+# 'Repeat',
+# 'Random',
+# 'Concat',
+# 'Mean', 
+# 'RankAgg', 
+# 'Info', 
+# 'Learned_FC', 
+# 'Learned_Att',
+
+def calc_sim_scores_for_single(query):
+	caption = tokenizer(query, return_tensors='pt').to(device)
+	new_caption = [caption]
+	new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
+	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
+
+	# Calculate pairwise cosine similarity between all image embeddings and the projected query
+	return torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
+
 while True:
 
-	if retrieval_technique == 'RankAgg':
-		queries = []
-		while True:
-			query = input('Enter next caption (Enter to evaluate): ')
-			if not query:
-				break
-
-			queries.append(query)
-
-		if len(queries) == 0:
-			break
-			
-		print(f'All queries you have entered: {queries}')
-
-		image_scores_list = []
-
-		for query in queries:
-			caption = tokenizer(query, return_tensors='pt').to(device)
-			new_caption = [caption]
-			new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
-			new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
-			image_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
-
-			image_scores_list.append(image_scores.detach().cpu().numpy())
-
-		# take mean for rank aggregation
-		similarity_scores = torch.tensor(np.mean(image_scores_list, axis=0)).to('cuda:3')
-
-	else:
+	# Single query only for Repeat technique
+	if retrieval_technique == 'Repeat':
 		query = input('Enter query caption (Ctrl + C to exit): ')
 
 		# Break on empty query
@@ -215,15 +206,51 @@ while True:
 		# For Learned_Att: get embeddings for all captions and mean weighted by learned Attention layer
 		# For RankAgg: get embeddings for all captions get similarity_scores for these embeddings, mean them, get indices
 
+		similarity_scores = calc_sim_scores_for_single(query)
 
-		# Tokenize input query, and embed using loaded model (bert embdding --> projection head)
-		caption = tokenizer(query, return_tensors='pt').to(device)
-		new_caption = [caption]
-		new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
-		new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
+	# Allow entering multiple queries otherwise
+	else:
 
-		# Calculate pairwise cosine similarity between all image embeddings and the projected query
-		similarity_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
+		queries = []
+		while True:
+			query = input('Enter next caption (Enter to evaluate, stops if no captions entered): ')
+			if not query:
+				break
+
+			queries.append(query)
+
+		if len(queries) == 0:
+			break
+
+		print(f'All queries you have entered: {queries}')
+
+		if retrieval_technique == 'Random':
+
+			similarity_scores = calc_sim_scores_for_single(queries[3])
+
+		elif retrieval_technique == 'Concat':
+			sentences = []
+			query = [' '.join(queries)]
+
+			similarity_scores = calc_sim_scores_for_single(query)
+
+
+		# For Rank Aggregation mean the image positions
+		elif retrieval_technique == 'RankAgg':
+			image_scores_list = []
+
+			for query in queries:
+
+				image_scores = calc_sim_scores_for_single(query)
+				image_scores_list.append(image_scores.detach().cpu().numpy())
+
+			# take mean for rank aggregation
+			similarity_scores = torch.tensor(np.mean(image_scores_list, axis=0)).to('cuda:3')
+
+		else:
+			print('These techniques are not yet implemented!')
+
+			break
 
 	# Only retrieve the top 20 indices of biggest cosine similarity
 	top_k = 20
