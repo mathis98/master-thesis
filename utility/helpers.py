@@ -139,8 +139,6 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 	if(isinstance(caption_embeddings, list)):
 
-		print('GOT A LIST!')
-
 		# captions1: [1,2,3,4]
 		# captions2: [1,2,3,4]
 
@@ -189,6 +187,9 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	for i in range(caption_embeddings.shape[0]):
 
 		caption_embedding = caption_embeddings[i]
+
+		print(f'current caption_embedding: {caption_embedding}, {caption_embedding.shape}')
+		print(f'image_embeddings: {image_embeddings}, {image_embeddings.shape}')
 		
 		image_scores = torch.matmul(image_embeddings, caption_embedding)
 
