@@ -211,6 +211,13 @@ class FullPipeline(pl.LightningModule):
 			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
 
+				if self.intra:
+					image_embed, augmented_image_embed, _, _ = self((image, caption))
+
+				else:
+					image_embed, _ = self((image, caption))
+
+
 				bert_embed = self.bert_embedding_module(caption)
 
 				bert_emb_list.append(bert_embed)
@@ -403,11 +410,8 @@ class FullPipeline(pl.LightningModule):
 
 					bert_embed = self.bert_embedding_module(caption)
 
-					print(f'Bert Embed: {bert_embed}')
-
 					bert_emb_list.append(bert_embed)
 
-				print(f'List: {bert_emb_list}')
 
 				caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
 
@@ -415,11 +419,7 @@ class FullPipeline(pl.LightningModule):
 
 				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
-				print(f'caption embed (avg): {caption_embed}, {len(caption_embed)}')
-
 			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
-
-			print(f'image embeddings: {image_embeddings}, {len(image_embeddings)}')
 
 
 		# 1.5: INFORMATIVENESS:
