@@ -206,21 +206,23 @@ class FullPipeline(pl.LightningModule):
 
 			image, captions = batch
 
-			caption_emb_list = []
+			bert_emb_list = []
 
 			for idx, caption in enumerate(captions):
 
-				if self.intra:
-					image_embed, augmented_image_embed, caption_embed, _ = self((image, caption))
+				bert_embed = self.bert_embedding_module(caption)
 
-				else:
-					image_embed, caption_embed = self((image, caption))
+				# if self.intra:
+				# 	image_embed, augmented_image_embed, caption_embed, _ = self((image, caption))
 
-				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+				# else:
+				# 	image_embed, caption_embed = self((image, caption))
 
-				caption_emb_list.append(caption_embed)
+				bert_emb_list.append(caption_embed)
 
-			caption_embed = torch.mean(torch.stack(caption_emb_list, dim=1).to('cuda:3'), dim=1)
+			caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
+
+			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
 		else:
 			if self.intra:
