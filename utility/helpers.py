@@ -130,9 +130,6 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 	#       calculate image scores for each and mean them
 	#       THEN calculate mAP and NDCG!
 
-	print(f'image_embeddings: {image_embeddings}, {len(image_embeddings)}')
-	print(f'caption_embeddings: {caption_embeddings}, {len(caption_embeddings)}')
-
 	mAP_values = []
 
 	ndcg_values = []
