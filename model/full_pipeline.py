@@ -401,7 +401,7 @@ class FullPipeline(pl.LightningModule):
 
 				print(f'BERT embedding: {bert_embed}')
 
-				torch.cat((bert_emb_list, bert_embed))
+				torch.cat((bert_emb_list, bert_embed), axis=-1)
 
 			print(f'All BERT embeddings: {bert_emb_list}')
 
