@@ -392,28 +392,28 @@ class FullPipeline(pl.LightningModule):
 
 			if self.technique == 'Mean':
 
-			image, captions = batch
+				image, captions = batch
 
-			bert_emb_list = []
+				bert_emb_list = []
 
-			# 1st, 2nd, 3rd, 4th, 5th caption
-			for idx, caption in enumerate(captions):
+				# 1st, 2nd, 3rd, 4th, 5th caption
+				for idx, caption in enumerate(captions):
 
-				bert_embed = self.bert_embedding_module(caption)
+					bert_embed = self.bert_embedding_module(caption)
 
-				print(f'Bert Embed: {bert_embed}')
+					print(f'Bert Embed: {bert_embed}')
 
-				bert_emb_list.append(bert_embed)
+					bert_emb_list.append(bert_embed)
 
-			print(f'List: {bert_emb_list}')
+				print(f'List: {bert_emb_list}')
 
-			caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
+				caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
 
-			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
-			print(f'Final: {caption_embed}')
+				print(f'Final: {caption_embed}')
 
-			print(f'caption embed (avg): {caption_embed}')
+				print(f'caption embed (avg): {caption_embed}')
 
 			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
