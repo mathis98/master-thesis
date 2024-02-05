@@ -218,7 +218,7 @@ class FullPipeline(pl.LightningModule):
 				# else:
 				# 	image_embed, caption_embed = self((image, caption))
 
-				bert_emb_list.append(caption_embed)
+				bert_emb_list.append(bert_embed)
 
 			caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
 
@@ -393,21 +393,15 @@ class FullPipeline(pl.LightningModule):
 
 			image, captions = batch
 
-			caption_emb_list = torch.tensor([]).to('cuda:3')
+			bert_emb_list = torch.tensor([]).to('cuda:3')
 
 			for idx, caption in enumerate(captions):
 
-				if self.intra:
-					_,_, caption_embed, _ = self((image, caption))
+				bert_embed = self.bert_embedding_module(caption)
 
-				else:
-					_, caption_embed = self((image, caption))
+				torch.cat((bert_emb_list, bert_embed))
 
-				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
-
-				torch.cat((caption_emb_list, caption_embed))
-
-			caption_emb_list = torch.mean(caption_emb_list, axis=0)
+			caption_emb_list = torch.mean(bert_emb_list, axis=0)
 
 			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
