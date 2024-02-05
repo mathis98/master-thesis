@@ -401,7 +401,7 @@ class FullPipeline(pl.LightningModule):
 
 				torch.cat((bert_emb_list, bert_embed))
 
-			caption_emb_list = torch.mean(bert_emb_list, axis=0)
+			caption_embed = torch.mean(bert_emb_list, axis=0)
 
 			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
