@@ -217,6 +217,8 @@ class FullPipeline(pl.LightningModule):
 
 			caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
 
+			caption_embed = self.projection_head(caption_embed)
+
 			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
 		else:
@@ -408,6 +410,8 @@ class FullPipeline(pl.LightningModule):
 				print(f'List: {bert_emb_list}')
 
 				caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
+
+				caption_embed = self.projection_head(caption_embed)
 
 				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
