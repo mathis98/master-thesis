@@ -208,15 +208,10 @@ class FullPipeline(pl.LightningModule):
 
 			bert_emb_list = []
 
+			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
 
 				bert_embed = self.bert_embedding_module(caption)
-
-				# if self.intra:
-				# 	image_embed, augmented_image_embed, caption_embed, _ = self((image, caption))
-
-				# else:
-				# 	image_embed, caption_embed = self((image, caption))
 
 				bert_emb_list.append(bert_embed)
 
@@ -395,17 +390,28 @@ class FullPipeline(pl.LightningModule):
 
 			bert_emb_list = torch.tensor([]).to('cuda:3')
 
+			if self.technique == 'Mean':
+
+			image, captions = batch
+
+			bert_emb_list = []
+
+			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
 
 				bert_embed = self.bert_embedding_module(caption)
 
-				print(f'BERT embedding: {bert_embed}')
+				print(f'Bert Embed: {bert_embed}')
 
-				torch.cat((bert_emb_list, bert_embed), axis=-1)
+				bert_emb_list.append(bert_embed)
 
-			print(f'All BERT embeddings: {bert_emb_list}')
+			print(f'List: {bert_emb_list}')
 
-			caption_embed = torch.mean(bert_emb_list, axis=0)
+			caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
+
+			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+
+			print(f'Final: {caption_embed}')
 
 			print(f'caption embed (avg): {caption_embed}')
 
