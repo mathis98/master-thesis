@@ -261,7 +261,7 @@ while True:
 			bert_emb_list = []
 
 			for caption in queries:
-				caption = tokenizer(query, return_tensors='pt').to(device)
+				caption = tokenizer(caption, return_tensors='pt').to(device)
 				new_caption = [caption]
 				new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
 
