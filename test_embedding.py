@@ -258,7 +258,7 @@ while True:
 
 		elif retrieval_technique == 'Mean':
 
-			bert_emb_list = torch.tensor([]).to('cuda:3')
+			bert_emb_list = []
 
 			for caption in queries:
 				caption = tokenizer(query, return_tensors='pt').to(device)
