@@ -156,21 +156,22 @@ if hparams['dataset'] == 'nwpu':
 
 random_sample = random.sample(list(text_data_module.test_dataset), 5)
 
-print('5 Random samples:')
-for element in random_sample:
+# add for Mean too eventually
+if not hparams['technique'] == 'Mean':
+	print('5 Random samples:')
+	for element in random_sample:
 
-	print(element)
+		name = ''
 
-	name = ''
-	index = element[2] // hparams["num_repeats"]
+		index = element[2] // hparams["num_repeats"]
 
-	if hparams['dataset'] == 'nwpu':
-		category_index = index // 700
-		elem_index = index % 700
+		if hparams['dataset'] == 'nwpu':
+			category_index = index // 700
+			elem_index = index % 700
 
-		name = f' ↔ {categories[category_index]}_{elem_index}'
+			name = f' ↔ {categories[category_index]}_{elem_index}'
 
-	print(f'Sentence: {element[1]} (Index: {index}{name})')
+		print(f'Sentence: {element[1]} (Index: {index}{name})')
 
 def calc_sim_scores_for_single(query):
 	caption = tokenizer(query, return_tensors='pt').to(device)
