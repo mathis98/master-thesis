@@ -13,6 +13,7 @@ import os
 import yaml
 import numpy as np
 import inquirer
+import torch.nn.functional as F
 
 batch_size = 512
 num_repeats = 5
@@ -174,6 +175,7 @@ def calc_sim_scores_for_single(query):
 	new_caption = [caption]
 	new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
 	new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
+	new_caption_projection = F.normalize(new_caption_projection, dim=-1, p=2)
 
 	# Calculate pairwise cosine similarity between all image embeddings and the projected query
 	return torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
@@ -183,7 +185,7 @@ def shorten_query(queries):
 
 retrieval_technique = inquirer.prompt(questions)['technique']
 
-if retrieval_technique in ['Mean', 'Info', 'Learned_FC', 'Learned_Att']:
+if retrieval_technique in ['Info', 'Learned_FC', 'Learned_Att']:
 	print('This technique are not yet implemented!')
 
 	quit()
@@ -250,6 +252,26 @@ while True:
 			# take mean for rank aggregation
 			similarity_scores = torch.tensor(np.mean(image_scores_list, axis=0)).to('cuda:3')
 			query = shorten_query(queries)
+
+		elif retrieval_technique == 'Mean':
+
+			bert_emb_list = torch.tensor([]).to('cuda:3')
+
+			for caption in queries:
+				caption = tokenizer(query, return_tensors='pt').to(device)
+				new_caption = [caption]
+				new_caption_embedding = full_pipeline.bert_embedding_module(new_caption)
+
+				bert_emb_list.append(new_caption_embedding)
+
+			caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
+
+			new_caption_projection = full_pipeline.projection_head(new_caption_embedding)
+			new_caption_projection = F.normalize(new_caption_projection, dim=-1, p=2)
+			
+			similarity_scores = torch.nn.functional.cosine_similarity(image_embeddings, new_caption_projection)
+			query = shorten_query(queries)
+
 
 	# Only retrieve the top 20 indices of biggest cosine similarity
 	top_k = 20
