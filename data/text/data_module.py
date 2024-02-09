@@ -89,7 +89,13 @@ class SentenceDataModule(pl.LightningDataModule):
 		self.seed = seed
 		self.num_repeats = num_repeats
 		self.technique = technique
-		self.rand = rand
+
+
+		np.random.seed(self.seed)
+
+		self.rand = np.random.choice(5)
+
+		print(self.rand)
 
 	def setup(self, stage=None):
 		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
