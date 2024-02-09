@@ -202,6 +202,25 @@ class FullPipeline(pl.LightningModule):
 
 		# NT-Xent loss between image and caption
 
+		"""
+		For Mean, Informativeness, Learned_FC, and Learned_Att Techniques the training changes
+		We have multiple captions now for
+
+		1) Mean: Embed by BERT one-by-one then average embedding and pass through projection head
+
+		2) Informativeness: Embed by BERT one-by-one, calculate informativeness (BLEU) between captions 
+							and normalise average weighted by normalised informativeness
+							then pass through projection head
+
+		3) Learned_FC: Embed by BERT one-by-one, have fully-connected layer determine 
+					   trainable weights for averaging, average with these weights
+					   pass through projection head
+
+		4) Learned_Att: Embed by BERT one-by-one, have attention mechanism determine
+						trainable weights for averaging (can attend to embedded queries) 
+						average with these weights, pass through projection head
+
+		"""
 		if self.technique == 'Mean':
 
 			image, captions = batch
@@ -454,6 +473,7 @@ class FullPipeline(pl.LightningModule):
 
 			(map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20) = calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=1), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=5), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=10), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=20)
 
+		# This is the default behaviour, just take the captiona nd embed it
 		elif self.technique in ['Repeat', 'Random']:
 			# Pass through model
 			if self.intra:
