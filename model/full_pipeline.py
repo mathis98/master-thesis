@@ -395,8 +395,6 @@ class FullPipeline(pl.LightningModule):
 
 		if self.technique == 'Mean':
 
-			print('MEAN TECHNIEQUE!')
-
 			image, captions = batch
 
 			bert_emb_list = []
@@ -456,7 +454,7 @@ class FullPipeline(pl.LightningModule):
 
 			(map_1,ndcg_1), (map_5,ndcg_5), (map_10,ndcg_10), (map_20,ndcg_20) = calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=1), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=5), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=10), calculate_mAP(image_embeddings, caption_emb_list, groundtruth, top_k=20)
 
-		elif self.technique == 'Repeat':
+		elif self.technique in ['Repeat', 'Random']:
 			# Pass through model
 			if self.intra:
 				_, _, caption_embed, _ = self(batch)
