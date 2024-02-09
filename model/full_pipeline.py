@@ -395,6 +395,8 @@ class FullPipeline(pl.LightningModule):
 
 		if self.technique == 'Mean':
 
+			print('MEAN TECHNIEQUE!')
+
 			image, captions = batch
 
 			bert_emb_list = []
