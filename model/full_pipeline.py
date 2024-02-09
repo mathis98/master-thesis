@@ -397,29 +397,23 @@ class FullPipeline(pl.LightningModule):
 
 			image, captions = batch
 
-			bert_emb_list = torch.tensor([]).to('cuda:3')
+			bert_emb_list = []
 
-			if self.technique == 'Mean':
+			# 1st, 2nd, 3rd, 4th, 5th caption
+			for idx, caption in enumerate(captions):
 
-				image, captions = batch
+				bert_embed = self.bert_embedding_module(caption)
 
-				bert_emb_list = []
-
-				# 1st, 2nd, 3rd, 4th, 5th caption
-				for idx, caption in enumerate(captions):
-
-					bert_embed = self.bert_embedding_module(caption)
-
-					bert_emb_list.append(bert_embed)
+				bert_emb_list.append(bert_embed)
 
 
-				caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
+			caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
 
-				caption_embed = self.projection_head(caption_embed)
+			caption_embed = self.projection_head(caption_embed)
 
-				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
-			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
+		image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
 
 		# 1.5: INFORMATIVENESS:
