@@ -413,7 +413,7 @@ class FullPipeline(pl.LightningModule):
 
 			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
-		image_embeddings = self.validation_embeddings if validation else self.test_embeddings
+			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
 
 		# 1.5: INFORMATIVENESS:
