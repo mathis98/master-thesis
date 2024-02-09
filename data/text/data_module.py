@@ -93,7 +93,7 @@ class SentenceDataModule(pl.LightningDataModule):
 
 		np.random.seed(888)
 
-		self.rand = 3
+		self.rand = 4
 
 		print(self.rand)
 
