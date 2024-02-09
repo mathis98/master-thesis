@@ -83,7 +83,7 @@ if version == '':
 		val_dataloader = image_text_pair_data_module.val_dataloader,
 		test_dataloader = image_text_pair_data_module.test_dataloader,
 		dataset='ucm',
-		num_repeats=5,
+		num_repeats=5
 	)
 
 else:
@@ -118,6 +118,8 @@ else:
 
 	image_text_pair_data_module = ImageTextPairDataModule(image_data_module, text_data_module, hparams['batch_size'])
 	image_text_pair_data_module.setup(stage='predict')
+
+	print(f'Technique: {hparams["technique"]}')
 
 	full_pipeline = FullPipeline.load_from_checkpoint(
 		checkpoint,
