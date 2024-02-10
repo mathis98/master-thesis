@@ -221,7 +221,7 @@ class FullPipeline(pl.LightningModule):
 						average with these weights, pass through projection head
 
 		"""
-		if self.technique == 'Mean':
+		if self.technique in ['Mean', 'Informativeness', 'Learned_FC', 'Learned_Att']:
 
 			image, captions = batch
 
@@ -229,6 +229,8 @@ class FullPipeline(pl.LightningModule):
 
 			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
+
+				print(f'Index: {idx}')
 
 				if self.intra:
 					image_embed, augmented_image_embed, _, _ = self((image, caption))
