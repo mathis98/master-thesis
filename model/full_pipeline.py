@@ -440,7 +440,7 @@ class FullPipeline(pl.LightningModule):
 
 				torch.cat((bert_emb_list, bert_embed))
 
-				bert_emb_list.append(bert_embed)
+				# bert_emb_list.append(bert_embed)
 
 
 			if self.technique == 'Mean':
