@@ -12,7 +12,7 @@ class FullyConnected(nn.Module):
 	"""
 
 	def __init__(self, input_dim=128, num_captions=5):
-		super(MyProjectionhead, self).__init__()
+		super(FullyConnected, self).__init__()
 
 		torch.manual_seed(42)
 
