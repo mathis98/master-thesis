@@ -47,13 +47,11 @@ class FullyConnected(nn.Module):
 
 			weights.append(caption)
 
-		weights = torch.cat(weights, dim=0).to('cuda:3')
+		weights = torch.stack(weights).to('cuda:3')
 
 		print(f'weights of captions: {weights}')
 
 		weights = F.softmax(weights)
-
-		weights = weights.unsqueeze(2)
 
 		print(f'softmaxed: {weights}')
 
