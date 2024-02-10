@@ -47,7 +47,7 @@ class FullyConnected(nn.Module):
 
 			weights.append(caption)
 
-		weights = torch.stack(weights).to('cuda:3')
+		# weights = torch.stack(weights).to('cuda:3')
 
 		print(f'weights of captions: {weights}')
 
