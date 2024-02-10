@@ -438,7 +438,7 @@ class FullPipeline(pl.LightningModule):
 
 				bert_embed = self.bert_embedding_module(caption)
 
-				torch.cat(bert_emb_list, bert_embed)
+				torch.cat((bert_emb_list, bert_embed))
 
 				bert_emb_list.append(bert_embed)
 
