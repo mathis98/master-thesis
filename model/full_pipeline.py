@@ -114,7 +114,7 @@ class FullPipeline(pl.LightningModule):
 
 		self.projection_head = MyProjectionhead(512, 512, 128)
 
-		self.fc_layer = FullyConnected(128,5)
+		self.fc_layer = FullyConnected(512,5)
 		
 		self.criterion = SimCLRLoss(temperature)
 		# self.criterion = NTXentLoss(temperature)

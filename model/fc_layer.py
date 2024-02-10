@@ -11,7 +11,7 @@ class FullyConnected(nn.Module):
 		output_dim: Output dimenstion of the projection head. 
 	"""
 
-	def __init__(self, input_dim=128, num_captions=5):
+	def __init__(self, input_dim=512, num_captions=5):
 		super(FullyConnected, self).__init__()
 
 		self.num_captions = num_captions
