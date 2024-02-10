@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 
-class FullyConected(nn.Module):
+class FullyConnected(nn.Module):
 	"""
 	Projection head for contrastive learning.
 
