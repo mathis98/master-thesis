@@ -216,6 +216,9 @@ class FullPipeline(pl.LightningModule):
 					   trainable weights for averaging, average with these weights
 					   pass through projection head
 
+					   Actually: Embed by BERT one-by-one, fc layer generates weighted captions
+					   average with weights (softmaxed) --> pass through projection head
+
 		4) Learned_Att: Embed by BERT one-by-one, have attention mechanism determine
 						trainable weights for averaging (can attend to embedded queries) 
 						average with these weights, pass through projection head
@@ -230,8 +233,6 @@ class FullPipeline(pl.LightningModule):
 			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
 
-				print(f'Index: {idx}')
-
 				if self.intra:
 					image_embed, augmented_image_embed, _, _ = self((image, caption))
 
@@ -243,7 +244,12 @@ class FullPipeline(pl.LightningModule):
 
 				bert_emb_list.append(bert_embed)
 
-			caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
+			if self.technique == 'Mean':
+				caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
+
+			elif self.technique == 'Learned_FC':
+				print('fc layer takes all 5 bert embeddings generating weighted versions. Here they are:')
+				print(bert_emb_list)
 
 			caption_embed = self.projection_head(caption_embed)
 
