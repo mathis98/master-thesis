@@ -14,6 +14,8 @@ class FullyConnected(nn.Module):
 	def __init__(self, input_dim=128, num_captions=5):
 		super(FullyConnected, self).__init__()
 
+		self.num_captions = num_captions
+
 		torch.manual_seed(42)
 
 		self.linear1 = nn.Linear(input_dim, 1)
