@@ -440,15 +440,13 @@ class FullPipeline(pl.LightningModule):
 
 			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
-
-			if self.technique == 'Mean':
-				caption_embed = torch.mean(bert_emb_list)
-
-			elif self.technique == 'Learned_FC':
+			if self.technique == 'Learned_FC':
 				print('fc layer takes all 5 bert embeddings generating weighted versions. Here they are:')
 				print(bert_emb_list)
 
-				caption_embed = self.fc_layer(bert_emb_list)
+				bert_emb_list = self.fc_layer(bert_emb_list)
+
+			caption_embed = torch.mean(bert_emb_list)
 
 
 			caption_embed = self.projection_head(caption_embed)

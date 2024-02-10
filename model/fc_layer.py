@@ -31,15 +31,22 @@ class FullyConnected(nn.Module):
 			captions: List of input captions
 		"""
 
-		batch_size = captions.size(0)
-		weights = torch.zeros(batch_size, self.num_captions, 1, device=captions.device)
+		weights = []
 
-		for i in range(self.num_captions):
-			caption_features = captions[:,i,:]
-			weights[:,i,:] = self.relu(self.linear1(caption_features))
+		for caption in captions:
+			caption_weigths = self.relu(self.linear1(caption))
+			weights.append(caption_weights)
 
-		weights = F.softmax(weights, dim=1)
+		weights = torch.stack(weights).to('cuda:3')
+
+		print(f'weights of captions: {weights}')
+
+		weights = F.softmax(weights)
+
+		print(f'softmaxed: {weights}')
+
 		weighted_features = captions * weights 
-		aggregated_features = torch.mean(weighted_features, dim=1)
 
-		return aggregated_features
+		print(f'weighted features: {weighted_features}')
+
+		return weighted_features
