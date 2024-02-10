@@ -431,7 +431,7 @@ class FullPipeline(pl.LightningModule):
 
 			bert_emb_list = []
 
-			bert_emb_list = torch.tensor([])
+			bert_emb_list = torch.tensor([]).to('cuda:3')
 
 			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
