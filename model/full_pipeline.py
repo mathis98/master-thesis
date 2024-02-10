@@ -420,7 +420,7 @@ class FullPipeline(pl.LightningModule):
 		# 1: MEAN FEATURE:
 		# Pass through list of captions (5) get embeddings each and then mean --> store as caption embed
 
-		if self.technique == 'Mean':
+		if self.technique in ['Mean', 'Informativeness', 'Learned_FC', 'Learned_Att']:
 
 			image, captions = batch
 
@@ -434,7 +434,13 @@ class FullPipeline(pl.LightningModule):
 				bert_emb_list.append(bert_embed)
 
 
-			caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
+			if self.technique == 'Mean':
+				caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
+
+			elif self.technique == 'Learned_FC':
+				print('fc layer takes all 5 bert embeddings generating weighted versions. Here they are:')
+				print(bert_emb_list)
+				
 
 			caption_embed = self.projection_head(caption_embed)
 
