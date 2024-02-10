@@ -34,8 +34,18 @@ class FullyConnected(nn.Module):
 		weights = []
 
 		for caption in captions:
-			caption_weights = self.relu(self.linear1(caption))
-			weights.append(caption_weights)
+
+			print(f'caption: {caption}')
+
+			caption = self.linear1(caption)
+
+			print(f'after linear: {caption}')
+
+			caption = self.relu(caption)
+
+			print(f'after relu: {caption}')
+
+			weights.append(caption)
 
 		weights = torch.stack(weights).to('cuda:3')
 
