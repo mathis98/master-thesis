@@ -17,6 +17,9 @@ from model.image_embedding import ImageEmbeddingModule
 # Projection Head
 from model.projection_head import MyProjectionhead
 
+# Fully-connected Layer
+from model.fc_layer import FullyConnected
+
 # SimCLR loss
 from loss.contrastive_loss import SimCLRLoss
 # from lightly.loss import NTXentLoss
@@ -110,6 +113,8 @@ class FullPipeline(pl.LightningModule):
 			param.requires_grad = False
 
 		self.projection_head = MyProjectionhead(512, 512, 128)
+
+		self.fc_layer = FullyConnected(128,5)
 		
 		self.criterion = SimCLRLoss(temperature)
 		# self.criterion = NTXentLoss(temperature)
@@ -440,7 +445,9 @@ class FullPipeline(pl.LightningModule):
 			elif self.technique == 'Learned_FC':
 				print('fc layer takes all 5 bert embeddings generating weighted versions. Here they are:')
 				print(bert_emb_list)
-				
+
+				caption_embed = self.fc_layer(bert_emb_list)
+
 
 			caption_embed = self.projection_head(caption_embed)
 

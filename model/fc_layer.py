@@ -11,34 +11,32 @@ class FullyConected(nn.Module):
 		output_dim: Output dimenstion of the projection head. 
 	"""
 
-	def __init__(self, input_dim, hidden_dim, output_dim):
+	def __init__(self, input_dim=128, num_captions=5):
 		super(MyProjectionhead, self).__init__()
 
 		torch.manual_seed(42)
 
-		self.linear1 = nn.Linear(input_dim, hidden_dim)
-		self.bn1 = nn.BatchNorm1d(hidden_dim)
+		self.linear1 = nn.Linear(input_dim, 1)
 		self.relu = nn.ReLU()
-		self.linear2 = nn.Linear(hidden_dim, output_dim)
-		self.bn2 = nn.BatchNorm1d(output_dim)
-		# self.tanh = nn.Tanh()
 
-	def forward(self, x):
+
+	def forward(self, captions):
 		"""
 		Forward pass through the projection head.
 
 		Args:
-			x: Input tensor.
-
-		Returns:
-			torch.Tensor: Input tensor embedded by the projection head.
+			captions: List of input captions
 		"""
 
-		x = self.linear1(x)
-		x = self.bn1(x)
-		x = self.relu(x)
-		x = self.linear2(x)
-		x = self.bn2(x)
-		# x = self.tanh(x)
+		batch_size = captions.size(0)
+		weights = torch.zeros(batch_size, self.num_captions, 1, device=captions.device)
 
-		return x
+		for i in range(self.num_captions):
+			caption_features = captions[:,i,:]
+			weights[:,i,:] = self.relu(self.linear1(caption_features))
+
+		weights = F.softmax(weights, dim=1)
+		weighted_features = captions * weights 
+		aggregated_features = torch.mean(weighted_features, dim=1)
+
+		return aggregated_features
