@@ -431,16 +431,14 @@ class FullPipeline(pl.LightningModule):
 
 			bert_emb_list = []
 
-			bert_emb_list = torch.tensor([]).to('cuda:3')
-
 			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
 
 				bert_embed = self.bert_embedding_module(caption)
 
-				torch.cat((bert_emb_list, bert_embed))
+				bert_emb_list.append(bert_embed)
 
-				# bert_emb_list.append(bert_embed)
+				bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
 
 			if self.technique == 'Mean':
