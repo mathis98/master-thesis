@@ -57,6 +57,8 @@ class FullyConnected(nn.Module):
 
 		weighted_features = captions * weights 
 
+		weighted_features = weighted_features.squeeze(0)
+
 		print(f'weighted features: {weighted_features}')
 
 		return weighted_features
