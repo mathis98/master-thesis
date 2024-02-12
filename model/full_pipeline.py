@@ -445,7 +445,7 @@ class FullPipeline(pl.LightningModule):
 				print(bert_emb_list)
 
 				bert_emb_list = self.fc_layer(bert_emb_list)
-				bert_emb_list = bert_emb_list.squeeze()
+				bert_emb_list = bert_emb_list.squeeze(0)
 
 			print(f'bert_emb_list: {bert_emb_list}')
 
