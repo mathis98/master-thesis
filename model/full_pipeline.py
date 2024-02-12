@@ -445,11 +445,11 @@ class FullPipeline(pl.LightningModule):
 				print(bert_emb_list)
 
 				bert_emb_list = self.fc_layer(bert_emb_list)
-				bert_emb_list = bert_emb_list.squeeze(0)
+				bert_emb_list = bert_emb_list.squeeze()
 
 			print(f'bert_emb_list: {bert_emb_list}')
 
-			caption_embed = torch.mean(bert_emb_list, dim=-1)
+			caption_embed = torch.mean(bert_emb_list, dim=2)
 
 			print(f'caption embed: {caption_embed}')
 
