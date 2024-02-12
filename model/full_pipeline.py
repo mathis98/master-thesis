@@ -444,7 +444,7 @@ class FullPipeline(pl.LightningModule):
 				print('fc layer takes all 5 bert embeddings generating weighted versions. Here they are:')
 				print(bert_emb_list)
 
-				bert_emb_list = self.fc_layer(bert_emb_list)
+				bert_emb_list = self.fc_layer(bert_emb_list).squeeze()
 
 			caption_embed = torch.mean(bert_emb_list)
 
