@@ -51,7 +51,7 @@ class FullyConnected(nn.Module):
 
 		print(f'weights of captions: {weights}')
 
-		weights = F.softmax(weights, dim=-1)
+		weights = F.softmax(weights, dim=0)
 
 		print(f'softmaxed: {weights}')
 
