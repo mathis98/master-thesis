@@ -47,7 +47,7 @@ class FullyConnected(nn.Module):
 
 			weights.append(caption)
 
-		weights = torch.stack(weights).to('cuda:3')
+		weights = torch.stack(weights).to('cuda:3').squeeze(0)
 
 		print(f'weights of captions: {weights}')
 
@@ -57,7 +57,6 @@ class FullyConnected(nn.Module):
 
 		weighted_features = captions * weights 
 
-		weighted_features = weighted_features.squeeze(1)
 
 		print(f'weighted features: {weighted_features}')
 
