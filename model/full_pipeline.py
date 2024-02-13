@@ -238,6 +238,13 @@ class FullPipeline(pl.LightningModule):
 			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
 
+				if self.intra:
+					image_embed, augmented_image_embed, _, _ = self((image, caption))
+
+				else:
+					image_embed, _ = self((image, caption))
+
+
 				bert_embed = self.bert_embedding_module(caption)
 
 				bert_emb_list.append(bert_embed)
