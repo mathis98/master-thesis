@@ -95,8 +95,6 @@ class SentenceDataModule(pl.LightningDataModule):
 
 		self.rand = 4
 
-		print(self.rand)
-
 	def setup(self, stage=None):
 		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
 
