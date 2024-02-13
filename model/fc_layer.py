@@ -35,29 +35,14 @@ class FullyConnected(nn.Module):
 
 		for caption in captions:
 
-			print(f'caption: {caption}')
-
 			caption = self.linear1(caption)
-
-			print(f'after linear: {caption}')
-
 			caption = self.relu(caption)
-
-			print(f'after relu: {caption}')
 
 			weights.append(caption)
 
 		weights = torch.stack(weights).to('cuda:3')
-
-		print(f'weights of captions: {weights}')
-
 		weights = F.softmax(weights, dim=0)
 
-		print(f'softmaxed: {weights}')
-
 		weighted_features = captions * weights 
-
-
-		print(f'weighted features: {weighted_features}')
 
 		return weighted_features

@@ -238,27 +238,25 @@ class FullPipeline(pl.LightningModule):
 			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
 
-				if self.intra:
-					image_embed, augmented_image_embed, _, _ = self((image, caption))
-
-				else:
-					image_embed, _ = self((image, caption))
-
-
 				bert_embed = self.bert_embedding_module(caption)
 
 				bert_emb_list.append(bert_embed)
 
-			if self.technique == 'Mean':
-				caption_embed = torch.mean(torch.stack(bert_emb_list, dim=1).to('cuda:3'), dim=1)
+			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
-			elif self.technique == 'Learned_FC':
-				print('fc layer takes all 5 bert embeddings generating weighted versions. Here they are:')
-				print(bert_emb_list)
+			if self.technique == 'Learned_FC':
+
+				bert_emb_list = self.fc_layer(bert_emb_list)
+				bert_emb_list = bert_emb_list.squeeze()
+
+			caption_embed = torch.mean(bert_emb_list, dim=0)
+
 
 			caption_embed = self.projection_head(caption_embed)
 
 			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+
+			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
 		else:
 			if self.intra:
@@ -441,17 +439,11 @@ class FullPipeline(pl.LightningModule):
 			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
 			if self.technique == 'Learned_FC':
-				print('fc layer takes all 5 bert embeddings generating weighted versions. Here they are:')
-				print(bert_emb_list)
 
 				bert_emb_list = self.fc_layer(bert_emb_list)
 				bert_emb_list = bert_emb_list.squeeze()
 
-			print(f'bert_emb_list: {bert_emb_list}')
-
 			caption_embed = torch.mean(bert_emb_list, dim=0)
-
-			print(f'caption embed: {caption_embed}')
 
 
 			caption_embed = self.projection_head(caption_embed)
