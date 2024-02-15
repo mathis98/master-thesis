@@ -290,8 +290,6 @@ class FullPipeline(pl.LightningModule):
 
 			loss = loss + intra_image_loss + intra_caption_loss
 
-		print(self.fc_layer.weight)
-
 		self.log('train-loss', loss, prog_bar=True)
 		return loss
 
