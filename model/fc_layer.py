@@ -31,8 +31,6 @@ class FullyConnected(nn.Module):
 			captions: List of input captions
 		"""
 
-		print(f'Captions: {captions}')
-
 		weights = []
 
 		for caption in captions:
@@ -47,6 +45,6 @@ class FullyConnected(nn.Module):
 		weights = F.softmax(weights, dim=0)
 
 		weighted_features = captions * weights 
-		
+
 
 		return weighted_features
