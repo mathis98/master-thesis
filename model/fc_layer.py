@@ -40,7 +40,7 @@ class FullyConnected(nn.Module):
 			print(f'Caption: {caption}')
 
 			weight = self.linear1(caption)
-			weight = self.relu(caption)
+			weight = self.relu(weight)
 
 			print(f'Associated weight: {weight}')
 
