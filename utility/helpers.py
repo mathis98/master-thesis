@@ -229,6 +229,20 @@ def calculate_bleu(image_embeddings, caption_embeddings, image_labels, captions)
 	return bleu_values
 
 
+def calculate_uniqueness(captions):
+	uniqueness_scores = []
+
+	for idx,caption in enumerate(captions):
+		reference = captions[:i] + captions[i+1:]
+
+		bleu = bleu_score([caption], reference, n_gram=2)
+		uniqueness = 1 - bleu
+
+		uniqueness_scores.append(uniqueness)
+
+	return uniqueness_scores
+
+
 def define_param_groups(model, weight_decay, optimizer_name):
 	"""
 	Define paramter groups for optimization. Remove weight_decay from batch normalization layers.

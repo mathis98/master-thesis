@@ -6,6 +6,8 @@ import numpy as np
 import json
 import itertools
 
+from utility.helpers import calculate_uniqueness
+
 
 class CustomSentenceDataset(Dataset):
 	"""
@@ -18,12 +20,13 @@ class CustomSentenceDataset(Dataset):
 		max_length (int): Maximum length of tokenized caption.
 	"""
 
-	def __init__(self, sentences, tokenizer, indices, max_length=128):
+	def __init__(self, sentences, tokenizer, indices, max_length=128, uniqueness=None):
 
 		self.sentences = sentences
 		self.tokenizer = tokenizer
 		self.max_length = max_length
 		self.indices = indices
+		self.uniqueness = uniqueness
 
 	def __len__(self):
 		return len(self.sentences)
@@ -52,6 +55,10 @@ class CustomSentenceDataset(Dataset):
 				inputs['attention_mask'] = inputs['attention_mask'].squeeze(0)
 
 				sentence_list.append((inputs, sentence, self.indices[idx]))
+
+			if self.uniqueness:
+				return sentence_list, uniqueness
+
 			return sentence_list
 
 		# single sentence
@@ -214,13 +221,27 @@ class SentenceDataModule(pl.LightningDataModule):
 			val_indices.extend(group[train_end:val_end])
 			test_indices.extend(group[val_end:])
 
-		# Construct complete dataset with all captions
-		self.dataset = CustomSentenceDataset(sentences, self.tokenizer, indices)
+		if self.technique == 'Info':
+			uniqueness = [calculate_uniqueness(captions) for captions in sentences]
 
-		# And sub datasets for training, validation, and testing
-		self.train_dataset = CustomSentenceDataset([sentences[i] for i in train_indices], self.tokenizer, train_indices)
-		self.val_dataset = CustomSentenceDataset([sentences[i] for i in val_indices], self.tokenizer, val_indices)
-		self.test_dataset = CustomSentenceDataset([sentences[i] for i in test_indices], self.tokenizer, test_indices)
+			# Construct complete dataset with all captions
+			# Pass uniqueness list here if 'INFO'!
+			self.dataset = CustomSentenceDataset(sentences, self.tokenizer, indices, uniqueness)
+
+			# And sub datasets for training, validation, and testing
+			self.train_dataset = CustomSentenceDataset([sentences[i] for i in train_indices], self.tokenizer, train_indices, [uniqueness[i] for i in train_indices])
+			self.val_dataset = CustomSentenceDataset([sentences[i] for i in val_indices], self.tokenizer, val_indices, [uniqueness[i] for i in val_indices])
+			self.test_dataset = CustomSentenceDataset([sentences[i] for i in test_indices], self.tokenizer, test_indices, [uniqueness[i] for i in test_indices])
+
+		else:
+			# Construct complete dataset with all captions
+			# Pass uniqueness list here if 'INFO'!
+			self.dataset = CustomSentenceDataset(sentences, self.tokenizer, indices)
+
+			# And sub datasets for training, validation, and testing
+			self.train_dataset = CustomSentenceDataset([sentences[i] for i in train_indices], self.tokenizer, train_indices)
+			self.val_dataset = CustomSentenceDataset([sentences[i] for i in val_indices], self.tokenizer, val_indices)
+			self.test_dataset = CustomSentenceDataset([sentences[i] for i in test_indices], self.tokenizer, test_indices)
 
 	# Dataloaders for training, validation, and testing
 	def train_dataloader(self):	
