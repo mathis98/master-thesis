@@ -4,12 +4,7 @@ import torch
 
 class FullyConnected(nn.Module):
 	"""
-	Projection head for contrastive learning.
-
-	Args:
-		input_dim: Input dimension of the projection head.
-		hidden_dim: Hidden dimension of the projection head.
-		output_dim: Output dimenstion of the projection head. 
+	Fully Connected layer for weight generation
 	"""
 
 	def __init__(self, input_dim=512, num_captions=5):
@@ -25,7 +20,7 @@ class FullyConnected(nn.Module):
 
 	def forward(self, captions):
 		"""
-		Forward pass through the projection head.
+		Forward pass through the fully connected layer
 
 		Args:
 			captions: List of input captions

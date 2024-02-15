@@ -20,6 +20,9 @@ from model.projection_head import MyProjectionhead
 # Fully-connected Layer
 from model.fc_layer import FullyConnected
 
+# Attention Layer
+from model.attention_layer import Attention
+
 # SimCLR loss
 from loss.contrastive_loss import SimCLRLoss
 # from lightly.loss import NTXentLoss
@@ -115,6 +118,8 @@ class FullPipeline(pl.LightningModule):
 		self.projection_head = MyProjectionhead(512, 512, 128)
 
 		self.fc_layer = FullyConnected(512,5)
+
+		self.attention = Attention(512,2,4,256)
 		
 		self.criterion = SimCLRLoss(temperature)
 		# self.criterion = NTXentLoss(temperature)
@@ -256,10 +261,12 @@ class FullPipeline(pl.LightningModule):
 			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
 			# Weighted according to FC Layer
-			if self.technique == 'Learned_FC':
+			if self.technique in ['Learned_FC', 'Learned_Att']:
+
+				block = self.fc_layer if self.technique == 'Learned_FC' else self.attention
 
 				# Pass through FC layer to get weighted embeddings
-				bert_emb_list = self.fc_layer(bert_emb_list)
+				bert_emb_list = block(bert_emb_list)
 				bert_emb_list = bert_emb_list.squeeze()
 
 			# Averaged without weighting for Mean technique and with weighting for FC, Att, and Informativeness
@@ -452,9 +459,11 @@ class FullPipeline(pl.LightningModule):
 
 			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
-			if self.technique == 'Learned_FC':
+			if self.technique in ['Learned_FC', 'Learned_Att']:
 
-				bert_emb_list = self.fc_layer(bert_emb_list)
+				block = self.fc_layer if self.technique == 'Learned_FC' else self.attention
+
+				bert_emb_list = block(bert_emb_list)
 				bert_emb_list = bert_emb_list.squeeze()
 
 			caption_embed = torch.mean(bert_emb_list, dim=0)
