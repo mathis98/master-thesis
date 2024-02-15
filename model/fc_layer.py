@@ -31,8 +31,6 @@ class FullyConnected(nn.Module):
 			captions: List of input captions
 		"""
 
-		print(f'Linear Layer Weights: {self.linear1.weight}')
-
 		weights = []
 
 		for caption in captions:
