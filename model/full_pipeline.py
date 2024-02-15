@@ -231,6 +231,7 @@ class FullPipeline(pl.LightningModule):
 		"""
 		if self.technique in ['Mean', 'Informativeness', 'Learned_FC', 'Learned_Att']:
 
+			# Get image and MULTIPLE captions per batch
 			image, captions = batch
 
 			bert_emb_list = []
@@ -238,6 +239,7 @@ class FullPipeline(pl.LightningModule):
 			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
 
+				# get image embedding
 				if self.intra:
 					image_embed, augmented_image_embed, _, _ = self((image, caption))
 
@@ -245,24 +247,34 @@ class FullPipeline(pl.LightningModule):
 					image_embed, _ = self((image, caption))
 
 
+				# Get caption embedding by passing through BERT
 				bert_embed = self.bert_embedding_module(caption)
 
+				# Add to list
 				bert_emb_list.append(bert_embed)
 
 			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
+			print(f'BERT Embeddings: {bert_emb_list}')
+
+			# Weighted according to FC Layer
 			if self.technique == 'Learned_FC':
 
+				# Pass through FC layer to get weighted embeddings
 				bert_emb_list = self.fc_layer(bert_emb_list)
 				bert_emb_list = bert_emb_list.squeeze()
 
+			# Averaged without weighting for Mean technique and with weighting for FC, Att, and Informativeness
 			caption_embed = torch.mean(bert_emb_list, dim=0)
 
+			print(f'After average: {caption_embed}')
 
+			# Pass through projection head to get to embedding space
 			caption_embed = self.projection_head(caption_embed)
 
-			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+			print(f'After projection head (final caption embedding!): {caption_embed}')
 
+		# Repeat technique
 		else:
 			if self.intra:
 				image_embed, augmented_image_embed, caption_embed, augmented_caption_embed = self(batch)
@@ -270,11 +282,14 @@ class FullPipeline(pl.LightningModule):
 			else:
 				image_embed, caption_embed = self(batch)
 
+		# Normalise image and caption embed
 		image_embed = F.normalize(image_embed, dim=-1, p=2)
 		caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 		
+		# Calculate loss based on embeddings (nt-xent)
 		loss = self.criterion(image_embed, caption_embed)
 
+		# For intramodal objective add intramodal losses
 		if self.intra:
 			intra_image_loss = self.criterion(image_embed, augmented_image_embed)
 			intra_caption_loss = self.criterion(caption_embed, augmented_caption_embed)
