@@ -206,6 +206,8 @@ def calculate_mAP(image_embeddings, caption_embeddings, ground_truth_labels, top
 
 	return mAP_values, ndcg_values
 
+# Change this to compute pairwise bleus between retrieved and groundtruth captions
+# get mean and max bleu scores
 def calculate_bleu(image_embeddings, caption_embeddings, image_labels, captions):
 	bleu_values = []
 

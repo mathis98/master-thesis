@@ -29,6 +29,7 @@ class CustomSentenceDataset(Dataset):
 		return len(self.sentences)
 
 
+	# RETURN Uniqueness scores if technique = 'Info'
 	def __getitem__(self,idx):
 		sentences = self.sentences[idx]
 
@@ -154,6 +155,8 @@ class SentenceDataModule(pl.LightningDataModule):
 				sentences = list(itertools.chain.from_iterable(sentences))
 
 		# Mean, RankAgg, Info, Learned_FC, Learned_Att
+		# FOR Info ===> CALCULATE Uniqueness Score additionally and store WITH THE SENTENCES!!
+		# Store them in a separate data structure
 		elif self.technique in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
 			# Mean Feature technique, also for Rank Aggregation
 			# ==> List [[caption1_1, caption2_1, caption_3_1, caption4_1, caption5_1],[caption1_2, caption2_2,...],...]
