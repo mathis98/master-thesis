@@ -255,8 +255,6 @@ class FullPipeline(pl.LightningModule):
 
 			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
-			print(f'BERT Embeddings: {bert_emb_list}')
-
 			# Weighted according to FC Layer
 			if self.technique == 'Learned_FC':
 
@@ -267,12 +265,8 @@ class FullPipeline(pl.LightningModule):
 			# Averaged without weighting for Mean technique and with weighting for FC, Att, and Informativeness
 			caption_embed = torch.mean(bert_emb_list, dim=0)
 
-			print(f'After average: {caption_embed}')
-
 			# Pass through projection head to get to embedding space
 			caption_embed = self.projection_head(caption_embed)
-
-			print(f'After projection head (final caption embedding!): {caption_embed}')
 
 		# Repeat technique
 		else:
