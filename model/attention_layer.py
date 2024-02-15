@@ -10,7 +10,7 @@ class Attention(nn.Module):
 	def __init__(self, input_dim=512, num_layers=2, num_heads=4, hidden_dim=256):
 		super(Attention, self).__init__()
 		encoder_layer = nn.TransformerEncoderLayer(d_model=input_dim, nhead=num_heads, dim_feedforward=hidden_dim)
-		self.attention = nn.TranformerEncoder(encoder_layer, num_layers=num_layers)
+		self.attention = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
 
 		self.linear = nn.Linear(input_dim, 1)
 		self.relu = nn.ReLU()
