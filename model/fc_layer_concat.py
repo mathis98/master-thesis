@@ -14,7 +14,7 @@ class FullyConnected(nn.Module):
 
 		torch.manual_seed(42)
 
-		self.linear1 = nn.Linear(input_dim, 1)
+		self.linear1 = nn.Linear(input_dim, self.num_captions)
 		self.relu = nn.ReLU()
 
 
@@ -29,8 +29,6 @@ class FullyConnected(nn.Module):
 		weights = []
 
 		for caption in captions:
-
-			print(caption)
 
 			weight = self.linear1(caption)
 			# weight = self.relu(weight)
