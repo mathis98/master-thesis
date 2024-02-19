@@ -261,7 +261,8 @@ class FullPipeline(pl.LightningModule):
 				# Add to list
 				bert_emb_list.append(bert_embed)
 
-			concatenated_embeddings = torch.cat(bert_emb_list[:-1] + [self.tokenizer.sep_token_id] + [bert_emb_list[-1]], dim=0)
+			sep = torch.tensor([self.tokenizer.sep_token_id], device='cuda:3')
+			concatenated_embeddings = torch.cat(bert_emb_list[:-1] + [sep] + [bert_emb_list[-1]], dim=0)
 
 			print(f'bert emb list: {bert_emb_list}')
 			print(f'concatenated embeddigns: {concatenated_embeddings}')
