@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+from transformers import AutoModel, AutoTokenizer
 
 # Embedding for text
 from model.text_embedding import BERTSentenceEmbedding
@@ -155,6 +156,8 @@ class FullPipeline(pl.LightningModule):
 
 		self.technique = technique
 
+		self.tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-small')
+
 	def forward(self, batch):
 		"""
 		Forward pass through the model.
@@ -257,6 +260,11 @@ class FullPipeline(pl.LightningModule):
 
 				# Add to list
 				bert_emb_list.append(bert_embed)
+
+			concatenated_embeddings = torch.cat(bert_emb_list[:-1] + [tokenizer.sep_token_id] + [bert_emb_list[-1]], dim=0)
+
+			print(f'bert emb list: {bert_emb_list}')
+			print(f'concatenated embeddigns: {concatenated_embeddings}')
 
 			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
