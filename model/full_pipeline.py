@@ -260,6 +260,8 @@ class FullPipeline(pl.LightningModule):
 
 			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
+			print(captions)
+
 			# Weighted according to FC Layer
 			if self.technique in ['Learned_FC', 'Learned_Att']:
 
