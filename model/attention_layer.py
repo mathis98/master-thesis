@@ -30,7 +30,7 @@ class Attention(nn.Module):
 			transformer_encode = self.attention(caption)
 
 			weight = self.linear(transformer_encode)
-			weight = self.relu(weight)
+			# weight = self.relu(weight)
 
 			weights.append(weight)
 
