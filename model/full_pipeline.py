@@ -243,9 +243,12 @@ class FullPipeline(pl.LightningModule):
 			image, captions = batch
 
 			bert_emb_list = []
+			concatenated_embeddings = []
 
 			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
+
+				print(f'caption: {caption}')
 
 				# get image embedding
 				if self.intra:
@@ -261,11 +264,8 @@ class FullPipeline(pl.LightningModule):
 				# Add to list
 				bert_emb_list.append(bert_embed)
 
-			sep = torch.full_like(bert_emb_list[0][:1], self.tokenizer.sep_token_id, device='cuda:3')
-			concatenated_embeddings = torch.cat([emb for sublist in zip(bert_emb_list[:-1], [sep] * (len(bert_emb_list) - 1)) for emb in sublist] + [bert_emb_list[-1]], dim=0)
-
-			print(f'bert emb list: {bert_emb_list}')
-			print(f'concatenated embeddigns: {concatenated_embeddings}')
+			# print(f'bert emb list: {bert_emb_list}')
+			# print(f'concatenated embeddigns: {concatenated_embeddings}')
 
 			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
