@@ -260,7 +260,8 @@ class FullPipeline(pl.LightningModule):
 
 			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
 
-			print(captions)
+			# print(captions) # PASS THESE CAPTIONS TO THE LEARNED_FC LAYER SO THAT IT CAN BE USED FOR CONCAT TECHNIQUE?
+			# HOW? MAYBE USE DIFFERENT DATALOADER, 2 DATALOADERS? *OR* JUST CONCAT EMBEDDINGS (5*512) ==> EASIER
 
 			# Weighted according to FC Layer
 			if self.technique in ['Learned_FC', 'Learned_Att']:
