@@ -9,6 +9,7 @@ from torchmetrics.functional.retrieval import retrieval_average_precision, retri
 from torchmetrics.functional.text import bleu_score
 from transformers.tokenization_utils_base import BatchEncoding
 import json
+import torch.nn.functional as F
 
 
 def closest_indices(embeddings):
@@ -239,6 +240,9 @@ def calculate_uniqueness(captions):
 		uniqueness = 1 - bleu
 
 		uniqueness_scores.append(uniqueness)
+
+	uniqueness_scores = torch.tensor(uniqueness_scores)
+	uniqueness_scores = F.softmax(uniqueness_scores, dim=0)
 
 	return uniqueness_scores
 

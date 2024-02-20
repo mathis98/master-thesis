@@ -347,8 +347,12 @@ class FullPipeline(pl.LightningModule):
 			for batch in dataloader:
 				batch = to_cuda_recursive(batch, device=':3')
 
-				# Retrieve image and caption
-				image, caption = batch
+				if self.technique == 'Info':
+					image, caption, uniqueness = batch
+
+				else:
+					# Retrieve image and caption
+					image, caption = batch
 
 				if self.intra:
 					image = image[0], image[2]
