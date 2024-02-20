@@ -233,7 +233,7 @@ def calculate_uniqueness(captions):
 	uniqueness_scores = []
 
 	for idx,caption in enumerate(captions):
-		reference = captions[:i] + captions[i+1:]
+		reference = captions[:idx] + captions[idx+1:]
 
 		bleu = bleu_score([caption], reference, n_gram=2)
 		uniqueness = 1 - bleu
