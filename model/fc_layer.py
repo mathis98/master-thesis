@@ -30,10 +30,8 @@ class FullyConnected(nn.Module):
 
 		for caption in captions:
 
-			print(caption)
-
 			weight = self.linear1(caption)
-			# weight = self.relu(weight)
+			weight = self.relu(weight)
 
 			weights.append(weight)
 
