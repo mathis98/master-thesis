@@ -284,8 +284,11 @@ class FullPipeline(pl.LightningModule):
 				bert_emb_list = block(bert_emb_list)
 				bert_emb_list = bert_emb_list.squeeze()
 
-			# Averaged without weighting for Mean technique and with weighting for FC, Att, and Informativeness
-			caption_embed = torch.mean(bert_emb_list, dim=0)
+				caption_embed = torch.sum(bert_emb_list, dim=0)
+
+			elif self.technique == 'Mean':
+				# Averaged for Mean technique
+				caption_embed = torch.mean(bert_emb_list, dim=0)
 
 			# Pass through projection head to get to embedding space
 			caption_embed = self.projection_head(caption_embed)
@@ -490,7 +493,10 @@ class FullPipeline(pl.LightningModule):
 				bert_emb_list = block(bert_emb_list)
 				bert_emb_list = bert_emb_list.squeeze()
 
-			caption_embed = torch.mean(bert_emb_list, dim=0)
+				caption_embed = torch.sum(bert_emb_list, dim=0)
+
+			elif self.technique == 'Mean':
+				caption_embed = torch.mean(bert_emb_list, dim=0)
 
 
 			caption_embed = self.projection_head(caption_embed)
