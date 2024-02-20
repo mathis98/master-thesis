@@ -237,18 +237,21 @@ class FullPipeline(pl.LightningModule):
 						average with these weights, pass through projection head
 
 		"""
-		if self.technique in ['Mean', 'Informativeness', 'Learned_FC', 'Learned_Att']:
+		if self.technique in ['Mean', 'Info', 'Learned_FC', 'Learned_Att']:
 
-			# Get image and MULTIPLE captions per batch
-			image, captions = batch
+			if self.technique == 'Info':
+				print(f'uniqueness: {uniqueness}')
+				image, captions, uniqueness = batch
+
+			else:
+				# Get image and MULTIPLE captions per batch
+				image, captions = batch
 
 			bert_emb_list = []
 			concatenated_embeddings = []
 
 			# 1st, 2nd, 3rd, 4th, 5th caption
 			for idx, caption in enumerate(captions):
-
-				print(f'caption: {caption}')
 
 				# get image embedding
 				if self.intra:
@@ -456,9 +459,14 @@ class FullPipeline(pl.LightningModule):
 		# 1: MEAN FEATURE:
 		# Pass through list of captions (5) get embeddings each and then mean --> store as caption embed
 
-		if self.technique in ['Mean', 'Informativeness', 'Learned_FC', 'Learned_Att']:
+		if self.technique in ['Mean', 'Info', 'Learned_FC', 'Learned_Att']:
 
-			image, captions = batch
+			if self.technique == 'Info':
+				image, captions, uniqueness = batch
+				print(f'uniquness: {uniqueness}')
+
+			else:
+				image, captions = batch
 
 			bert_emb_list = []
 
