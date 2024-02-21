@@ -517,7 +517,7 @@ class FullPipeline(pl.LightningModule):
 
 			print(f'after weight: {bert_emb_list}')
 
-			caption_embed = torch.sum(bert_emb_list, dim=0)
+			caption_embed = torch.sum(bert_emb_list.squeeze(), dim=0)
 
 			print(f'caption embed: {caption_embed}')
 
