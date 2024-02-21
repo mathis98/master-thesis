@@ -270,7 +270,7 @@ class FullPipeline(pl.LightningModule):
 			# print(f'bert emb list: {bert_emb_list}')
 			# print(f'concatenated embeddigns: {concatenated_embeddings}')
 
-			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
+			bert_emb_list = torch.stack(bert_emb_list).to('cuda:2')
 
 			# print(captions) # PASS THESE CAPTIONS TO THE LEARNED_FC LAYER SO THAT IT CAN BE USED FOR CONCAT TECHNIQUE?
 			# HOW? MAYBE USE DIFFERENT DATALOADER, 2 DATALOADERS? *OR* JUST CONCAT EMBEDDINGS (5*512) ==> EASIER
@@ -348,7 +348,7 @@ class FullPipeline(pl.LightningModule):
 		with torch.no_grad():		
 			# Get data batchwise
 			for batch in dataloader:
-				batch = to_cuda_recursive(batch, device=':3')
+				batch = to_cuda_recursive(batch, device=':2')
 
 				if self.technique == 'Info':
 					image, caption, uniqueness = batch
@@ -484,7 +484,7 @@ class FullPipeline(pl.LightningModule):
 
 				bert_emb_list.append(bert_embed)
 
-			bert_emb_list = torch.stack(bert_emb_list).to('cuda:3')
+			bert_emb_list = torch.stack(bert_emb_list).to('cuda:2')
 
 			if self.technique in ['Learned_FC', 'Learned_Att']:
 

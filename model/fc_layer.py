@@ -35,7 +35,7 @@ class FullyConnected(nn.Module):
 
 			weights.append(weight)
 
-		weights = torch.stack(weights).to('cuda:3')
+		weights = torch.stack(weights).to('cuda:2')
 
 		weights = F.softmax(weights, dim=0)
 
