@@ -509,11 +509,12 @@ class FullPipeline(pl.LightningModule):
 				caption_embed = torch.mean(bert_emb_list, dim=0)
 
 			uniqueness = torch.stack(uniqueness).to('cuda:2')
+			uniqueness = uniqueness.unsqueeze(-1)
 
 			print(f'bert emb list: {bert_emb_list}')
 			print(f'uniqueness: {uniqueness}')
 
-			bert_emb_list = bert_emb_list * uniqueness
+			bert_emb_list = torch.mul(bert_emb_list, uniqueness)
 
 			print(f'after weight: {bert_emb_list}')
 
