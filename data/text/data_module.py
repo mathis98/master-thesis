@@ -57,7 +57,7 @@ class CustomSentenceDataset(Dataset):
 				sentence_list.append((inputs, sentence, self.indices[idx]))
 
 			if self.uniqueness:
-				return sentence_list, uniqueness
+				return sentence_list, self.uniqueness
 
 			return sentence_list
 
@@ -224,7 +224,7 @@ class SentenceDataModule(pl.LightningDataModule):
 		if self.technique == 'Info':
 			uniqueness = [calculate_uniqueness(captions) for captions in sentences]
 
-			print(f'uniqueness: {uniqueness}')
+			# print(f'uniqueness: {uniqueness}')
 
 			# Construct complete dataset with all captions
 			# Pass uniqueness list here if 'INFO'!
