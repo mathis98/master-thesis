@@ -240,7 +240,6 @@ class FullPipeline(pl.LightningModule):
 		if self.technique in ['Mean', 'Info', 'Learned_FC', 'Learned_Att']:
 
 			if self.technique == 'Info':
-				print(f'uniqueness: {uniqueness}')
 				image, (captions, uniqueness) = batch
 
 			else:
@@ -491,7 +490,6 @@ class FullPipeline(pl.LightningModule):
 
 			if self.technique == 'Info':
 				image, (captions, uniqueness) = batch
-				print(f'uniquness: {uniqueness}')
 
 			else:
 				image, captions = batch
