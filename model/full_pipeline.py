@@ -368,7 +368,7 @@ class FullPipeline(pl.LightningModule):
 
 					else:
 						batch = batch[0], batch[1][0]
-						
+
 					image, caption = batch
 
 				indeces = caption[2]
@@ -507,6 +507,9 @@ class FullPipeline(pl.LightningModule):
 
 			elif self.technique == 'Mean':
 				caption_embed = torch.mean(bert_emb_list, dim=0)
+
+			print(f'bert emb list: {bert_emb_list}')
+			print(f'uniqueness: {uniqueness}')
 
 
 			caption_embed = self.projection_head(caption_embed)
