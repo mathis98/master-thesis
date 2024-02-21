@@ -287,8 +287,18 @@ class FullPipeline(pl.LightningModule):
 				caption_embed = torch.sum(bert_emb_list, dim=0)
 
 			elif self.technique == 'Mean':
-				# Averaged for Mean technique
 				caption_embed = torch.mean(bert_emb_list, dim=0)
+
+			uniqueness = uniqueness.unsqueeze(2).transpose(0, 1) # This does not work
+
+			bert_emb_list = bert_emb_list * uniqueness
+
+			caption_embed = torch.sum(bert_emb_list, dim=0)
+
+
+			caption_embed = self.projection_head(caption_embed)
+
+			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
 			# Pass through projection head to get to embedding space
 			caption_embed = self.projection_head(caption_embed)
@@ -510,16 +520,9 @@ class FullPipeline(pl.LightningModule):
 
 			uniqueness = uniqueness.unsqueeze(2).transpose(0, 1) # This does not work
 
-			print(f'bert emb list: {bert_emb_list}')
-			print(f'uniqueness: {uniqueness}')
-
 			bert_emb_list = bert_emb_list * uniqueness
 
-			print(f'after weight: {bert_emb_list}')
-
 			caption_embed = torch.sum(bert_emb_list, dim=0)
-
-			print(f'caption embed: {caption_embed}')
 
 
 			caption_embed = self.projection_head(caption_embed)
