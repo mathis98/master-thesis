@@ -289,16 +289,17 @@ class FullPipeline(pl.LightningModule):
 			elif self.technique == 'Mean':
 				caption_embed = torch.mean(bert_emb_list, dim=0)
 
-			uniqueness = uniqueness.unsqueeze(2).transpose(0, 1) # This does not work
+			elif self.technique == 'Info':
+				uniqueness = uniqueness.unsqueeze(2).transpose(0, 1) # This does not work
 
-			bert_emb_list = bert_emb_list * uniqueness
+				bert_emb_list = bert_emb_list * uniqueness
 
-			caption_embed = torch.sum(bert_emb_list, dim=0)
+				caption_embed = torch.sum(bert_emb_list, dim=0)
 
 
-			caption_embed = self.projection_head(caption_embed)
+				caption_embed = self.projection_head(caption_embed)
 
-			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
 			# Pass through projection head to get to embedding space
 			caption_embed = self.projection_head(caption_embed)
@@ -518,16 +519,17 @@ class FullPipeline(pl.LightningModule):
 			elif self.technique == 'Mean':
 				caption_embed = torch.mean(bert_emb_list, dim=0)
 
-			uniqueness = uniqueness.unsqueeze(2).transpose(0, 1) # This does not work
+			elif self.technique == 'Info':
+				uniqueness = uniqueness.unsqueeze(2).transpose(0, 1) # This does not work
 
-			bert_emb_list = bert_emb_list * uniqueness
+				bert_emb_list = bert_emb_list * uniqueness
 
-			caption_embed = torch.sum(bert_emb_list, dim=0)
+				caption_embed = torch.sum(bert_emb_list, dim=0)
 
 
-			caption_embed = self.projection_head(caption_embed)
+				caption_embed = self.projection_head(caption_embed)
 
-			caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
 			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
