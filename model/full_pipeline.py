@@ -510,8 +510,8 @@ class FullPipeline(pl.LightningModule):
 
 			uniqueness = torch.stack(uniqueness).to('cuda:2')
 
-			print(f'bert emb list: {bert_emb_list[:5]}')
-			print(f'uniqueness: {uniqueness[:5]}')
+			print(f'bert emb list: {bert_emb_list}')
+			print(f'uniqueness: {uniqueness}')
 
 			bert_emb_list = bert_emb_list * uniqueness
 
