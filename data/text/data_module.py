@@ -228,12 +228,12 @@ class SentenceDataModule(pl.LightningDataModule):
 
 			# Construct complete dataset with all captions
 			# Pass uniqueness list here if 'INFO'!
-			self.dataset = CustomSentenceDataset(sentences, self.tokenizer, indices, uniqueness)
+			self.dataset = CustomSentenceDataset(sentences, self.tokenizer, indices, uniqueness=uniqueness)
 
 			# And sub datasets for training, validation, and testing
-			self.train_dataset = CustomSentenceDataset([sentences[i] for i in train_indices], self.tokenizer, train_indices, [uniqueness[i] for i in train_indices])
-			self.val_dataset = CustomSentenceDataset([sentences[i] for i in val_indices], self.tokenizer, val_indices, [uniqueness[i] for i in val_indices])
-			self.test_dataset = CustomSentenceDataset([sentences[i] for i in test_indices], self.tokenizer, test_indices, [uniqueness[i] for i in test_indices])
+			self.train_dataset = CustomSentenceDataset([sentences[i] for i in train_indices], self.tokenizer, train_indices, uniqueness=[uniqueness[i] for i in train_indices])
+			self.val_dataset = CustomSentenceDataset([sentences[i] for i in val_indices], self.tokenizer, val_indices, uniqueness=[uniqueness[i] for i in val_indices])
+			self.test_dataset = CustomSentenceDataset([sentences[i] for i in test_indices], self.tokenizer, test_indices, uniqueness=[uniqueness[i] for i in test_indices])
 
 		else:
 			# Construct complete dataset with all captions
