@@ -508,7 +508,7 @@ class FullPipeline(pl.LightningModule):
 			elif self.technique == 'Mean':
 				caption_embed = torch.mean(bert_emb_list, dim=0)
 
-			uniqueness = uniqueness.unsqueeze(-1).unsqueeze(-1)
+			uniqueness = uniqueness.unsqueeze(2).transpose(0, 1) # This does not work
 
 			print(f'bert emb list: {bert_emb_list}')
 			print(f'uniqueness: {uniqueness}')
@@ -517,7 +517,7 @@ class FullPipeline(pl.LightningModule):
 
 			print(f'after weight: {bert_emb_list}')
 
-			caption_embed = torch.sum(bert_emb_list.squeeze(), dim=0)
+			caption_embed = torch.sum(bert_emb_list, dim=0)
 
 			print(f'caption embed: {caption_embed}')
 
