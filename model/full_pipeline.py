@@ -362,7 +362,13 @@ class FullPipeline(pl.LightningModule):
 					caption = caption[0], caption[2], caption[4]
 
 				if self.technique in ['Mean', 'RankAgg', 'Info', 'Learned_FC', 'Learned_Att']:
-					batch = batch[0], batch[1][0][0]
+
+					if self.technique == 'Info':
+						batch = batch[0], batch[1][0][0]
+
+					else:
+						batch = batch[0], batch[1][0]
+						
 					image, caption = batch
 
 				indeces = caption[2]
@@ -431,8 +437,12 @@ class FullPipeline(pl.LightningModule):
 		# To calculate bleu or not to calculate bleu
 		ignore_bleu = True
 
-		# Get image and caption
-		image, caption = batch
+		if self.technique == 'Info':
+			image, (caption, uniqueness) = batch
+
+		else:
+			# Retrieve image and caption
+			image, caption = batch
 
 		if self.intra:
 			image = image[0], image[2]
