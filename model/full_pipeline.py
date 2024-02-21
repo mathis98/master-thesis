@@ -508,7 +508,7 @@ class FullPipeline(pl.LightningModule):
 			elif self.technique == 'Mean':
 				caption_embed = torch.mean(bert_emb_list, dim=0)
 
-			uniqueness = torch.stack(uniqueness.T).to('cuda:2')
+			uniqueness = torch.stack(uniqueness).to('cuda:2')
 
 			print(f'bert emb list: {bert_emb_list[:5]}')
 			print(f'uniqueness: {uniqueness[:5]}')
