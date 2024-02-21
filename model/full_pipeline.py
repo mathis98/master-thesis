@@ -241,7 +241,7 @@ class FullPipeline(pl.LightningModule):
 
 			if self.technique == 'Info':
 				print(f'uniqueness: {uniqueness}')
-				image, captions, uniqueness = batch
+				image, (captions, uniqueness) = batch
 
 			else:
 				# Get image and MULTIPLE captions per batch
@@ -351,7 +351,7 @@ class FullPipeline(pl.LightningModule):
 				batch = to_cuda_recursive(batch, device=':2')
 
 				if self.technique == 'Info':
-					image, caption, uniqueness = batch
+					image, (caption, uniqueness) = batch
 
 				else:
 					# Retrieve image and caption
@@ -469,7 +469,7 @@ class FullPipeline(pl.LightningModule):
 		if self.technique in ['Mean', 'Info', 'Learned_FC', 'Learned_Att']:
 
 			if self.technique == 'Info':
-				image, captions, uniqueness = batch
+				image, (captions, uniqueness) = batch
 				print(f'uniquness: {uniqueness}')
 
 			else:
