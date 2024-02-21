@@ -57,7 +57,7 @@ class CustomSentenceDataset(Dataset):
 				sentence_list.append((inputs, sentence, self.indices[idx]))
 
 			if self.uniqueness:
-				return sentence_list, self.uniqueness
+				return sentence_list, self.uniqueness[idx]
 
 			return sentence_list
 
