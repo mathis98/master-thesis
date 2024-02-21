@@ -511,6 +511,14 @@ class FullPipeline(pl.LightningModule):
 			print(f'bert emb list: {bert_emb_list}')
 			print(f'uniqueness: {uniqueness}')
 
+			bert_emb_list = bert_emb_list * uniqueness
+
+			print(f'after weight: {bert_emb_list}')
+
+			caption_embed = torch.sum(bert_emb_list, dim=0)
+
+			print(f'caption embed: {caption_embed}')
+
 
 			caption_embed = self.projection_head(caption_embed)
 
