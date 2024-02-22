@@ -288,10 +288,6 @@ class FullPipeline(pl.LightningModule):
 			elif self.technique == 'Mean':
 				caption_embed = torch.mean(bert_emb_list, dim=0)
 
-				caption_embed = self.projection_head(caption_embed)
-
-				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
-
 			elif self.technique == 'Info':
 				uniqueness = uniqueness.unsqueeze(2).transpose(0, 1)
 
@@ -307,6 +303,8 @@ class FullPipeline(pl.LightningModule):
 			if not self.technique == 'Info':
 				# Pass through projection head to get to embedding space
 				caption_embed = self.projection_head(caption_embed)
+
+				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
 
 		# Repeat technique
 		else:
