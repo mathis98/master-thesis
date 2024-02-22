@@ -12,6 +12,8 @@ class Attention(nn.Module):
 		encoder_layer = nn.TransformerEncoderLayer(d_model=input_dim, nhead=num_heads, dim_feedforward=hidden_dim)
 		self.attention = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
 
+		torch.manual_seed(42)
+
 		self.linear = nn.Linear(input_dim, 1)
 		self.relu = nn.ReLU()
 
@@ -34,7 +36,7 @@ class Attention(nn.Module):
 
 			weights.append(weight)
 
-		weights = torch.stack(weights).to('cuda:2')
+		weights = torch.stack(weights).to('cuda:3')
 
 		weights = F.softmax(weights, dim=0)
 
