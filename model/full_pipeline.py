@@ -288,6 +288,10 @@ class FullPipeline(pl.LightningModule):
 			elif self.technique == 'Mean':
 				caption_embed = torch.mean(bert_emb_list, dim=0)
 
+				caption_embed = self.projection_head(caption_embed)
+
+				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+
 			elif self.technique == 'Info':
 				uniqueness = uniqueness.unsqueeze(2).transpose(0, 1)
 
@@ -518,6 +522,10 @@ class FullPipeline(pl.LightningModule):
 			elif self.technique == 'Mean':
 				caption_embed = torch.mean(bert_emb_list, dim=0)
 
+				caption_embed = self.projection_head(caption_embed)
+
+				caption_embed = F.normalize(caption_embed, dim=-1, p=2)
+
 			elif self.technique == 'Info':
 				uniqueness = uniqueness.unsqueeze(2).transpose(0, 1) # This does not work
 
@@ -585,7 +593,7 @@ class FullPipeline(pl.LightningModule):
 
 		if not self.technique == 'RankAgg':
 			# Get all image embeddings
-			# image_embeddings = self.validation_embeddings if validation else self.test_embeddings
+			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
 			# mAP = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=self.top_k) # multiple top k
 			# Calculate mAP and Recall based on the groundtruth list constructed above
