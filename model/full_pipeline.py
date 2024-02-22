@@ -585,7 +585,7 @@ class FullPipeline(pl.LightningModule):
 
 		if not self.technique == 'RankAgg':
 			# Get all image embeddings
-			image_embeddings = self.validation_embeddings if validation else self.test_embeddings
+			# image_embeddings = self.validation_embeddings if validation else self.test_embeddings
 
 			# mAP = calculate_mAP(image_embeddings, caption_embed, groundtruth, top_k=self.top_k) # multiple top k
 			# Calculate mAP and Recall based on the groundtruth list constructed above
